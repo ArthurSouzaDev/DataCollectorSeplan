@@ -8,7 +8,7 @@ from datetime import datetime
 load_dotenv()
 
 fundo_a_fundo = os.getenv("URL_fundo_a_fundo")
-transf_especial = os.getenv("URL_trans_especial")
+transf_especial = os.getenv("URL_transf_especial")
 
 def extrair_dados(endpoint, params):
     todos_os_dados = []
@@ -16,10 +16,11 @@ def extrair_dados(endpoint, params):
     offset = 0
 
     while True:
-        params['limit'] = limit
-        params['offset'] = offset
+        params_local = params.copy()
+        params_local['limit'] = limit
+        params_local['offset'] = offset
 
-        response = requests.get(endpoint, params=params)
+        response = requests.get(endpoint, params=params_local)
 
         if response.status_code != 200:
             print(f"Erro na requisição: {response.status_code}")
@@ -40,8 +41,12 @@ def extrair_dados(endpoint, params):
 
     print(f"Total extraído: {len(todos_os_dados)} registros")
     return todos_os_dados
+
 params_fundo = {
     'uf_ente_recebedor_plano_acao': 'eq.TO',
+}
+params_especial = {
+    'uf_beneficiario_plano_acao':'eq.TO'
 }
 def tratar_float(valor):
     if valor is None:
@@ -69,7 +74,7 @@ def tratar_dados(dados):
         if uf != "TO":
             continue
 
-        registro = {
+        registroFund= {
             "codigo_plano": item.get("codigo_plano_acao"),
             "situacao": item.get("situacao_plano_acao") or "Não informado",
             "data_inicio": tratar_data(item.get("data_inicio_vigencia_plano_acao")),
@@ -89,18 +94,77 @@ def tratar_dados(dados):
             "valor_total_plano": tratar_float(item.get("valor_total_plano_acao")),
             "saldo_disponivel": tratar_float(item.get("valor_saldo_disponivel_plano_acao")),
             }
+        
+        dados_tratados.append(registroFund)
+
+    return dados_tratados
+
+def tratar_dados_emenda(dados):
+    dados_tratados = []
+
+    for item in dados:
+        uf = (item.get("uf_beneficiario_plano_acao") or "").strip().upper()
+
+        if uf != "TO":
+            continue
+
+        registro = {
+            "codigo_plano": item.get("codigo_plano_acao"),
+
+            "ano_plano": item.get("ano_plano_acao") or 0,
+            "modalidade": item.get("modalidade_plano_acao") or "Não informado",
+            "situacao": item.get("situacao_plano_acao") or "Não informado",
+
+            "beneficiario": item.get("nome_beneficiario_plano_acao") or "Não informado",
+            "cnpj_beneficiario": item.get("cnpj_beneficiario_plano_acao") or "Não informado",
+            "uf": uf,
+
+            # Dados bancários (como string)
+            "banco": item.get("nome_banco_plano_acao") or "Não informado",
+            "agencia": str(item.get("numero_agencia_plano_acao") or ""),
+            "conta": str(item.get("numero_conta_plano_acao") or ""),
+            "dv_agencia": item.get("dv_agencia_plano_acao") or "",
+            "dv_conta": item.get("dv_conta_plano_acao") or "",
+
+            # Emenda parlamentar
+            "parlamentar": item.get("nome_parlamentar_emenda_plano_acao") or "Não informado",
+            "ano_emenda": item.get("ano_emenda_parlamentar_plano_acao") or "",
+            "numero_emenda": item.get("numero_emenda_parlamentar_plano_acao") or "",
+            "codigo_emenda": item.get("codigo_emenda_parlamentar_formatado_plano_acao") or "",
+
+            # Área / programa
+            "area_politica": item.get("codigo_descricao_areas_politicas_publicas_plano_acao") or "Não informado",
+            "programa_orcamentario": item.get("descricao_programacao_orcamentaria_plano_acao") or "Não informado",
+
+            # Valores
+            "valor_custeio": tratar_float(item.get("valor_custeio_plano_acao")),
+            "valor_investimento": tratar_float(item.get("valor_investimento_plano_acao")),
+        }
+
         dados_tratados.append(registro)
 
     return dados_tratados
+
+
+#Extração e tratamento
 dados = extrair_dados(fundo_a_fundo,params_fundo)
 dados_tratados = tratar_dados(dados)
 
-print(f"Total extraído: {len(dados)}")
-print(f"Total tratado: {len(dados_tratados)}")
+dados_emenda = extrair_dados(transf_especial, params_especial)
+dados_tratados_emendas= tratar_dados_emenda(dados_emenda)
 
-df = pd.DataFrame(dados_tratados)
-print(df[["data_inicio", "data_fim"]].head(10))
-df["data_inicio"] = pd.to_datetime(df["data_inicio"], errors="coerce")
-df["data_fim"] = pd.to_datetime(df["data_fim"], errors="coerce")
 
-df.to_csv("tocantins_bi.csv", index=False, sep=";", date_format="%Y-%m-%d")
+print(f"Total extraído fundo a fundo: {len(dados)}")
+print(f"Total tratado fundo a fundo: {len(dados_tratados)}")
+
+print(f"Total extraído especiais: {len(dados_emenda)}")
+print(f"Total tratado especiais: {len(dados_tratados_emendas)}")
+
+
+df_fundo = pd.DataFrame(dados_tratados)
+df_fundo["data_inicio"] = pd.to_datetime(df_fundo["data_inicio"], errors="coerce")
+df_fundo["data_fim"] = pd.to_datetime(df_fundo["data_fim"], errors="coerce")
+
+df_emenda = pd.DataFrame(dados_tratados_emendas)
+df_fundo.to_csv("fundo_a_fundo.csv", index=False, sep=";", date_format="%Y-%m-%d")
+df_emenda.to_csv("emendas_to.csv", index=False, sep=";")
