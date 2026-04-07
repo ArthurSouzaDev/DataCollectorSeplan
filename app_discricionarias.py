@@ -1,42 +1,56 @@
 # app_discricionarias.py
 import os
-import subprocess
+import sys
+import datetime
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CSV_PATH = os.path.join(BASE_DIR, "data_discricionarias", "discricionarias_to.csv")
 
 
 def executar_coletor():
-    """Executa o coletor e exibe progresso no Streamlit."""
+    """Importa e executa o coletor diretamente no mesmo processo Python."""
+    
+    # Garante que o diretório do projeto está no sys.path
+    if BASE_DIR not in sys.path:
+        sys.path.insert(0, BASE_DIR)
+
     with st.status("⏳ Coletando dados do Transferegov...", expanded=True) as status:
-        st.write("📡 Baixando siconv_convenio...")
-        result = subprocess.run(
-            ["python", "coletor_discricionarias.py", "coletar"],
-            capture_output=True, text=True, cwd=BASE_DIR
-        )
-        if result.returncode == 0:
-            status.update(label="✅ Dados coletados com sucesso!", state="complete")
-            st.rerun()
-        else:
+        try:
+            st.write("📡 Importando coletor...")
+            import coletor_discricionarias as coletor  # mesmo ambiente, sem subprocess
+
+            st.write("📡 Baixando e processando siconv_convenio...")
+            df = coletor.consolidar(forcar=False)
+
+            if df is not None and len(df) > 0:
+                status.update(label=f"✅ {len(df):,} registros coletados!", state="complete")
+                st.cache_data.clear()
+                st.rerun()
+            else:
+                status.update(label="⚠️ Coleta finalizada sem dados", state="error")
+                st.warning("Nenhum dado retornado. Verifique os filtros no coletor.")
+
+        except Exception as e:
             status.update(label="❌ Erro na coleta", state="error")
-            st.error(f"Erro:\n```\n{result.stderr[-2000:]}\n```")
+            st.error(f"**Erro:** {e}")
+            import traceback
+            st.code(traceback.format_exc(), language="python")
 
 
 @st.cache_data(show_spinner=False)
 def load_discricionarias():
     df = pd.read_csv(CSV_PATH, sep=";", encoding="utf-8-sig", low_memory=False)
 
-    # Garante colunas numéricas
     for col in ["valor_global", "valor_repasse", "valor_contrapartida",
                 "valor_empenhado", "valor_desembolsado"]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0)
 
-    # Ano como string para filtros
     for col in ["ano_proposta", "ano_assinatura"]:
         if col in df.columns:
             df[col] = df[col].astype(str).str.replace(".0", "", regex=False)
@@ -51,21 +65,19 @@ def render():
     if not os.path.exists(CSV_PATH):
         st.warning("⚠️ Dados ainda não coletados.")
         st.info("Clique no botão abaixo para coletar os dados do Transferegov (pode demorar alguns minutos).")
-
         if st.button("🚀 Coletar Dados Agora", type="primary"):
             executar_coletor()
-        return  # Para aqui até ter o CSV
+        return
 
     # ── Carrega dados ─────────────────────────────────────────────────────────
     df = load_discricionarias()
 
-    # ── Botão para atualizar dados ────────────────────────────────────────────
+    # ── Info + botão atualizar ────────────────────────────────────────────────
     col_info, col_btn = st.columns([8, 2])
     with col_info:
         mtime = os.path.getmtime(CSV_PATH)
-        import datetime
-        dt = datetime.datetime.fromtimestamp(mtime).strftime("%d/%m/%Y %H:%M")
-        st.caption(f"🕒 Última atualização dos dados: **{dt}** · {len(df):,} registros")
+        dt    = datetime.datetime.fromtimestamp(mtime).strftime("%d/%m/%Y %H:%M")
+        st.caption(f"🕒 Última atualização: **{dt}** · {len(df):,} registros")
     with col_btn:
         if st.button("🔄 Atualizar Dados"):
             st.cache_data.clear()
@@ -75,37 +87,22 @@ def render():
     with st.expander("🔎 Filtros", expanded=True):
         c1, c2, c3, c4 = st.columns(4)
 
-        anos = ["Todos"] + sorted(
-            df["ano_assinatura"].dropna().unique().tolist()
-        ) if "ano_assinatura" in df.columns else ["Todos"]
+        anos   = ["Todos"] + sorted(df["ano_assinatura"].dropna().unique().tolist())         if "ano_assinatura"         in df.columns else ["Todos"]
+        sits   = ["Todas"] + sorted(df["situacao"].dropna().unique().tolist())               if "situacao"               in df.columns else ["Todas"]
+        orgaos = ["Todos"] + sorted(df["orgao_concedente"].dropna().unique().tolist())       if "orgao_concedente"       in df.columns else ["Todos"]
+        munis  = ["Todos"] + sorted(df["municipio_beneficiario"].dropna().unique().tolist()) if "municipio_beneficiario" in df.columns else ["Todos"]
 
-        sits = ["Todas"] + sorted(
-            df["situacao"].dropna().unique().tolist()
-        ) if "situacao" in df.columns else ["Todas"]
-
-        orgaos = ["Todos"] + sorted(
-            df["orgao_concedente"].dropna().unique().tolist()
-        ) if "orgao_concedente" in df.columns else ["Todos"]
-
-        munis = ["Todos"] + sorted(
-            df["municipio_beneficiario"].dropna().unique().tolist()
-        ) if "municipio_beneficiario" in df.columns else ["Todos"]
-
-        f_ano  = c1.selectbox("Ano Assinatura",       anos,   key="disc_ano")
-        f_sit  = c2.selectbox("Situação",             sits,   key="disc_sit")
-        f_org  = c3.selectbox("Órgão Concedente",     orgaos, key="disc_org")
-        f_muni = c4.selectbox("Município",            munis,  key="disc_muni")
+        f_ano  = c1.selectbox("Ano Assinatura",   anos,   key="disc_ano")
+        f_sit  = c2.selectbox("Situação",         sits,   key="disc_sit")
+        f_org  = c3.selectbox("Órgão Concedente", orgaos, key="disc_org")
+        f_muni = c4.selectbox("Município",        munis,  key="disc_muni")
 
     # ── Aplica filtros ────────────────────────────────────────────────────────
     dff = df.copy()
-    if f_ano  != "Todos" and "ano_assinatura"        in dff.columns:
-        dff = dff[dff["ano_assinatura"]        == f_ano]
-    if f_sit  != "Todas" and "situacao"              in dff.columns:
-        dff = dff[dff["situacao"]              == f_sit]
-    if f_org  != "Todos" and "orgao_concedente"      in dff.columns:
-        dff = dff[dff["orgao_concedente"]      == f_org]
-    if f_muni != "Todos" and "municipio_beneficiario" in dff.columns:
-        dff = dff[dff["municipio_beneficiario"] == f_muni]
+    if f_ano  != "Todos" and "ano_assinatura"         in dff.columns: dff = dff[dff["ano_assinatura"]         == f_ano]
+    if f_sit  != "Todas" and "situacao"               in dff.columns: dff = dff[dff["situacao"]               == f_sit]
+    if f_org  != "Todos" and "orgao_concedente"       in dff.columns: dff = dff[dff["orgao_concedente"]       == f_org]
+    if f_muni != "Todos" and "municipio_beneficiario" in dff.columns: dff = dff[dff["municipio_beneficiario"] == f_muni]
 
     # ── KPIs ──────────────────────────────────────────────────────────────────
     def fmt_brl(v):
@@ -119,21 +116,18 @@ def render():
 
     st.divider()
 
-    # ── Gráficos ──────────────────────────────────────────────────────────────
+    # ── Gráficos Linha 1 ──────────────────────────────────────────────────────
     g1, g2 = st.columns(2, gap="large")
 
     with g1:
         if "orgao_concedente" in dff.columns and "valor_repasse" in dff.columns:
             top_org = (
                 dff.groupby("orgao_concedente")["valor_repasse"].sum()
-                .reset_index()
-                .nlargest(10, "valor_repasse")
-                .sort_values("valor_repasse")
+                .reset_index().nlargest(10, "valor_repasse").sort_values("valor_repasse")
             )
             top_org["label"] = top_org["valor_repasse"].apply(lambda x: f"R$ {x/1e6:.1f}M")
             fig = px.bar(
-                top_org, x="valor_repasse", y="orgao_concedente",
-                orientation="h",
+                top_org, x="valor_repasse", y="orgao_concedente", orientation="h",
                 title="🏦 Top 10 Órgãos Concedentes — Valor Repasse",
                 color="valor_repasse", color_continuous_scale="Blues",
                 labels={"valor_repasse": "Valor (R$)", "orgao_concedente": ""},
@@ -148,14 +142,11 @@ def render():
         if "municipio_beneficiario" in dff.columns and "valor_repasse" in dff.columns:
             top_mun = (
                 dff.groupby("municipio_beneficiario")["valor_repasse"].sum()
-                .reset_index()
-                .nlargest(10, "valor_repasse")
-                .sort_values("valor_repasse")
+                .reset_index().nlargest(10, "valor_repasse").sort_values("valor_repasse")
             )
             top_mun["label"] = top_mun["valor_repasse"].apply(lambda x: f"R$ {x/1e6:.1f}M")
             fig = px.bar(
-                top_mun, x="valor_repasse", y="municipio_beneficiario",
-                orientation="h",
+                top_mun, x="valor_repasse", y="municipio_beneficiario", orientation="h",
                 title="🏙️ Top 10 Municípios — Valor Repasse",
                 color="valor_repasse", color_continuous_scale="Greens",
                 labels={"valor_repasse": "Valor (R$)", "municipio_beneficiario": ""},
@@ -166,21 +157,35 @@ def render():
             fig.update_traces(textposition="outside")
             st.plotly_chart(fig, use_container_width=True)
 
-    # Situação + Evolução
+    # ── Gráficos Linha 2 ──────────────────────────────────────────────────────
     g3, g4 = st.columns(2, gap="large")
 
     with g3:
         if "situacao" in dff.columns:
             sit = dff.groupby("situacao").size().reset_index(name="qtd")
+            total_s = sit["qtd"].sum()
+            sit["pct"] = sit["qtd"] / total_s * 100
+            principais = sit[sit["pct"] >= 2].copy()
+            outros_v   = sit[sit["pct"] < 2]["qtd"].sum()
+            if outros_v > 0:
+                principais = pd.concat([
+                    principais,
+                    pd.DataFrame([{"situacao": "Outros", "qtd": outros_v, "pct": outros_v / total_s * 100}])
+                ], ignore_index=True)
+
             fig = go.Figure(go.Pie(
-                labels=sit["situacao"], values=sit["qtd"],
+                labels=principais["situacao"], values=principais["qtd"],
                 hole=0.45, textinfo="percent",
+                hovertemplate="<b>%{label}</b><br>Qtd: %{value}<br>%{percent}<extra></extra>",
+                textposition="inside", insidetextorientation="radial",
                 marker=dict(colors=px.colors.qualitative.Set2,
                             line=dict(color="white", width=2))
             ))
             fig.update_layout(
-                title="📌 Distribuição por Situação", height=420,
-                legend=dict(orientation="v", x=1.02, y=0.5),
+                title=dict(text="📌 Distribuição por Situação", x=0, font=dict(size=15)),
+                height=420,
+                legend=dict(orientation="v", x=1.02, y=0.5,
+                            yanchor="middle", font=dict(size=11)),
                 margin=dict(l=10, r=180, t=50, b=10)
             )
             st.plotly_chart(fig, use_container_width=True)
@@ -192,7 +197,6 @@ def render():
                 .agg(valor=("valor_repasse", "sum"), qtd=("valor_repasse", "count"))
                 .reset_index().sort_values("ano_assinatura")
             )
-            from plotly.subplots import make_subplots
             fig = make_subplots(specs=[[{"secondary_y": True}]])
             fig.add_trace(go.Bar(x=evo["ano_assinatura"], y=evo["valor"],
                                  name="Valor Repasse", marker_color="#1f77b4"),
@@ -201,9 +205,13 @@ def render():
                                      name="Qtd Convênios", mode="lines+markers",
                                      line=dict(color="orange", width=2)),
                           secondary_y=True)
-            fig.update_layout(title="📅 Evolução por Ano", height=420,
-                              legend=dict(orientation="h", yanchor="bottom", y=-0.25),
-                              margin=dict(l=10, r=10, t=50, b=80))
+            fig.update_layout(
+                title="📅 Evolução por Ano", height=420,
+                legend=dict(orientation="h", yanchor="bottom", y=-0.25),
+                margin=dict(l=10, r=10, t=50, b=80)
+            )
+            fig.update_yaxes(title_text="Valor (R$)", secondary_y=False)
+            fig.update_yaxes(title_text="Quantidade",  secondary_y=True)
             st.plotly_chart(fig, use_container_width=True)
 
     # ── Tabela + Download ─────────────────────────────────────────────────────
@@ -222,7 +230,6 @@ def render():
             hide_index=True
         )
 
-        # ✅ Botão de download
         csv_bytes = dff[colunas_tabela].to_csv(
             index=False, sep=";", encoding="utf-8-sig"
         ).encode("utf-8-sig")
@@ -234,3 +241,5 @@ def render():
             mime="text/csv",
             type="primary"
         )
+
+
