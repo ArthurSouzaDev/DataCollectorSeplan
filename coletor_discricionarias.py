@@ -30,7 +30,7 @@ ARQUIVOS = {
 
 FILTROS = {
     "uf":              "TO",
-    "anos_proposta":   list(range(2008, 2027)),  # ← 2008 até 2026
+    "anos_proposta":   list(range(2008, 2027)),
     "anos_assinatura": list(range(2008, 2027)),
 }
 
@@ -46,11 +46,9 @@ HEADERS = {
     ),
 }
 
-# --- CONFIGURACOES: corrige mapeamento de colunas ----------------------------
 COLUNAS_SAIDA = {
-    # convenio — layout atual
     "nr_convenio":                "nr_convenio",
-    "id_proposta":                "id_proposta",        # ← era nr_proposta
+    "id_proposta":                "id_proposta",
     "dia_assin_conv":             "dt_assinatura",
     "sit_convenio":               "situacao",
     "subsituacao_conv":           "subsituacao",
@@ -62,18 +60,16 @@ COLUNAS_SAIDA = {
     "vl_empenhado_conv":          "valor_empenhado",
     "vl_desembolsado_conv":       "valor_desembolsado",
     "vl_saldo_reman_tesouro":     "valor_saldo_tesouro",
-    # proposta — vem daqui agora
     "nr_proposta":                "nr_proposta",
     "ano_prop":                   "ano_proposta",
     "modalidade_proposta":        "modalidade",
     "nm_programa":                "nome_programa",
-    "uf_proponente":              "uf",                 # ← está na proposta
+    "uf_proponente":              "uf",
     "nm_munic_proponente":        "municipio_beneficiario",
     "nm_proponente":              "proponente",
     "cnpj_proponente":            "cnpj_proponente",
     "nm_orgao_sup_conv":          "orgao_superior",
     "nm_orgao_conv":              "orgao_concedente",
-    # emenda
     "nm_parlamentar":             "parlamentar",
     "tipo_parlamentar":           "tipo_parlamentar",
     "nr_emenda":                  "nr_emenda",
@@ -175,21 +171,29 @@ def extrair_ano(df: pd.DataFrame, col: str, nova_col: str) -> pd.DataFrame:
     return df
 
 
-def filtrar_uf(df: pd.DataFrame, label: str) -> pd.DataFrame:
-    candidatas = [
-        "uf_proponente", "uf_propon", "uf_proponente_conv",
-        "uf_munic_proponente", "uf"
-    ]
-    col = next((c for c in candidatas if c in df.columns), None)
-    if col is None:
-        col = next((c for c in df.columns if "uf" in c.lower()), None)
+def filtrar_uf(df: pd.DataFrame, label: str,
+               colunas_uf: list[str] | None = None) -> pd.DataFrame:
+    """
+    Filtra por UF usando apenas as colunas explicitamente informadas.
+    Se colunas_uf=None, usa lista padrão SEM busca genérica por 'uf' no nome.
+    """
+    # ← FIX: removida busca genérica — evita pegar coluna errada
+    if colunas_uf is None:
+        colunas_uf = [
+            "uf_proponente", "uf_propon",
+            "uf_proponente_conv", "uf_munic_proponente"
+        ]
+
+    col = next((c for c in colunas_uf if c in df.columns), None)
 
     if col:
         antes = len(df)
         df = df[df[col].astype(str).str.strip().str.upper() == FILTROS["uf"]]
         print(f"  [FILTRO UF=TO via '{col}'] {antes:,} -> {len(df):,}")
     else:
-        print(f"  [AVISO] {label}: coluna UF nao encontrada — {list(df.columns)}")
+        print(f"  [INFO] {label}: coluna UF nao encontrada — sem filtro UF")
+        print(f"  Colunas disponíveis: {list(df.columns[:15])}")
+
     return df
 
 
@@ -220,20 +224,29 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
         return None
 
     df = normalizar_colunas(df)
-    print(f"  Bruto: {len(df):,} linhas")
+    print(f"  Bruto: {len(df):,} linhas | Colunas: {list(df.columns[:10])}")
 
-    df = filtrar_uf(df, "convenio")
+    # ← FIX: convenio NÃO filtra por UF — UF só existe na proposta
+    # filtrar_uf removido daqui para evitar zerar o DataFrame
 
     df = extrair_ano(df, "dia_assin_conv",   "ano_assinatura")
-    df = extrair_ano(df, "dt_inicio_vigenc", "ano_inicio")
+    df = extrair_ano(df, "dia_inic_vigenc_conv", "ano_inicio")
 
+    # ← FIX: filtro de ano só se a coluna existir e tiver dados
     if "ano_assinatura" in df.columns:
         antes = len(df)
-        df = df[df["ano_assinatura"].isin(FILTROS["anos_assinatura"])]
-        print(f"  [FILTRO ANO ASSINATURA] {antes:,} -> {len(df):,}")
+        df_filtrado = df[df["ano_assinatura"].isin(FILTROS["anos_assinatura"])]
+        # ← FIX: se filtro zerar, mantém original com aviso
+        if len(df_filtrado) == 0:
+            print(f"  [AVISO] Filtro ano zerou convenios — mantendo todos ({antes:,})")
+        else:
+            df = df_filtrado
+            print(f"  [FILTRO ANO ASSINATURA] {antes:,} -> {len(df):,}")
 
     df = converter_valores(df)
+    print(f"  Convenios mantidos: {len(df):,}")
     return df
+
 
 def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
     print("\n[PROPOSTA]")
@@ -242,10 +255,21 @@ def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
         return None
 
     df = normalizar_colunas(df)
-    print(f"  Bruto: {len(df):,} linhas")
+    print(f"  Bruto: {len(df):,} linhas | Colunas: {list(df.columns[:10])}")
 
-    # UF está aqui agora — filtra TO
-    df = filtrar_uf(df, "proposta")
+    # UF está na proposta — filtra TO com colunas explícitas
+    df = filtrar_uf(df, "proposta", colunas_uf=["uf_proponente", "uf_propon"])
+
+    # ← FIX: se saiu vazio, mostra valores reais de UF para diagnóstico
+    if len(df) == 0:
+        df_raw = baixar_e_extrair("proposta", forcar=False)
+        if df_raw is not None:
+            df_raw = normalizar_colunas(df_raw)
+            col_uf = next((c for c in df_raw.columns if "uf" in c.lower()), None)
+            if col_uf:
+                print(f"  [DEBUG] Valores únicos em '{col_uf}': "
+                      f"{df_raw[col_uf].unique()[:20]}")
+        return pd.DataFrame()
 
     df = extrair_ano(df, "dt_proposta", "ano_proposta_dt")
 
@@ -254,9 +278,14 @@ def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
 
     if "ano_prop" in df.columns:
         antes = len(df)
-        df = df[df["ano_prop"].isin(FILTROS["anos_proposta"])]
-        print(f"  [FILTRO ANO PROPOSTA] {antes:,} -> {len(df):,}")
+        df_filtrado = df[df["ano_prop"].isin(FILTROS["anos_proposta"])]
+        if len(df_filtrado) == 0:
+            print(f"  [AVISO] Filtro ano zerou propostas — mantendo todas ({antes:,})")
+        else:
+            df = df_filtrado
+            print(f"  [FILTRO ANO PROPOSTA] {antes:,} -> {len(df):,}")
 
+    print(f"  Propostas TO mantidas: {len(df):,}")
     return df.copy()
 
 
@@ -269,7 +298,6 @@ def processar_emenda(forcar: bool = False) -> pd.DataFrame | None:
     df = normalizar_colunas(df)
     print(f"  Bruto: {len(df):,} linhas")
 
-    # Colunas reais do siconv_emenda.csv (layout atual)
     COLUNAS_EMENDA_DESEJADAS = [
         "id_proposta",
         "nr_emenda",
@@ -282,8 +310,7 @@ def processar_emenda(forcar: bool = False) -> pd.DataFrame | None:
         "valor_repasse_emenda",
     ]
 
-    # Seleciona apenas as que existem no arquivo (evita KeyError)
-    colunas_emenda = [c for c in COLUNAS_EMENDA_DESEJADAS if c in df.columns]
+    colunas_emenda   = [c for c in COLUNAS_EMENDA_DESEJADAS if c in df.columns]
     colunas_faltando = [c for c in COLUNAS_EMENDA_DESEJADAS if c not in df.columns]
 
     if colunas_faltando:
@@ -295,27 +322,34 @@ def processar_emenda(forcar: bool = False) -> pd.DataFrame | None:
     print(f"  Colunas selecionadas: {colunas_emenda}")
     return df
 
-# --- CONSOLIDACAO -------------------------------------------------------------
 
+# --- CONSOLIDACAO -------------------------------------------------------------
 
 def consolidar(forcar: bool = False) -> pd.DataFrame | None:
     df_conv   = processar_convenio(forcar)
-    df_prop   = processar_proposta(forcar)   # ← já filtrada por UF=TO
+    df_prop   = processar_proposta(forcar)
     df_emenda = processar_emenda(forcar)
 
-    if df_conv is None or df_prop is None:
-        print("\n[FALHA] convenio ou proposta indisponivel.")
+    # ← FIX: validação explícita com mensagem clara
+    if df_conv is None:
+        print("\n[FALHA] siconv_convenio indisponivel.")
         return None
 
-    #   NOVA ORDEM: parte da proposta (já filtrada por UF)
-    df_base = df_prop.copy()
-    print(f"\n[BASE] Propostas TO: {len(df_base):,}")  # esperado ~23k
+    if df_prop is None or len(df_prop) == 0:
+        print("\n[FALHA] siconv_proposta indisponivel ou vazio após filtros.")
+        print("  → Verifique se a coluna 'uf_proponente' existe no arquivo.")
+        return None
 
-    # ── Join proposta -> convenio via id_proposta ─────────────────────────────
+    df_base = df_prop.copy()
+    print(f"\n[BASE] Propostas TO: {len(df_base):,}")
+
+    # ── Join proposta → convenio ──────────────────────────────────────────
     col_prop_id = next((c for c in df_base.columns
                         if c in ["id_proposta", "nr_proposta"]), None)
     col_conv_id = next((c for c in df_conv.columns
                         if c in ["id_proposta", "nr_proposta"]), None)
+
+    print(f"  [JOIN] Chave proposta: '{col_prop_id}' | Chave convenio: '{col_conv_id}'")
 
     if col_prop_id and col_conv_id:
         antes = len(df_base)
@@ -325,17 +359,28 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
             how="left", suffixes=("", "_conv")
         )
         df_base = df_base.loc[:, ~df_base.columns.duplicated()]
-        print(f"[MERGE proposta<->convenio] {antes:,} -> {len(df_base):,} linhas")
+        print(f"  [MERGE proposta<->convenio] {antes:,} -> {len(df_base):,} linhas")
 
         if len(df_base) > antes * 1.05:
-            print("  ⚠️  ATENCAO: merge multiplicou linhas! "
-                  "Verifique duplicatas em id_proposta no convenio.")
+            print("  ⚠️  MERGE multiplicou linhas! "
+                  "Deduplica convenio por id_proposta.")
+            # ← FIX: deduplica convenio antes do merge para evitar explosão
+            df_conv_dedup = df_conv.drop_duplicates(subset=[col_conv_id])
+            df_base = pd.merge(
+                df_prop, df_conv_dedup,
+                left_on=col_prop_id, right_on=col_conv_id,
+                how="left", suffixes=("", "_conv")
+            )
+            df_base = df_base.loc[:, ~df_base.columns.duplicated()]
+            print(f"  [MERGE dedup] -> {len(df_base):,} linhas")
+    else:
+        print(f"  [AVISO] Chave id_proposta não encontrada!")
+        print(f"  Colunas proposta:  {list(df_prop.columns[:10])}")
+        print(f"  Colunas convenio:  {list(df_conv.columns[:10])}")
 
-    # ── Join com emendas (agrupado via id_proposta) ───────────────────────────
-    if df_emenda is not None:
-        print(f"  [DEBUG] Colunas emenda: {list(df_emenda.columns)}")
-
-        col_base  = next((c for c in df_base.columns  if c == "id_proposta"), None)
+    # ── Join com emendas ──────────────────────────────────────────────────
+    if df_emenda is not None and len(df_emenda) > 0:
+        col_base  = next((c for c in df_base.columns   if c == "id_proposta"), None)
         col_emend = next((c for c in df_emenda.columns if c == "id_proposta"), None)
 
         if col_base and col_emend:
@@ -354,8 +399,6 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
                     agg_dict[campo] = agg
 
             df_emenda_agg = df_emenda.groupby(col_emend, as_index=False).agg(agg_dict)
-            print(f"  Emendas agrupadas: {len(df_emenda_agg):,} propostas únicas")
-
             antes = len(df_base)
             df_base = pd.merge(
                 df_base, df_emenda_agg,
@@ -363,16 +406,12 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
                 how="left", suffixes=("", "_emenda")
             )
             df_base = df_base.loc[:, ~df_base.columns.duplicated()]
+            com_emenda = df_base["nr_emenda"].notna().sum() \
+                         if "nr_emenda" in df_base.columns else 0
+            print(f"  [MERGE emendas] {antes:,} -> {len(df_base):,} | "
+                  f"Com emenda: {com_emenda:,}")
 
-            com_emenda = df_base["nr_emenda"].notna().sum() if "nr_emenda" in df_base.columns else 0
-            print(f"  [MERGE emendas via id_proposta] {antes:,} -> {len(df_base):,} linhas")
-            print(f"  Convênios com emenda vinculada: {com_emenda:,}")
-        else:
-            print(f"  [AVISO] id_proposta nao encontrado!")
-            print(f"  Colunas base:   {list(df_base.columns[:10])}")
-            print(f"  Colunas emenda: {list(df_emenda.columns)}")
-
-    # ── Finaliza ──────────────────────────────────────────────────────────────
+    # ── Finaliza ──────────────────────────────────────────────────────────
     df_base = renomear_colunas(df_base)
 
     for col in ["ano_proposta", "ano_assinatura"]:
@@ -380,6 +419,11 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
             df_base[col] = pd.to_numeric(df_base[col], errors="coerce").astype("Int64")
 
     df_base = df_base.loc[:, ~df_base.columns.duplicated()]
+
+    # ← FIX: validação final antes de salvar
+    if len(df_base) == 0:
+        print("\n[FALHA] DataFrame final vazio — CSV não será salvo.")
+        return None
 
     saida = os.path.join(DATA_DIR, "discricionarias_to.csv")
     df_base.to_csv(saida, sep=";", index=False, encoding="utf-8-sig")

@@ -48,21 +48,14 @@ def executar_coletor():
 # ─── CARGA DE DADOS ───────────────────────────────────────────────────────────
 @st.cache_data(show_spinner="⏳ Carregando Discricionárias...")
 def load_discricionarias() -> pd.DataFrame:
-    """Lê o CSV com detecção automática de separador e validações."""
 
     if not os.path.exists(CSV_PATH):
         return pd.DataFrame()
 
-    # Detecta separador
     with open(CSV_PATH, "r", encoding="utf-8-sig") as f:
         primeira_linha = f.readline()
 
-    if ";" in primeira_linha:
-        sep = ";"
-    elif "\t" in primeira_linha:
-        sep = "\t"
-    else:
-        sep = ","
+    sep = ";" if ";" in primeira_linha else ("\t" if "\t" in primeira_linha else ",")
 
     df = pd.read_csv(CSV_PATH, sep=sep, encoding="utf-8-sig", low_memory=False)
 
@@ -80,7 +73,7 @@ def load_discricionarias() -> pd.DataFrame:
         if col in df.columns:
             df[col] = df[col].astype(str).str.replace(".0", "", regex=False)
 
-    return df
+    return df  # ← SEM filtro de UF aqui, já foi feito no coletor
 
 
 # ─── RENDER PRINCIPAL ──────────────────────────────────────────────────────────
