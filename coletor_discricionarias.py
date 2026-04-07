@@ -28,11 +28,10 @@ ARQUIVOS = {
     "programa":  "siconv_programa.csv.zip",
 }
 
-# Filtros equivalentes ao MARCO.xlsx
 FILTROS = {
     "uf":              "TO",
-    "anos_proposta":   list(range(2019, 2027)),
-    "anos_assinatura": list(range(2019, 2027)),
+    "anos_proposta":   list(range(2008, 2027)),  # ← 2008 até 2026
+    "anos_assinatura": list(range(2008, 2027)),
 }
 
 HEADERS = {
@@ -47,39 +46,40 @@ HEADERS = {
     ),
 }
 
-# Mapeamento das colunas brutas -> nomes padronizados (layout MARCO.xlsx)
-# Ajuste apos rodar 'diagnosticar' para confirmar nomes reais
+# --- CONFIGURACOES: corrige mapeamento de colunas ----------------------------
 COLUNAS_SAIDA = {
-    # convenio
-    "nr_convenio":           "nr_convenio",
-    "nr_proposta":           "nr_proposta",
-    "dia_assin_conv":        "dt_assinatura",
-    "dt_inicio_vigenc":      "dt_inicio_vigencia",
-    "dt_fim_vigenc":         "dt_fim_vigencia",
-    "sit_convenio":          "situacao",
-    "objeto_convenio":       "objeto",
-    "nm_munic_proponente":   "municipio_beneficiario",
-    "uf_proponente":         "uf",
-    "nm_proponente":         "proponente",
-    "cnpj_proponente":       "cnpj_proponente",
-    "nm_orgao_sup_conv":     "orgao_superior",
-    "nm_orgao_conv":         "orgao_concedente",
-    "vl_global_conv":        "valor_global",
-    "vl_repasse_conv":       "valor_repasse",
-    "vl_contrapartida_conv": "valor_contrapartida",
-    "vl_empenhado_conv":     "valor_empenhado",
-    "vl_desembolsado_conv":  "valor_desembolsado",
-    "vl_saldo_reman_tesouro":"valor_saldo_tesouro",
-    # proposta
-    "ano_prop":              "ano_proposta",
-    "modalidade_proposta":   "modalidade",
-    "nm_programa":           "nome_programa",
+    # convenio — layout atual
+    "nr_convenio":                "nr_convenio",
+    "id_proposta":                "id_proposta",        # ← era nr_proposta
+    "dia_assin_conv":             "dt_assinatura",
+    "sit_convenio":               "situacao",
+    "subsituacao_conv":           "subsituacao",
+    "dia_inic_vigenc_conv":       "dt_inicio_vigencia",
+    "dia_fim_vigenc_conv":        "dt_fim_vigencia",
+    "vl_global_conv":             "valor_global",
+    "vl_repasse_conv":            "valor_repasse",
+    "vl_contrapartida_conv":      "valor_contrapartida",
+    "vl_empenhado_conv":          "valor_empenhado",
+    "vl_desembolsado_conv":       "valor_desembolsado",
+    "vl_saldo_reman_tesouro":     "valor_saldo_tesouro",
+    # proposta — vem daqui agora
+    "nr_proposta":                "nr_proposta",
+    "ano_prop":                   "ano_proposta",
+    "modalidade_proposta":        "modalidade",
+    "nm_programa":                "nome_programa",
+    "uf_proponente":              "uf",                 # ← está na proposta
+    "nm_munic_proponente":        "municipio_beneficiario",
+    "nm_proponente":              "proponente",
+    "cnpj_proponente":            "cnpj_proponente",
+    "nm_orgao_sup_conv":          "orgao_superior",
+    "nm_orgao_conv":              "orgao_concedente",
     # emenda
-    "nm_parlamentar":        "parlamentar",
-    "tipo_parlamentar":      "tipo_parlamentar",
-    "nr_emenda":             "nr_emenda",
-    "valor_emenda_custeio":  "valor_custeio",
-    "valor_emenda_investimento": "valor_investimento",
+    "nm_parlamentar":             "parlamentar",
+    "tipo_parlamentar":           "tipo_parlamentar",
+    "nr_emenda":                  "nr_emenda",
+    "valor_emenda_custeio":       "valor_custeio",
+    "valor_emenda_investimento":  "valor_investimento",
+    "ano_emenda":                 "ano_emenda",
 }
 
 
@@ -104,11 +104,8 @@ def baixar_e_extrair(chave: str, forcar: bool = False) -> pd.DataFrame | None:
         mb = os.path.getsize(caminho_csv) / 1024 / 1024
         print(f"  [CACHE] {nome_csv} ({mb:.0f} MB) — usando local")
         return pd.read_csv(
-            caminho_csv,
-            sep=";",
-            encoding="utf-8-sig",       # <-- corrige BOM
-            low_memory=False,
-            on_bad_lines="skip"
+            caminho_csv, sep=";", encoding="utf-8-sig",
+            low_memory=False, on_bad_lines="skip"
         )
 
     url = f"{REPOSITORIO}/{nome_zip}"
@@ -126,8 +123,8 @@ def baixar_e_extrair(chave: str, forcar: bool = False) -> pd.DataFrame | None:
             conteudo += chunk
             baixado  += len(chunk)
             if total:
-                pct = baixado / total * 100
-                print(f"\r  {pct:.0f}% — {baixado/1024/1024:.0f} MB", end="", flush=True)
+                print(f"\r  {baixado/total*100:.0f}% — {baixado/1024/1024:.0f} MB",
+                      end="", flush=True)
 
         print(f"\r  [OK] {baixado/1024/1024:.0f} MB baixados        ")
 
@@ -142,25 +139,23 @@ def baixar_e_extrair(chave: str, forcar: bool = False) -> pd.DataFrame | None:
         time.sleep(1)
 
         return pd.read_csv(
-            io.BytesIO(dados_csv),
-            sep=";",
-            encoding="utf-8-sig",       # <-- corrige BOM
-            low_memory=False,
-            on_bad_lines="skip"
+            io.BytesIO(dados_csv), sep=";", encoding="utf-8-sig",
+            low_memory=False, on_bad_lines="skip"
         )
 
     except requests.exceptions.HTTPError as e:
         print(f"\n  [ERRO HTTP {e.response.status_code}]")
         return None
     except requests.exceptions.Timeout:
-        print(f"\n  [TIMEOUT] arquivo muito grande, tente novamente")
+        print(f"\n  [TIMEOUT]")
         return None
     except zipfile.BadZipFile:
-        print(f"\n  [ERRO ZIP] arquivo corrompido")
+        print(f"\n  [ERRO ZIP]")
         return None
     except Exception as e:
         print(f"\n  [ERRO] {e}")
         return None
+
 
 def normalizar_colunas(df: pd.DataFrame) -> pd.DataFrame:
     df.columns = (
@@ -181,43 +176,24 @@ def extrair_ano(df: pd.DataFrame, col: str, nova_col: str) -> pd.DataFrame:
 
 
 def filtrar_uf(df: pd.DataFrame, label: str) -> pd.DataFrame:
-    """
-    Filtra por UF=TO.
-    Tenta todas as variacoes possiveis de nome de coluna.
-    """
-    # Prioridade de busca
-    candidatas_prioritarias = [
+    candidatas = [
         "uf_proponente", "uf_propon", "uf_proponente_conv",
         "uf_munic_proponente", "uf"
     ]
-
-    col = None
-
-    # Tenta as candidatas prioritarias primeiro
-    for c in candidatas_prioritarias:
-        if c in df.columns:
-            col = c
-            break
-
-    # Fallback: qualquer coluna que contenha "uf"
+    col = next((c for c in candidatas if c in df.columns), None)
     if col is None:
-        candidatas = [c for c in df.columns if "uf" in c.lower()]
-        if candidatas:
-            col = candidatas[0]
+        col = next((c for c in df.columns if "uf" in c.lower()), None)
 
     if col:
         antes = len(df)
         df = df[df[col].astype(str).str.strip().str.upper() == FILTROS["uf"]]
         print(f"  [FILTRO UF=TO via '{col}'] {antes:,} -> {len(df):,}")
     else:
-        print(f"  [AVISO] {label}: coluna UF nao encontrada")
-        print(f"          Colunas disponiveis: {list(df.columns)}")
-
+        print(f"  [AVISO] {label}: coluna UF nao encontrada — {list(df.columns)}")
     return df
 
 
 def converter_valores(df: pd.DataFrame) -> pd.DataFrame:
-    """Converte colunas vl_* de formato BR (1.234,56) para float."""
     for col in df.columns:
         if col.startswith("vl_") or col.startswith("valor_"):
             df[col] = (
@@ -231,7 +207,6 @@ def converter_valores(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def renomear_colunas(df: pd.DataFrame) -> pd.DataFrame:
-    """Aplica o mapeamento COLUNAS_SAIDA — ignora colunas inexistentes."""
     mapa = {k: v for k, v in COLUNAS_SAIDA.items() if k in df.columns}
     return df.rename(columns=mapa)
 
@@ -249,14 +224,9 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
 
     df = filtrar_uf(df, "convenio")
 
-    # Extrai anos para filtro
-    for col_data, col_ano in [
-        ("dia_assin_conv",   "ano_assinatura"),
-        ("dt_inicio_vigenc", "ano_inicio"),
-    ]:
-        df = extrair_ano(df, col_data, col_ano)
+    df = extrair_ano(df, "dia_assin_conv",   "ano_assinatura")
+    df = extrair_ano(df, "dt_inicio_vigenc", "ano_inicio")
 
-    # Filtra por ano de assinatura
     if "ano_assinatura" in df.columns:
         antes = len(df)
         df = df[df["ano_assinatura"].isin(FILTROS["anos_assinatura"])]
@@ -264,7 +234,6 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
 
     df = converter_valores(df)
     return df
-
 
 def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
     print("\n[PROPOSTA]")
@@ -275,10 +244,11 @@ def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
     df = normalizar_colunas(df)
     print(f"  Bruto: {len(df):,} linhas")
 
-    # Extrai ano da proposta
+    # ✅ UF está aqui agora — filtra TO
+    df = filtrar_uf(df, "proposta")
+
     df = extrair_ano(df, "dt_proposta", "ano_proposta_dt")
 
-    # Coluna ano_prop pode ja existir como campo numerico
     if "ano_prop" not in df.columns and "ano_proposta_dt" in df.columns:
         df["ano_prop"] = df["ano_proposta_dt"]
 
@@ -287,15 +257,7 @@ def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
         df = df[df["ano_prop"].isin(FILTROS["anos_proposta"])]
         print(f"  [FILTRO ANO PROPOSTA] {antes:,} -> {len(df):,}")
 
-    # Seleciona apenas colunas relevantes da proposta para o join
-    colunas_prop = [
-        c for c in df.columns
-        if c in COLUNAS_SAIDA or c in [
-            "nr_proposta", "modalidade_proposta", "nm_programa",
-            "ano_prop", "tp_instrumento"
-        ]
-    ]
-    return df[colunas_prop].copy()
+    return df.copy()
 
 
 def processar_emenda(forcar: bool = False) -> pd.DataFrame | None:
@@ -307,7 +269,6 @@ def processar_emenda(forcar: bool = False) -> pd.DataFrame | None:
     df = normalizar_colunas(df)
     print(f"  Bruto: {len(df):,} linhas")
 
-    # Seleciona colunas relevantes
     colunas_emenda = [
         c for c in df.columns
         if c in COLUNAS_SAIDA or c in [
@@ -323,59 +284,94 @@ def processar_emenda(forcar: bool = False) -> pd.DataFrame | None:
 
 # --- CONSOLIDACAO -------------------------------------------------------------
 
+
 def consolidar(forcar: bool = False) -> pd.DataFrame | None:
-    """
-    Gera discricionarias_to.csv pronto para o app.py:
-    - Filtrado por UF=TO e anos configurados
-    - Colunas renomeadas para o layout do MARCO.xlsx
-    - Valores numericos normalizados
-    """
     df_conv   = processar_convenio(forcar)
-    df_prop   = processar_proposta(forcar)
+    df_prop   = processar_proposta(forcar)   # ← já filtrada por UF=TO
     df_emenda = processar_emenda(forcar)
 
-    if df_conv is None:
-        print("\n[FALHA] siconv_convenio indisponivel.")
+    if df_conv is None or df_prop is None:
+        print("\n[FALHA] convenio ou proposta indisponivel.")
         return None
 
-    df_base = df_conv.copy()
+    #   NOVA ORDEM: parte da proposta (já filtrada por UF)
+    df_base = df_prop.copy()
+    print(f"\n[BASE] Propostas TO: {len(df_base):,}")  # esperado ~23k
 
-    # Join com proposta
-    if df_prop is not None:
-        col_c = next((c for c in df_base.columns if c == "nr_proposta"), None)
-        col_p = next((c for c in df_prop.columns if c == "nr_proposta"), None)
-        if col_c and col_p:
-            df_base = pd.merge(
-                df_base, df_prop,
-                on="nr_proposta", how="left",
-                suffixes=("", "_prop")
-            )
-            print(f"\n[MERGE] convenio <-> proposta: {len(df_base):,}")
+    # ── Join proposta -> convenio via id_proposta ─────────────────────────────
+    col_prop_id = next((c for c in df_base.columns
+                        if c in ["id_proposta", "nr_proposta"]), None)
+    col_conv_id = next((c for c in df_conv.columns
+                        if c in ["id_proposta", "nr_proposta"]), None)
 
-    # Join com emendas
+    if col_prop_id and col_conv_id:
+        antes = len(df_base)
+        df_base = pd.merge(
+            df_base, df_conv,
+            left_on=col_prop_id, right_on=col_conv_id,
+            how="left", suffixes=("", "_conv")
+        )
+        df_base = df_base.loc[:, ~df_base.columns.duplicated()]
+        print(f"[MERGE proposta<->convenio] {antes:,} -> {len(df_base):,} linhas")
+
+        if len(df_base) > antes * 1.05:
+            print("  ⚠️  ATENCAO: merge multiplicou linhas! "
+                  "Verifique duplicatas em id_proposta no convenio.")
+
+    # ── Join com emendas (agrupado) ───────────────────────────────────────────
+    # ── Join com emendas (agrupado) ───────────────────────────────────────────
     if df_emenda is not None:
-        col_c = next((c for c in df_base.columns   if "nr_convenio" in c), None)
-        col_e = next((c for c in df_emenda.columns if "nr_convenio" in c), None)
+        # ✅ Busca nr_convenio mesmo após merge (pode ter ficado sem sufixo)
+        col_c = next(
+            (c for c in df_base.columns if c == "nr_convenio"),
+            next((c for c in df_base.columns if "nr_convenio" in c), None)
+        )
+        col_e = next(
+            (c for c in df_emenda.columns if c == "nr_convenio"),
+            next((c for c in df_emenda.columns if "nr_convenio" in c), None)
+        )
+
+        print(f"  [DEBUG] col_convenio base='{col_c}' | emenda='{col_e}'")
+
         if col_c and col_e:
+            agg_dict = {}
+            for campo, agg in [
+                ("valor_emenda_custeio",      "sum"),
+                ("valor_emenda_investimento", "sum"),
+                ("nm_parlamentar",  lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("nr_emenda",       lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("tipo_parlamentar","first"),
+                ("ano_emenda",      "first"),
+            ]:
+                if campo in df_emenda.columns:
+                    agg_dict[campo] = agg
+
+            df_emenda_agg = df_emenda.groupby(col_e, as_index=False).agg(agg_dict)
+
+            antes = len(df_base)
             df_base = pd.merge(
-                df_base, df_emenda,
+                df_base, df_emenda_agg,
                 left_on=col_c, right_on=col_e,
                 how="left", suffixes=("", "_emenda")
             )
-            print(f"[MERGE] com emendas: {len(df_base):,}")
-
-    # Renomeia para layout MARCO.xlsx
+            df_base = df_base.loc[:, ~df_base.columns.duplicated()]
+            com_emenda = df_base[col_c].notna().sum()
+            print(f"[MERGE emendas]  {antes:,} -> {len(df_base):,} linhas")
+            print(f"  Convênios com emenda vinculada: {com_emenda:,}")
+        else:
+            print("  [AVISO] nr_convenio nao encontrado para merge de emendas")
+            print(f"  Colunas base:   {[c for c in df_base.columns if 'conv' in c]}")
+            print(f"  Colunas emenda: {list(df_emenda.columns)}")
+            
+    # ── Finaliza ──────────────────────────────────────────────────────────────
     df_base = renomear_colunas(df_base)
 
-    # Garante colunas de ano presentes e como inteiro
     for col in ["ano_proposta", "ano_assinatura"]:
         if col in df_base.columns:
             df_base[col] = pd.to_numeric(df_base[col], errors="coerce").astype("Int64")
 
-    # Remove colunas duplicadas geradas pelos merges
     df_base = df_base.loc[:, ~df_base.columns.duplicated()]
 
-    # Salva
     saida = os.path.join(DATA_DIR, "discricionarias_to.csv")
     df_base.to_csv(saida, sep=";", index=False, encoding="utf-8-sig")
 
@@ -383,7 +379,6 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
     print(f"Arquivo:         {saida}")
     print(f"Total linhas:    {len(df_base):,}")
     print(f"Total colunas:   {len(df_base.columns)}")
-    print(f"Colunas:         {list(df_base.columns)}")
     print("=" * 60)
 
     return df_base
