@@ -167,25 +167,32 @@ with aba1:
     # ── Gráficos — Linha 2 ────────────────────────────────────────────────────
     c3, c4 = st.columns(2, gap="large")
 
-    with c3:
-        sit = df_e.groupby("situacao").size().reset_index(name="qtd")
-        fig = px.pie(
-            sit, names="situacao", values="qtd",
-            title="📌 Distribuição por Situação",
-            hole=0.4,
-            color_discrete_sequence=px.colors.qualitative.Set2
+with c3:
+    sit = df_e.groupby("situacao").size().reset_index(name="qtd")
+
+    fig = go.Figure(go.Pie(
+        labels=sit["situacao"],
+        values=sit["qtd"],
+        hole=0.45,
+        textinfo="percent",
+        hovertemplate="<b>%{label}</b><br>Qtd: %{value}<br>%{percent}<extra></extra>",
+        textposition="inside",
+        insidetextorientation="radial",
+        marker=dict(
+            colors=px.colors.qualitative.Set2,
+            line=dict(color="white", width=2)
         )
-        fig.update_traces(
-            textposition="outside",
-            textinfo="percent+label",
-            pull=[0.03] * len(sit)
-        )
-        fig.update_layout(
-            height=420,
-            legend=dict(orientation="h", yanchor="bottom", y=-0.25),
-            margin=dict(l=20, r=20, t=50, b=80)
-        )
-        st.plotly_chart(fig, use_container_width=True)
+    ))
+    fig.update_layout(
+        title=dict(text="📌 Distribuição por Situação", x=0, font=dict(size=15)),
+        height=420,
+        legend=dict(
+            orientation="v", x=1.02, y=0.5,
+            yanchor="middle", font=dict(size=11)
+        ),
+        margin=dict(l=10, r=160, t=50, b=10)
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
     with c4:
         evolucao = (
@@ -339,25 +346,50 @@ with aba2:
     # ── Gráficos — Linha 2 ────────────────────────────────────────────────────
     d3, d4 = st.columns(2, gap="large")
 
-    with d3:
-        sit_f = df_f2.groupby("situacao").size().reset_index(name="qtd")
-        fig = px.pie(
-            sit_f, names="situacao", values="qtd",
-            title="📌 Distribuição por Situação",
-            hole=0.4,
-            color_discrete_sequence=px.colors.qualitative.Pastel
+with d3:
+    sit_f = df_f2.groupby("situacao").size().reset_index(name="qtd").sort_values("qtd", ascending=False)
+
+    # Agrupa situações com menos de 2% do total em "Outros"
+    total = sit_f["qtd"].sum()
+    sit_f["pct"] = sit_f["qtd"] / total * 100
+    principais = sit_f[sit_f["pct"] >= 2].copy()
+    outros_qtd = sit_f[sit_f["pct"] < 2]["qtd"].sum()
+
+    if outros_qtd > 0:
+        outros_row = pd.DataFrame([{"situacao": "Outros", "qtd": outros_qtd, "pct": outros_qtd/total*100}])
+        principais = pd.concat([principais, outros_row], ignore_index=True)
+
+    # Paleta com cores suficientes
+    cores = (
+        px.colors.qualitative.Pastel
+        + px.colors.qualitative.Set3
+        + px.colors.qualitative.Pastel1
+    )
+
+    fig = go.Figure(go.Pie(
+        labels=principais["situacao"],
+        values=principais["qtd"],
+        hole=0.45,
+        textinfo="percent",
+        hovertemplate="<b>%{label}</b><br>Qtd: %{value}<br>%{percent}<extra></extra>",
+        textposition="inside",
+        insidetextorientation="radial",
+        marker=dict(
+            colors=cores[:len(principais)],
+            line=dict(color="white", width=2)
         )
-        fig.update_traces(
-            textposition="outside",
-            textinfo="percent+label",
-            pull=[0.03] * len(sit_f)
-        )
-        fig.update_layout(
-            height=420,
-            legend=dict(orientation="h", yanchor="bottom", y=-0.25),
-            margin=dict(l=20, r=20, t=50, b=80)
-        )
-        st.plotly_chart(fig, use_container_width=True)
+    ))
+    fig.update_layout(
+        title=dict(text="📌 Distribuição por Situação", x=0, font=dict(size=15)),
+        height=420,
+        legend=dict(
+            orientation="v", x=1.02, y=0.5,
+            yanchor="middle", font=dict(size=11),
+            itemsizing="constant"
+        ),
+        margin=dict(l=10, r=180, t=50, b=10)
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
     with d4:
         evolucao_f = (
