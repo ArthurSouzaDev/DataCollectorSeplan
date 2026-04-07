@@ -244,7 +244,7 @@ def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
     df = normalizar_colunas(df)
     print(f"  Bruto: {len(df):,} linhas")
 
-    # ✅ UF está aqui agora — filtra TO
+    # UF está aqui agora — filtra TO
     df = filtrar_uf(df, "proposta")
 
     df = extrair_ano(df, "dt_proposta", "ano_proposta_dt")
@@ -269,18 +269,31 @@ def processar_emenda(forcar: bool = False) -> pd.DataFrame | None:
     df = normalizar_colunas(df)
     print(f"  Bruto: {len(df):,} linhas")
 
-    colunas_emenda = [
-        c for c in df.columns
-        if c in COLUNAS_SAIDA or c in [
-            "nr_convenio", "nm_parlamentar", "tipo_parlamentar",
-            "nr_emenda", "valor_emenda_custeio", "valor_emenda_investimento",
-            "ano_emenda"
-        ]
+    # Colunas reais do siconv_emenda.csv (layout atual)
+    COLUNAS_EMENDA_DESEJADAS = [
+        "id_proposta",
+        "nr_emenda",
+        "nome_parlamentar",
+        "tipo_parlamentar",
+        "ind_impositivo",
+        "beneficiario_emenda",
+        "cod_programa_emenda",
+        "valor_repasse_proposta_emenda",
+        "valor_repasse_emenda",
     ]
+
+    # Seleciona apenas as que existem no arquivo (evita KeyError)
+    colunas_emenda = [c for c in COLUNAS_EMENDA_DESEJADAS if c in df.columns]
+    colunas_faltando = [c for c in COLUNAS_EMENDA_DESEJADAS if c not in df.columns]
+
+    if colunas_faltando:
+        print(f"  [AVISO] Colunas nao encontradas: {colunas_faltando}")
+
     df = df[colunas_emenda].copy()
     df = converter_valores(df)
-    return df
 
+    print(f"  Colunas selecionadas: {colunas_emenda}")
+    return df
 
 # --- CONSOLIDACAO -------------------------------------------------------------
 
@@ -318,51 +331,47 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
             print("  ⚠️  ATENCAO: merge multiplicou linhas! "
                   "Verifique duplicatas em id_proposta no convenio.")
 
-    # ── Join com emendas (agrupado) ───────────────────────────────────────────
-    # ── Join com emendas (agrupado) ───────────────────────────────────────────
+    # ── Join com emendas (agrupado via id_proposta) ───────────────────────────
     if df_emenda is not None:
-        # ✅ Busca nr_convenio mesmo após merge (pode ter ficado sem sufixo)
-        col_c = next(
-            (c for c in df_base.columns if c == "nr_convenio"),
-            next((c for c in df_base.columns if "nr_convenio" in c), None)
-        )
-        col_e = next(
-            (c for c in df_emenda.columns if c == "nr_convenio"),
-            next((c for c in df_emenda.columns if "nr_convenio" in c), None)
-        )
+        print(f"  [DEBUG] Colunas emenda: {list(df_emenda.columns)}")
 
-        print(f"  [DEBUG] col_convenio base='{col_c}' | emenda='{col_e}'")
+        col_base  = next((c for c in df_base.columns  if c == "id_proposta"), None)
+        col_emend = next((c for c in df_emenda.columns if c == "id_proposta"), None)
 
-        if col_c and col_e:
+        if col_base and col_emend:
             agg_dict = {}
             for campo, agg in [
-                ("valor_emenda_custeio",      "sum"),
-                ("valor_emenda_investimento", "sum"),
-                ("nm_parlamentar",  lambda x: " | ".join(x.dropna().astype(str).unique())),
-                ("nr_emenda",       lambda x: " | ".join(x.dropna().astype(str).unique())),
-                ("tipo_parlamentar","first"),
-                ("ano_emenda",      "first"),
+                ("nr_emenda",                    lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("nome_parlamentar",             lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("tipo_parlamentar",             lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("ind_impositivo",               lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("beneficiario_emenda",          lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("cod_programa_emenda",          lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("valor_repasse_proposta_emenda","sum"),
+                ("valor_repasse_emenda",         "sum"),
             ]:
                 if campo in df_emenda.columns:
                     agg_dict[campo] = agg
 
-            df_emenda_agg = df_emenda.groupby(col_e, as_index=False).agg(agg_dict)
+            df_emenda_agg = df_emenda.groupby(col_emend, as_index=False).agg(agg_dict)
+            print(f"  Emendas agrupadas: {len(df_emenda_agg):,} propostas únicas")
 
             antes = len(df_base)
             df_base = pd.merge(
                 df_base, df_emenda_agg,
-                left_on=col_c, right_on=col_e,
+                left_on=col_base, right_on=col_emend,
                 how="left", suffixes=("", "_emenda")
             )
             df_base = df_base.loc[:, ~df_base.columns.duplicated()]
-            com_emenda = df_base[col_c].notna().sum()
-            print(f"[MERGE emendas]  {antes:,} -> {len(df_base):,} linhas")
+
+            com_emenda = df_base["nr_emenda"].notna().sum() if "nr_emenda" in df_base.columns else 0
+            print(f"  [MERGE emendas via id_proposta] {antes:,} -> {len(df_base):,} linhas")
             print(f"  Convênios com emenda vinculada: {com_emenda:,}")
         else:
-            print("  [AVISO] nr_convenio nao encontrado para merge de emendas")
-            print(f"  Colunas base:   {[c for c in df_base.columns if 'conv' in c]}")
+            print(f"  [AVISO] id_proposta nao encontrado!")
+            print(f"  Colunas base:   {list(df_base.columns[:10])}")
             print(f"  Colunas emenda: {list(df_emenda.columns)}")
-            
+
     # ── Finaliza ──────────────────────────────────────────────────────────────
     df_base = renomear_colunas(df_base)
 
