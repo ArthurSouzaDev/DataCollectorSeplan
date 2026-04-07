@@ -12,7 +12,7 @@ fundo_a_fundo = os.getenv("URL_fundo_a_fundo")
 transf_especial = os.getenv("URL_transf_especial")
 
 # ─────────────────────────────────────────────
-# 🔷 CACHE de natureza jurídica (evita repetir CNPJ)
+# CACHE de natureza jurídica (evita repetir CNPJ)
 # ─────────────────────────────────────────────
 _cache_natureza = {}
 
@@ -65,7 +65,7 @@ def enriquecer_natureza(df: pd.DataFrame, coluna_cnpj: str) -> pd.DataFrame:
 
 
 # ─────────────────────────────────────────────
-# 🔷 EXTRAÇÃO PAGINADA
+# EXTRAÇÃO PAGINADA
 # ─────────────────────────────────────────────
 def extrair_dados(endpoint, params):
     todos_os_dados = []
@@ -101,7 +101,7 @@ def extrair_dados(endpoint, params):
 
 
 # ─────────────────────────────────────────────
-# 🔷 HELPERS
+#  HELPERS
 # ─────────────────────────────────────────────
 def tratar_float(valor):
     if valor is None:
@@ -159,7 +159,7 @@ def tratar_dados(dados):
 
 
 # ─────────────────────────────────────────────
-# 🔷 TRATAMENTO — EMENDAS PARLAMENTARES
+#  TRATAMENTO — EMENDAS PARLAMENTARES
 # ─────────────────────────────────────────────
 def tratar_dados_emenda(dados):
     dados_tratados = []
@@ -199,7 +199,7 @@ def tratar_dados_emenda(dados):
 
 
 # ─────────────────────────────────────────────
-# 🚀 EXECUÇÃO
+#  EXECUÇÃO
 # ─────────────────────────────────────────────
 params_fundo   = {'uf_ente_recebedor_plano_acao':  'eq.TO'}
 params_especial = {'uf_beneficiario_plano_acao':   'eq.TO'}
