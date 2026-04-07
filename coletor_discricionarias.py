@@ -104,8 +104,11 @@ def baixar_e_extrair(chave: str, forcar: bool = False) -> pd.DataFrame | None:
         mb = os.path.getsize(caminho_csv) / 1024 / 1024
         print(f"  [CACHE] {nome_csv} ({mb:.0f} MB) — usando local")
         return pd.read_csv(
-            caminho_csv, sep=";", encoding="latin-1",
-            low_memory=False, on_bad_lines="skip"
+            caminho_csv,
+            sep=";",
+            encoding="utf-8-sig",       # <-- corrige BOM
+            low_memory=False,
+            on_bad_lines="skip"
         )
 
     url = f"{REPOSITORIO}/{nome_zip}"
@@ -115,9 +118,9 @@ def baixar_e_extrair(chave: str, forcar: bool = False) -> pd.DataFrame | None:
         resp = requests.get(url, headers=HEADERS, timeout=600, stream=True)
         resp.raise_for_status()
 
-        conteudo  = b""
-        total     = int(resp.headers.get("content-length", 0))
-        baixado   = 0
+        conteudo = b""
+        total    = int(resp.headers.get("content-length", 0))
+        baixado  = 0
 
         for chunk in resp.iter_content(chunk_size=131072):
             conteudo += chunk
@@ -139,8 +142,11 @@ def baixar_e_extrair(chave: str, forcar: bool = False) -> pd.DataFrame | None:
         time.sleep(1)
 
         return pd.read_csv(
-            io.BytesIO(dados_csv), sep=";", encoding="latin-1",
-            low_memory=False, on_bad_lines="skip"
+            io.BytesIO(dados_csv),
+            sep=";",
+            encoding="utf-8-sig",       # <-- corrige BOM
+            low_memory=False,
+            on_bad_lines="skip"
         )
 
     except requests.exceptions.HTTPError as e:
@@ -155,7 +161,6 @@ def baixar_e_extrair(chave: str, forcar: bool = False) -> pd.DataFrame | None:
     except Exception as e:
         print(f"\n  [ERRO] {e}")
         return None
-
 
 def normalizar_colunas(df: pd.DataFrame) -> pd.DataFrame:
     df.columns = (
@@ -176,16 +181,38 @@ def extrair_ano(df: pd.DataFrame, col: str, nova_col: str) -> pd.DataFrame:
 
 
 def filtrar_uf(df: pd.DataFrame, label: str) -> pd.DataFrame:
-    candidatas = [c for c in df.columns if "uf_propon" in c or c == "uf"]
-    if not candidatas:
-        candidatas = [c for c in df.columns if c.endswith("_uf") or c.startswith("uf_")]
-    if candidatas:
-        col   = candidatas[0]
+    """
+    Filtra por UF=TO.
+    Tenta todas as variacoes possiveis de nome de coluna.
+    """
+    # Prioridade de busca
+    candidatas_prioritarias = [
+        "uf_proponente", "uf_propon", "uf_proponente_conv",
+        "uf_munic_proponente", "uf"
+    ]
+
+    col = None
+
+    # Tenta as candidatas prioritarias primeiro
+    for c in candidatas_prioritarias:
+        if c in df.columns:
+            col = c
+            break
+
+    # Fallback: qualquer coluna que contenha "uf"
+    if col is None:
+        candidatas = [c for c in df.columns if "uf" in c.lower()]
+        if candidatas:
+            col = candidatas[0]
+
+    if col:
         antes = len(df)
-        df    = df[df[col].astype(str).str.strip().str.upper() == FILTROS["uf"]]
+        df = df[df[col].astype(str).str.strip().str.upper() == FILTROS["uf"]]
         print(f"  [FILTRO UF=TO via '{col}'] {antes:,} -> {len(df):,}")
     else:
-        print(f"  [AVISO] {label}: coluna UF nao encontrada — {list(df.columns)[:10]}")
+        print(f"  [AVISO] {label}: coluna UF nao encontrada")
+        print(f"          Colunas disponiveis: {list(df.columns)}")
+
     return df
 
 
