@@ -512,3 +512,9 @@ with aba3:
 # ─── RODAPÉ ────────────────────────────────────────────────────────────────────
 st.divider()
 st.caption("Dashboard desenvolvido pela Seplan-TO · Dados: Transferegov")
+import app_discricionarias
+tab1, tab2, tab3 = st.tabs([
+    "Emendas Parlamentares",
+    "Discricionarias e Legais",
+    "Fundo a Fundo"
+])
