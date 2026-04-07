@@ -502,3 +502,22 @@ with aba2:
 # ─── RODAPÉ ────────────────────────────────────────────────────────────────────
 st.divider()
 st.caption("📊 Desenvolvido por Seplan TO · Dados: Transferegov")
+# app.py — adicione a aba de Discricionarias
+import app_discricionarias
+
+tab1, tab2, tab3 = st.tabs([
+    "Emendas Parlamentares",
+    "Discricionarias e Legais",
+    "Fundo a Fundo"
+])
+
+with tab1:
+    # seu codigo atual de emendas
+    pass
+
+with tab2:
+    app_discricionarias.render()
+
+with tab3:
+    # fundo a fundo
+    pass
