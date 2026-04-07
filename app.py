@@ -12,7 +12,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# CSS para corrigir cortes e responsividade
 st.markdown("""
     <style>
         .block-container { padding: 1.5rem 2rem 2rem 2rem; }
@@ -40,9 +39,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 def load_emendas():
     path = os.path.join(BASE_DIR, "emendas_to.csv")
     df = pd.read_csv(path, sep=";")
-    df["valor_total"]  = df["valor_custeio"] + df["valor_investimento"]
-    df["ano_emenda"]   = df["ano_emenda"].astype(str)
-    df["ano_plano"]    = df["ano_plano"].astype(str)
+    df["valor_total"] = df["valor_custeio"] + df["valor_investimento"]
+    df["ano_emenda"]  = df["ano_emenda"].astype(str)
+    df["ano_plano"]   = df["ano_plano"].astype(str)
+    if "natureza_juridica" not in df.columns:
+        df["natureza_juridica"] = "Não informado"
     return df
 
 @st.cache_data
@@ -52,6 +53,8 @@ def load_fundo():
     df["data_inicio"] = pd.to_datetime(df["data_inicio"], errors="coerce")
     df["data_fim"]    = pd.to_datetime(df["data_fim"],    errors="coerce")
     df["ano"]         = df["data_inicio"].dt.year.astype("Int64").astype(str)
+    if "natureza_juridica" not in df.columns:
+        df["natureza_juridica"] = "Não informado"
     return df
 
 df_emendas = load_emendas()
@@ -75,39 +78,42 @@ st.divider()
 # ABAS PRINCIPAIS
 # ═══════════════════════════════════════════════════════════════════════════════
 aba1, aba2 = st.tabs([
-    "🏛️  Emendas Parlamentares",
+    "⭐  Especiais",       # ← renomeado
     "🔄  Fundo a Fundo"
 ])
 
 # ───────────────────────────────────────────────────────────────────────────────
-# ABA 1 — EMENDAS PARLAMENTARES
+# ABA 1 — ESPECIAIS
 # ───────────────────────────────────────────────────────────────────────────────
 with aba1:
 
-    # ── Filtros ──────────────────────────────────────────────────────────────
+    # ── Filtros ───────────────────────────────────────────────────────────────
     with st.expander("🔎 Filtros", expanded=True):
-        f1, f2, f3, f4 = st.columns(4)
+        f1, f2, f3, f4, f5 = st.columns(5)
 
-        anos_e = ["Todos"] + sorted(df_emendas["ano_emenda"].dropna().unique().tolist())
-        sits_e = ["Todas"] + sorted(df_emendas["situacao"].dropna().unique().tolist())
-        parls  = ["Todos"] + sorted(df_emendas["parlamentar"].dropna().unique().tolist())
-        munis  = ["Todos"] + sorted(df_emendas["beneficiario"].dropna().unique().tolist())
+        anos_e  = ["Todos"] + sorted(df_emendas["ano_emenda"].dropna().unique().tolist())
+        sits_e  = ["Todas"] + sorted(df_emendas["situacao"].dropna().unique().tolist())
+        parls   = ["Todos"] + sorted(df_emendas["parlamentar"].dropna().unique().tolist())
+        munis   = ["Todos"] + sorted(df_emendas["beneficiario"].dropna().unique().tolist())
+        nats_e  = ["Todas"] + sorted(df_emendas["natureza_juridica"].dropna().unique().tolist())
 
-        f_ano  = f1.selectbox("Ano da Emenda",        anos_e, key="e_ano")
-        f_sit  = f2.selectbox("Situação",             sits_e, key="e_sit")
-        f_parl = f3.selectbox("Parlamentar",          parls,  key="e_parl")
-        f_muni = f4.selectbox("Município Beneficiário", munis, key="e_muni")
+        f_ano   = f1.selectbox("Ano da Emenda",          anos_e, key="e_ano")
+        f_sit   = f2.selectbox("Situação",               sits_e, key="e_sit")
+        f_parl  = f3.selectbox("Parlamentar",            parls,  key="e_parl")
+        f_muni  = f4.selectbox("Município Beneficiário", munis,  key="e_muni")
+        f_nat_e = f5.selectbox("Natureza Jurídica",      nats_e, key="e_nat")
 
     # ── Aplicar filtros ───────────────────────────────────────────────────────
     df_e = df_emendas.copy()
-    if f_ano  != "Todos": df_e = df_e[df_e["ano_emenda"]  == f_ano]
-    if f_sit  != "Todas": df_e = df_e[df_e["situacao"]    == f_sit]
-    if f_parl != "Todos": df_e = df_e[df_e["parlamentar"] == f_parl]
-    if f_muni != "Todos": df_e = df_e[df_e["beneficiario"]== f_muni]
+    if f_ano   != "Todos": df_e = df_e[df_e["ano_emenda"]        == f_ano]
+    if f_sit   != "Todas": df_e = df_e[df_e["situacao"]          == f_sit]
+    if f_parl  != "Todos": df_e = df_e[df_e["parlamentar"]       == f_parl]
+    if f_muni  != "Todos": df_e = df_e[df_e["beneficiario"]      == f_muni]
+    if f_nat_e != "Todas": df_e = df_e[df_e["natureza_juridica"] == f_nat_e]
 
     # ── KPIs ──────────────────────────────────────────────────────────────────
     k1, k2, k3, k4 = st.columns(4)
-    k1.metric("📋 Total de Emendas",    f"{len(df_e):,}".replace(",", "."))
+    k1.metric("📋 Total de Especiais",  f"{len(df_e):,}".replace(",", "."))
     k2.metric("💰 Valor Total",         f"R$ {df_e['valor_total'].sum():,.0f}".replace(",","X").replace(".",",").replace("X","."))
     k3.metric("🏥 Custeio",             f"R$ {df_e['valor_custeio'].sum():,.0f}".replace(",","X").replace(".",",").replace("X","."))
     k4.metric("🏗️ Investimento",        f"R$ {df_e['valor_investimento'].sum():,.0f}".replace(",","X").replace(".",",").replace("X","."))
@@ -126,14 +132,13 @@ with aba1:
         )
         fig = px.bar(
             top_parl, x="qtd", y="parlamentar", orientation="h",
-            title="🏛️ Top 10 Parlamentares — Quantidade de Emendas",
+            title="🏛️ Top 10 Parlamentares — Quantidade de Especiais",
             color="qtd", color_continuous_scale="Blues",
             labels={"qtd": "Quantidade", "parlamentar": ""},
             text="qtd"
         )
         fig.update_layout(
-            coloraxis_showscale=False,
-            height=420,
+            coloraxis_showscale=False, height=420,
             margin=dict(l=10, r=30, t=50, b=10)
         )
         fig.update_traces(textposition="outside")
@@ -146,9 +151,7 @@ with aba1:
             .nlargest(10, "valor_total")
             .sort_values("valor_total")
         )
-        top_mun["label"] = top_mun["valor_total"].apply(
-            lambda x: f"R$ {x/1e6:.1f}M"
-        )
+        top_mun["label"] = top_mun["valor_total"].apply(lambda x: f"R$ {x/1e6:.1f}M")
         fig = px.bar(
             top_mun, x="valor_total", y="beneficiario", orientation="h",
             title="🏙️ Top 10 Municípios — Valor Total",
@@ -157,47 +160,38 @@ with aba1:
             text="label"
         )
         fig.update_layout(
-            coloraxis_showscale=False,
-            height=420,
+            coloraxis_showscale=False, height=420,
             margin=dict(l=10, r=80, t=50, b=10)
         )
         fig.update_traces(textposition="outside")
         st.plotly_chart(fig, use_container_width=True)
 
     # ── Gráficos — Linha 2 ────────────────────────────────────────────────────
-    c3, c4 = st.columns(2, gap="large")
+    c3, c4, c5 = st.columns(3, gap="large")
 
-with c3:
-    sit = df_e.groupby("situacao").size().reset_index(name="qtd")
-
-    fig = go.Figure(go.Pie(
-        labels=sit["situacao"],
-        values=sit["qtd"],
-        hole=0.45,
-        textinfo="percent",
-        hovertemplate="<b>%{label}</b><br>Qtd: %{value}<br>%{percent}<extra></extra>",
-        textposition="inside",
-        insidetextorientation="radial",
-        marker=dict(
-            colors=px.colors.qualitative.Set2,
-            line=dict(color="white", width=2)
+    with c3:
+        sit = df_e.groupby("situacao").size().reset_index(name="qtd")
+        fig = go.Figure(go.Pie(
+            labels=sit["situacao"], values=sit["qtd"],
+            hole=0.45, textinfo="percent",
+            hovertemplate="<b>%{label}</b><br>Qtd: %{value}<br>%{percent}<extra></extra>",
+            textposition="inside", insidetextorientation="radial",
+            marker=dict(colors=px.colors.qualitative.Set2,
+                        line=dict(color="white", width=2))
+        ))
+        fig.update_layout(
+            title=dict(text="📌 Distribuição por Situação", x=0, font=dict(size=15)),
+            height=420,
+            legend=dict(orientation="v", x=1.02, y=0.5,
+                        yanchor="middle", font=dict(size=11)),
+            margin=dict(l=10, r=160, t=50, b=10)
         )
-    ))
-    fig.update_layout(
-        title=dict(text="📌 Distribuição por Situação", x=0, font=dict(size=15)),
-        height=420,
-        legend=dict(
-            orientation="v", x=1.02, y=0.5,
-            yanchor="middle", font=dict(size=11)
-        ),
-        margin=dict(l=10, r=160, t=50, b=10)
-    )
-    st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True)
 
     with c4:
         evolucao = (
             df_emendas.groupby("ano_emenda")
-            .agg(valor_total=("valor_total","sum"), qtd=("valor_total","count"))
+            .agg(valor_total=("valor_total", "sum"), qtd=("valor_total", "count"))
             .reset_index().sort_values("ano_emenda")
         )
         fig = make_subplots(specs=[[{"secondary_y": True}]])
@@ -208,41 +202,71 @@ with c3:
         )
         fig.add_trace(
             go.Scatter(x=evolucao["ano_emenda"], y=evolucao["qtd"],
-                       name="Qtd Emendas", mode="lines+markers",
+                       name="Qtd Especiais", mode="lines+markers",
                        line=dict(color="orange", width=2)),
             secondary_y=True
         )
         fig.update_layout(
-            title="📅 Evolução por Ano da Emenda",
-            height=420,
+            title="📅 Evolução por Ano da Emenda", height=420,
             legend=dict(orientation="h", yanchor="bottom", y=-0.25),
             margin=dict(l=10, r=10, t=50, b=80)
         )
-        fig.update_yaxes(title_text="Valor (R$)", secondary_y=False)
-        fig.update_yaxes(title_text="Quantidade",  secondary_y=True)
+        fig.update_yaxes(title_text="Valor (R$)",  secondary_y=False)
+        fig.update_yaxes(title_text="Quantidade",   secondary_y=True)
+        st.plotly_chart(fig, use_container_width=True)
+
+    with c5:
+        # ── NOVO — Natureza Jurídica (Especiais) ─────────────────────────────
+        nat_e = df_e.groupby("natureza_juridica").size().reset_index(name="qtd")
+        nat_e = nat_e.sort_values("qtd", ascending=False)
+
+        # Agrupa < 2% em "Outros"
+        total_ne = nat_e["qtd"].sum()
+        nat_e["pct"] = nat_e["qtd"] / total_ne * 100
+        principais_ne = nat_e[nat_e["pct"] >= 2].copy()
+        outros_ne = nat_e[nat_e["pct"] < 2]["qtd"].sum()
+        if outros_ne > 0:
+            principais_ne = pd.concat([
+                principais_ne,
+                pd.DataFrame([{"natureza_juridica": "Outros", "qtd": outros_ne,
+                                "pct": outros_ne / total_ne * 100}])
+            ], ignore_index=True)
+
+        fig = go.Figure(go.Pie(
+            labels=principais_ne["natureza_juridica"],
+            values=principais_ne["qtd"],
+            hole=0.45, textinfo="percent",
+            hovertemplate="<b>%{label}</b><br>Qtd: %{value}<br>%{percent}<extra></extra>",
+            textposition="inside", insidetextorientation="radial",
+            marker=dict(
+                colors=px.colors.qualitative.Pastel,
+                line=dict(color="white", width=2)
+            )
+        ))
+        fig.update_layout(
+            title=dict(text="🏢 Distribuição por Natureza Jurídica", x=0, font=dict(size=15)),
+            height=420,
+            legend=dict(orientation="v", x=1.02, y=0.5,
+                        yanchor="middle", font=dict(size=10)),
+            margin=dict(l=10, r=180, t=50, b=10)
+        )
         st.plotly_chart(fig, use_container_width=True)
 
     # ── Custeio vs Investimento ───────────────────────────────────────────────
     st.subheader("📊 Custeio vs Investimento por Ano")
     custeio_inv = (
         df_e.groupby("ano_emenda")
-        .agg(custeio=("valor_custeio","sum"), investimento=("valor_investimento","sum"))
+        .agg(custeio=("valor_custeio", "sum"), investimento=("valor_investimento", "sum"))
         .reset_index().sort_values("ano_emenda")
     )
     fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=custeio_inv["ano_emenda"], y=custeio_inv["custeio"],
-        name="Custeio", marker_color="#2ca02c"
-    ))
-    fig.add_trace(go.Bar(
-        x=custeio_inv["ano_emenda"], y=custeio_inv["investimento"],
-        name="Investimento", marker_color="#1f77b4"
-    ))
+    fig.add_trace(go.Bar(x=custeio_inv["ano_emenda"], y=custeio_inv["custeio"],
+                         name="Custeio", marker_color="#2ca02c"))
+    fig.add_trace(go.Bar(x=custeio_inv["ano_emenda"], y=custeio_inv["investimento"],
+                         name="Investimento", marker_color="#1f77b4"))
     fig.update_layout(
-        barmode="stack",
-        height=380,
-        xaxis_title="Ano",
-        yaxis_title="Valor (R$)",
+        barmode="stack", height=380,
+        xaxis_title="Ano", yaxis_title="Valor (R$)",
         legend=dict(orientation="h", yanchor="bottom", y=1.02),
         margin=dict(l=10, r=10, t=30, b=10)
     )
@@ -252,9 +276,9 @@ with c3:
     with st.expander("🔍 Dados detalhados"):
         st.dataframe(
             df_e[[
-                "codigo_plano","ano_emenda","parlamentar",
-                "beneficiario","situacao",
-                "valor_custeio","valor_investimento","valor_total"
+                "codigo_plano", "ano_emenda", "parlamentar",
+                "beneficiario", "natureza_juridica", "situacao",   # ← nova coluna
+                "valor_custeio", "valor_investimento", "valor_total"
             ]].sort_values("valor_total", ascending=False),
             use_container_width=True,
             hide_index=True
@@ -265,30 +289,33 @@ with c3:
 # ───────────────────────────────────────────────────────────────────────────────
 with aba2:
 
-    # ── Filtros ──────────────────────────────────────────────────────────────
+    # ── Filtros ───────────────────────────────────────────────────────────────
     with st.expander("🔎 Filtros", expanded=True):
-        g1, g2, g3 = st.columns(3)
+        g1, g2, g3, g4 = st.columns(4)
 
         anos_f  = ["Todos"] + sorted(df_fundo["ano"].dropna().unique().tolist())
         sits_f  = ["Todas"] + sorted(df_fundo["situacao"].dropna().unique().tolist())
         orgaos  = ["Todos"] + sorted(df_fundo["sigla_orgao"].dropna().unique().tolist())
+        nats_f  = ["Todas"] + sorted(df_fundo["natureza_juridica"].dropna().unique().tolist())
 
-        gf_ano  = g1.selectbox("Ano",            anos_f, key="f_ano")
-        gf_sit  = g2.selectbox("Situação",       sits_f, key="f_sit")
-        gf_org  = g3.selectbox("Órgão Repassador", orgaos, key="f_org")
+        gf_ano  = g1.selectbox("Ano",               anos_f, key="f_ano")
+        gf_sit  = g2.selectbox("Situação",          sits_f, key="f_sit")
+        gf_org  = g3.selectbox("Órgão Repassador",  orgaos, key="f_org")
+        gf_nat  = g4.selectbox("Natureza Jurídica", nats_f, key="f_nat")
 
     # ── Aplicar filtros ───────────────────────────────────────────────────────
     df_f2 = df_fundo.copy()
-    if gf_ano != "Todos": df_f2 = df_f2[df_f2["ano"]         == gf_ano]
-    if gf_sit != "Todas": df_f2 = df_f2[df_f2["situacao"]    == gf_sit]
-    if gf_org != "Todos": df_f2 = df_f2[df_f2["sigla_orgao"] == gf_org]
+    if gf_ano != "Todos": df_f2 = df_f2[df_f2["ano"]              == gf_ano]
+    if gf_sit != "Todas": df_f2 = df_f2[df_f2["situacao"]         == gf_sit]
+    if gf_org != "Todos": df_f2 = df_f2[df_f2["sigla_orgao"]      == gf_org]
+    if gf_nat != "Todas": df_f2 = df_f2[df_f2["natureza_juridica"] == gf_nat]
 
     # ── KPIs ──────────────────────────────────────────────────────────────────
     k1, k2, k3, k4 = st.columns(4)
-    k1.metric("📋 Total de Planos",     f"{len(df_f2):,}".replace(",","."))
-    k2.metric("💰 Valor Total Plano",   f"R$ {df_f2['valor_total_plano'].sum():,.0f}".replace(",","X").replace(".",",").replace("X","."))
-    k3.metric("📥 Total Repasse",       f"R$ {df_f2['valor_total_repasse'].sum():,.0f}".replace(",","X").replace(".",",").replace("X","."))
-    k4.metric("💳 Saldo Disponível",    f"R$ {df_f2['saldo_disponivel'].sum():,.0f}".replace(",","X").replace(".",",").replace("X","."))
+    k1.metric("📋 Total de Planos",   f"{len(df_f2):,}".replace(",", "."))
+    k2.metric("💰 Valor Total Plano", f"R$ {df_f2['valor_total_plano'].sum():,.0f}".replace(",","X").replace(".",",").replace("X","."))
+    k3.metric("📥 Total Repasse",     f"R$ {df_f2['valor_total_repasse'].sum():,.0f}".replace(",","X").replace(".",",").replace("X","."))
+    k4.metric("💳 Saldo Disponível",  f"R$ {df_f2['saldo_disponivel'].sum():,.0f}".replace(",","X").replace(".",",").replace("X","."))
 
     st.divider()
 
@@ -302,9 +329,7 @@ with aba2:
             .nlargest(10, "valor_total_repasse")
             .sort_values("valor_total_repasse")
         )
-        top_org["label"] = top_org["valor_total_repasse"].apply(
-            lambda x: f"R$ {x/1e6:.1f}M"
-        )
+        top_org["label"] = top_org["valor_total_repasse"].apply(lambda x: f"R$ {x/1e6:.1f}M")
         fig = px.bar(
             top_org, x="valor_total_repasse", y="sigla_orgao", orientation="h",
             title="🏦 Top Órgãos Repassadores — Valor Total",
@@ -312,10 +337,8 @@ with aba2:
             labels={"valor_total_repasse": "Valor (R$)", "sigla_orgao": ""},
             text="label"
         )
-        fig.update_layout(
-            coloraxis_showscale=False, height=420,
-            margin=dict(l=10, r=80, t=50, b=10)
-        )
+        fig.update_layout(coloraxis_showscale=False, height=420,
+                          margin=dict(l=10, r=80, t=50, b=10))
         fig.update_traces(textposition="outside")
         st.plotly_chart(fig, use_container_width=True)
 
@@ -326,9 +349,7 @@ with aba2:
             .nlargest(10, "valor_total_repasse")
             .sort_values("valor_total_repasse")
         )
-        top_mun_f["label"] = top_mun_f["valor_total_repasse"].apply(
-            lambda x: f"R$ {x/1e6:.1f}M"
-        )
+        top_mun_f["label"] = top_mun_f["valor_total_repasse"].apply(lambda x: f"R$ {x/1e6:.1f}M")
         fig = px.bar(
             top_mun_f, x="valor_total_repasse", y="municipio", orientation="h",
             title="🏙️ Top 10 Municípios — Valor Total Repasse",
@@ -336,65 +357,51 @@ with aba2:
             labels={"valor_total_repasse": "Valor (R$)", "municipio": ""},
             text="label"
         )
-        fig.update_layout(
-            coloraxis_showscale=False, height=420,
-            margin=dict(l=10, r=80, t=50, b=10)
-        )
+        fig.update_layout(coloraxis_showscale=False, height=420,
+                          margin=dict(l=10, r=80, t=50, b=10))
         fig.update_traces(textposition="outside")
         st.plotly_chart(fig, use_container_width=True)
 
     # ── Gráficos — Linha 2 ────────────────────────────────────────────────────
-    d3, d4 = st.columns(2, gap="large")
+    d3, d4, d5 = st.columns(3, gap="large")
 
-with d3:
-    sit_f = df_f2.groupby("situacao").size().reset_index(name="qtd").sort_values("qtd", ascending=False)
+    with d3:
+        sit_f = df_f2.groupby("situacao").size().reset_index(name="qtd").sort_values("qtd", ascending=False)
+        total_sf = sit_f["qtd"].sum()
+        sit_f["pct"] = sit_f["qtd"] / total_sf * 100
+        principais_sf = sit_f[sit_f["pct"] >= 2].copy()
+        outros_sf = sit_f[sit_f["pct"] < 2]["qtd"].sum()
+        if outros_sf > 0:
+            principais_sf = pd.concat([
+                principais_sf,
+                pd.DataFrame([{"situacao": "Outros", "qtd": outros_sf,
+                                "pct": outros_sf / total_sf * 100}])
+            ], ignore_index=True)
 
-    # Agrupa situações com menos de 2% do total em "Outros"
-    total = sit_f["qtd"].sum()
-    sit_f["pct"] = sit_f["qtd"] / total * 100
-    principais = sit_f[sit_f["pct"] >= 2].copy()
-    outros_qtd = sit_f[sit_f["pct"] < 2]["qtd"].sum()
-
-    if outros_qtd > 0:
-        outros_row = pd.DataFrame([{"situacao": "Outros", "qtd": outros_qtd, "pct": outros_qtd/total*100}])
-        principais = pd.concat([principais, outros_row], ignore_index=True)
-
-    # Paleta com cores suficientes
-    cores = (
-        px.colors.qualitative.Pastel
-        + px.colors.qualitative.Set3
-        + px.colors.qualitative.Pastel1
-    )
-
-    fig = go.Figure(go.Pie(
-        labels=principais["situacao"],
-        values=principais["qtd"],
-        hole=0.45,
-        textinfo="percent",
-        hovertemplate="<b>%{label}</b><br>Qtd: %{value}<br>%{percent}<extra></extra>",
-        textposition="inside",
-        insidetextorientation="radial",
-        marker=dict(
-            colors=cores[:len(principais)],
-            line=dict(color="white", width=2)
+        cores = (px.colors.qualitative.Pastel
+                 + px.colors.qualitative.Set3
+                 + px.colors.qualitative.Pastel1)
+        fig = go.Figure(go.Pie(
+            labels=principais_sf["situacao"], values=principais_sf["qtd"],
+            hole=0.45, textinfo="percent",
+            hovertemplate="<b>%{label}</b><br>Qtd: %{value}<br>%{percent}<extra></extra>",
+            textposition="inside", insidetextorientation="radial",
+            marker=dict(colors=cores[:len(principais_sf)],
+                        line=dict(color="white", width=2))
+        ))
+        fig.update_layout(
+            title=dict(text="📌 Distribuição por Situação", x=0, font=dict(size=15)),
+            height=420,
+            legend=dict(orientation="v", x=1.02, y=0.5,
+                        yanchor="middle", font=dict(size=11), itemsizing="constant"),
+            margin=dict(l=10, r=180, t=50, b=10)
         )
-    ))
-    fig.update_layout(
-        title=dict(text="📌 Distribuição por Situação", x=0, font=dict(size=15)),
-        height=420,
-        legend=dict(
-            orientation="v", x=1.02, y=0.5,
-            yanchor="middle", font=dict(size=11),
-            itemsizing="constant"
-        ),
-        margin=dict(l=10, r=180, t=50, b=10)
-    )
-    st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True)
 
     with d4:
         evolucao_f = (
             df_fundo.groupby("ano")
-            .agg(valor=("valor_total_repasse","sum"), qtd=("valor_total_repasse","count"))
+            .agg(valor=("valor_total_repasse", "sum"), qtd=("valor_total_repasse", "count"))
             .reset_index().sort_values("ano")
         )
         fig = make_subplots(specs=[[{"secondary_y": True}]])
@@ -410,24 +417,57 @@ with d3:
             secondary_y=True
         )
         fig.update_layout(
-            title="📅 Evolução por Ano",
-            height=420,
+            title="📅 Evolução por Ano", height=420,
             legend=dict(orientation="h", yanchor="bottom", y=-0.25),
             margin=dict(l=10, r=10, t=50, b=80)
         )
-        fig.update_yaxes(title_text="Valor (R$)",  secondary_y=False)
-        fig.update_yaxes(title_text="Quantidade",  secondary_y=True)
+        fig.update_yaxes(title_text="Valor (R$)", secondary_y=False)
+        fig.update_yaxes(title_text="Quantidade", secondary_y=True)
+        st.plotly_chart(fig, use_container_width=True)
+
+    with d5:
+        # ── NOVO — Natureza Jurídica (Fundo a Fundo) ─────────────────────────
+        nat_f = df_f2.groupby("natureza_juridica").size().reset_index(name="qtd")
+        nat_f = nat_f.sort_values("qtd", ascending=False)
+
+        total_nf = nat_f["qtd"].sum()
+        nat_f["pct"] = nat_f["qtd"] / total_nf * 100
+        principais_nf = nat_f[nat_f["pct"] >= 2].copy()
+        outros_nf = nat_f[nat_f["pct"] < 2]["qtd"].sum()
+        if outros_nf > 0:
+            principais_nf = pd.concat([
+                principais_nf,
+                pd.DataFrame([{"natureza_juridica": "Outros", "qtd": outros_nf,
+                                "pct": outros_nf / total_nf * 100}])
+            ], ignore_index=True)
+
+        fig = go.Figure(go.Pie(
+            labels=principais_nf["natureza_juridica"],
+            values=principais_nf["qtd"],
+            hole=0.45, textinfo="percent",
+            hovertemplate="<b>%{label}</b><br>Qtd: %{value}<br>%{percent}<extra></extra>",
+            textposition="inside", insidetextorientation="radial",
+            marker=dict(
+                colors=px.colors.qualitative.Pastel,
+                line=dict(color="white", width=2)
+            )
+        ))
+        fig.update_layout(
+            title=dict(text="🏢 Distribuição por Natureza Jurídica", x=0, font=dict(size=15)),
+            height=420,
+            legend=dict(orientation="v", x=1.02, y=0.5,
+                        yanchor="middle", font=dict(size=10)),
+            margin=dict(l=10, r=180, t=50, b=10)
+        )
         st.plotly_chart(fig, use_container_width=True)
 
     # ── Composição do Repasse ─────────────────────────────────────────────────
     st.subheader("📊 Composição do Repasse por Órgão")
     comp = (
         df_f2.groupby("sigla_orgao")
-        .agg(
-            emenda    =("valor_emenda",     "sum"),
-            especifico=("valor_especifico", "sum"),
-            voluntario=("valor_voluntario", "sum")
-        )
+        .agg(emenda=("valor_emenda", "sum"),
+             especifico=("valor_especifico", "sum"),
+             voluntario=("valor_voluntario", "sum"))
         .reset_index()
         .sort_values("emenda", ascending=False)
         .head(15)
@@ -451,9 +491,9 @@ with d3:
     with st.expander("🔍 Dados detalhados"):
         st.dataframe(
             df_f2[[
-                "codigo_plano","situacao","municipio","sigla_orgao",
-                "fundo_repassador","valor_emenda",
-                "valor_total_repasse","valor_total_plano","saldo_disponivel"
+                "codigo_plano", "situacao", "municipio", "natureza_juridica",  # ← nova coluna
+                "sigla_orgao", "fundo_repassador",
+                "valor_emenda", "valor_total_repasse", "valor_total_plano", "saldo_disponivel"
             ]].sort_values("valor_total_plano", ascending=False),
             use_container_width=True,
             hide_index=True
