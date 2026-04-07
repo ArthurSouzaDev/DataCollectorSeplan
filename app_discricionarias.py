@@ -1,282 +1,236 @@
 # app_discricionarias.py
-"""
-Modulo de Discricionarias e Legais para o app.py principal.
-Carrega o CSV pre-filtrado gerado pelo coletor_discricionarias.py
-e exibe filtros interativos + exportacao.
-"""
-
 import os
-import io
-import pandas as pd
+import subprocess
 import streamlit as st
-from datetime import datetime
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data_discricionarias")
-ARQUIVO  = os.path.join(DATA_DIR, "discricionarias_to.csv")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(BASE_DIR, "data_discricionarias", "discricionarias_to.csv")
 
 
-# --- CARREGAMENTO -------------------------------------------------------------
+def executar_coletor():
+    """Executa o coletor e exibe progresso no Streamlit."""
+    with st.status("⏳ Coletando dados do Transferegov...", expanded=True) as status:
+        st.write("📡 Baixando siconv_convenio...")
+        result = subprocess.run(
+            ["python", "coletor_discricionarias.py", "coletar"],
+            capture_output=True, text=True, cwd=BASE_DIR
+        )
+        if result.returncode == 0:
+            status.update(label="✅ Dados coletados com sucesso!", state="complete")
+            st.rerun()
+        else:
+            status.update(label="❌ Erro na coleta", state="error")
+            st.error(f"Erro:\n```\n{result.stderr[-2000:]}\n```")
 
-@st.cache_data(ttl=3600, show_spinner="Carregando dados de Discricionarias...")
-def carregar_dados() -> pd.DataFrame:
-    if not os.path.exists(ARQUIVO):
-        return pd.DataFrame()
 
-    df = pd.read_csv(ARQUIVO, sep=";", encoding="utf-8-sig", low_memory=False)
+@st.cache_data(show_spinner=False)
+def load_discricionarias():
+    df = pd.read_csv(CSV_PATH, sep=";", encoding="utf-8-sig", low_memory=False)
 
-    # Garante tipos corretos
-    for col in ["ano_proposta", "ano_assinatura", "ano_emenda"]:
-        if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors="coerce").astype("Int64")
-
+    # Garante colunas numéricas
     for col in ["valor_global", "valor_repasse", "valor_contrapartida",
-                "valor_empenhado", "valor_desembolsado", "valor_saldo_tesouro",
-                "valor_custeio", "valor_investimento"]:
+                "valor_empenhado", "valor_desembolsado"]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0)
 
-    for col in ["dt_assinatura", "dt_inicio_vigencia", "dt_fim_vigencia"]:
+    # Ano como string para filtros
+    for col in ["ano_proposta", "ano_assinatura"]:
         if col in df.columns:
-            df[col] = pd.to_datetime(df[col], dayfirst=True, errors="coerce")
+            df[col] = df[col].astype(str).str.replace(".0", "", regex=False)
 
     return df
 
-
-def formatar_brl(valor: float) -> str:
-    return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-
-
-# --- SIDEBAR DE FILTROS -------------------------------------------------------
-
-def aplicar_filtros(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Renderiza os filtros na sidebar e retorna o DataFrame filtrado.
-    Filtros equivalentes ao MARCO.xlsx.
-    """
-    st.sidebar.header("Filtros — Discricionarias")
-
-    # Ano Proposta
-    if "ano_proposta" in df.columns:
-        anos_prop = sorted(df["ano_proposta"].dropna().unique().tolist())
-        sel_anos_prop = st.sidebar.multiselect(
-            "Ano Proposta",
-            options=anos_prop,
-            default=anos_prop,
-            key="disc_ano_proposta"
-        )
-        if sel_anos_prop:
-            df = df[df["ano_proposta"].isin(sel_anos_prop)]
-
-    # Ano Assinatura
-    if "ano_assinatura" in df.columns:
-        anos_ass = sorted(df["ano_assinatura"].dropna().unique().tolist())
-        sel_anos_ass = st.sidebar.multiselect(
-            "Ano Assinatura",
-            options=anos_ass,
-            default=anos_ass,
-            key="disc_ano_assinatura"
-        )
-        if sel_anos_ass:
-            df = df[df["ano_assinatura"].isin(sel_anos_ass)]
-
-    # Situacao
-    if "situacao" in df.columns:
-        situacoes = sorted(df["situacao"].dropna().unique().tolist())
-        sel_sit = st.sidebar.multiselect(
-            "Situacao do Convenio",
-            options=situacoes,
-            default=[],
-            placeholder="Todas",
-            key="disc_situacao"
-        )
-        if sel_sit:
-            df = df[df["situacao"].isin(sel_sit)]
-
-    # Municipio Beneficiario
-    if "municipio_beneficiario" in df.columns:
-        municipios = sorted(df["municipio_beneficiario"].dropna().unique().tolist())
-        sel_mun = st.sidebar.multiselect(
-            "Municipio Beneficiario",
-            options=municipios,
-            default=[],
-            placeholder="Todos",
-            key="disc_municipio"
-        )
-        if sel_mun:
-            df = df[df["municipio_beneficiario"].isin(sel_mun)]
-
-    # Parlamentar
-    if "parlamentar" in df.columns:
-        parlamentares = sorted(df["parlamentar"].dropna().unique().tolist())
-        sel_parl = st.sidebar.multiselect(
-            "Parlamentar",
-            options=parlamentares,
-            default=[],
-            placeholder="Todos",
-            key="disc_parlamentar"
-        )
-        if sel_parl:
-            df = df[df["parlamentar"].isin(sel_parl)]
-
-    # Orgao Concedente
-    if "orgao_concedente" in df.columns:
-        orgaos = sorted(df["orgao_concedente"].dropna().unique().tolist())
-        sel_org = st.sidebar.multiselect(
-            "Orgao Concedente",
-            options=orgaos,
-            default=[],
-            placeholder="Todos",
-            key="disc_orgao"
-        )
-        if sel_org:
-            df = df[df["orgao_concedente"].isin(sel_org)]
-
-    # Modalidade
-    if "modalidade" in df.columns:
-        modalidades = sorted(df["modalidade"].dropna().unique().tolist())
-        sel_mod = st.sidebar.multiselect(
-            "Modalidade",
-            options=modalidades,
-            default=[],
-            placeholder="Todas",
-            key="disc_modalidade"
-        )
-        if sel_mod:
-            df = df[df["modalidade"].isin(sel_mod)]
-
-    return df
-
-
-# --- EXPORTACAO ---------------------------------------------------------------
-
-def gerar_excel(df: pd.DataFrame) -> bytes:
-    buffer = io.BytesIO()
-    with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
-        df.to_excel(writer, index=False, sheet_name="Discricionarias_TO")
-    return buffer.getvalue()
-
-
-def gerar_csv(df: pd.DataFrame) -> bytes:
-    return df.to_csv(sep=";", index=False, encoding="utf-8-sig").encode("utf-8-sig")
-
-
-def bloco_exportacao(df: pd.DataFrame):
-    st.markdown("---")
-    st.subheader("Exportar consulta filtrada")
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric("Registros filtrados", f"{len(df):,}")
-
-    with col2:
-        nome_csv = f"discricionarias_TO_{datetime.today().strftime('%Y%m%d')}.csv"
-        st.download_button(
-            label="Download CSV",
-            data=gerar_csv(df),
-            file_name=nome_csv,
-            mime="text/csv",
-            use_container_width=True,
-            key="disc_download_csv"
-        )
-
-    with col3:
-        nome_xlsx = f"discricionarias_TO_{datetime.today().strftime('%Y%m%d')}.xlsx"
-        st.download_button(
-            label="Download Excel",
-            data=gerar_excel(df),
-            file_name=nome_xlsx,
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True,
-            key="disc_download_excel"
-        )
-
-
-# --- KPIS ---------------------------------------------------------------------
-
-def bloco_kpis(df: pd.DataFrame):
-    col1, col2, col3, col4 = st.columns(4)
-
-    total = len(df)
-    val_global  = df["valor_global"].sum()       if "valor_global"  in df.columns else 0
-    val_repasse = df["valor_repasse"].sum()       if "valor_repasse" in df.columns else 0
-    val_custeio = df["valor_custeio"].sum()       if "valor_custeio" in df.columns else 0
-    val_invest  = df["valor_investimento"].sum()  if "valor_investimento" in df.columns else 0
-
-    col1.metric("Total Convenios",    f"{total:,}")
-    col2.metric("Valor Global",        formatar_brl(val_global))
-    col3.metric("Valor Custeio",       formatar_brl(val_custeio))
-    col4.metric("Valor Investimento",  formatar_brl(val_invest))
-
-
-# --- TABELA DETALHADA ---------------------------------------------------------
-
-def bloco_tabela(df: pd.DataFrame):
-    st.subheader("Detalhamento dos convenios")
-
-    # Colunas prioritarias para exibicao (equivalente ao MARCO.xlsx)
-    colunas_exibir = [
-        c for c in [
-            "nr_convenio", "nr_proposta", "ano_proposta", "ano_assinatura",
-            "situacao", "modalidade", "municipio_beneficiario",
-            "proponente", "orgao_concedente", "parlamentar",
-            "nr_emenda", "objeto",
-            "valor_global", "valor_repasse", "valor_custeio", "valor_investimento",
-            "valor_empenhado", "valor_desembolsado",
-            "dt_assinatura", "dt_inicio_vigencia", "dt_fim_vigencia",
-        ]
-        if c in df.columns
-    ]
-
-    st.dataframe(
-        df[colunas_exibir].reset_index(drop=True),
-        use_container_width=True,
-        height=450
-    )
-
-
-# --- RENDER PRINCIPAL ---------------------------------------------------------
 
 def render():
-    st.title("Discricionarias e Legais — Tocantins")
+    st.subheader("📂 Discricionárias e Legais — Transferegov")
 
-    # Verifica se arquivo existe
-    if not os.path.exists(ARQUIVO):
-        st.error(
-            "Arquivo de dados nao encontrado.\n\n"
-            "Execute primeiro:\n\n"
-            "```\npython coletor_discricionarias.py\n```"
+    # ── Verifica se CSV existe ────────────────────────────────────────────────
+    if not os.path.exists(CSV_PATH):
+        st.warning("⚠️ Dados ainda não coletados.")
+        st.info("Clique no botão abaixo para coletar os dados do Transferegov (pode demorar alguns minutos).")
+
+        if st.button("🚀 Coletar Dados Agora", type="primary"):
+            executar_coletor()
+        return  # Para aqui até ter o CSV
+
+    # ── Carrega dados ─────────────────────────────────────────────────────────
+    df = load_discricionarias()
+
+    # ── Botão para atualizar dados ────────────────────────────────────────────
+    col_info, col_btn = st.columns([8, 2])
+    with col_info:
+        mtime = os.path.getmtime(CSV_PATH)
+        import datetime
+        dt = datetime.datetime.fromtimestamp(mtime).strftime("%d/%m/%Y %H:%M")
+        st.caption(f"🕒 Última atualização dos dados: **{dt}** · {len(df):,} registros")
+    with col_btn:
+        if st.button("🔄 Atualizar Dados"):
+            st.cache_data.clear()
+            executar_coletor()
+
+    # ── Filtros ───────────────────────────────────────────────────────────────
+    with st.expander("🔎 Filtros", expanded=True):
+        c1, c2, c3, c4 = st.columns(4)
+
+        anos = ["Todos"] + sorted(
+            df["ano_assinatura"].dropna().unique().tolist()
+        ) if "ano_assinatura" in df.columns else ["Todos"]
+
+        sits = ["Todas"] + sorted(
+            df["situacao"].dropna().unique().tolist()
+        ) if "situacao" in df.columns else ["Todas"]
+
+        orgaos = ["Todos"] + sorted(
+            df["orgao_concedente"].dropna().unique().tolist()
+        ) if "orgao_concedente" in df.columns else ["Todos"]
+
+        munis = ["Todos"] + sorted(
+            df["municipio_beneficiario"].dropna().unique().tolist()
+        ) if "municipio_beneficiario" in df.columns else ["Todos"]
+
+        f_ano  = c1.selectbox("Ano Assinatura",       anos,   key="disc_ano")
+        f_sit  = c2.selectbox("Situação",             sits,   key="disc_sit")
+        f_org  = c3.selectbox("Órgão Concedente",     orgaos, key="disc_org")
+        f_muni = c4.selectbox("Município",            munis,  key="disc_muni")
+
+    # ── Aplica filtros ────────────────────────────────────────────────────────
+    dff = df.copy()
+    if f_ano  != "Todos" and "ano_assinatura"        in dff.columns:
+        dff = dff[dff["ano_assinatura"]        == f_ano]
+    if f_sit  != "Todas" and "situacao"              in dff.columns:
+        dff = dff[dff["situacao"]              == f_sit]
+    if f_org  != "Todos" and "orgao_concedente"      in dff.columns:
+        dff = dff[dff["orgao_concedente"]      == f_org]
+    if f_muni != "Todos" and "municipio_beneficiario" in dff.columns:
+        dff = dff[dff["municipio_beneficiario"] == f_muni]
+
+    # ── KPIs ──────────────────────────────────────────────────────────────────
+    def fmt_brl(v):
+        return f"R$ {v:,.0f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("📋 Total de Convênios",  f"{len(dff):,}".replace(",", "."))
+    k2.metric("💰 Valor Global",        fmt_brl(dff["valor_global"].sum()        if "valor_global"        in dff.columns else 0))
+    k3.metric("📥 Valor Repasse",       fmt_brl(dff["valor_repasse"].sum()       if "valor_repasse"       in dff.columns else 0))
+    k4.metric("💳 Valor Contrapartida", fmt_brl(dff["valor_contrapartida"].sum() if "valor_contrapartida" in dff.columns else 0))
+
+    st.divider()
+
+    # ── Gráficos ──────────────────────────────────────────────────────────────
+    g1, g2 = st.columns(2, gap="large")
+
+    with g1:
+        if "orgao_concedente" in dff.columns and "valor_repasse" in dff.columns:
+            top_org = (
+                dff.groupby("orgao_concedente")["valor_repasse"].sum()
+                .reset_index()
+                .nlargest(10, "valor_repasse")
+                .sort_values("valor_repasse")
+            )
+            top_org["label"] = top_org["valor_repasse"].apply(lambda x: f"R$ {x/1e6:.1f}M")
+            fig = px.bar(
+                top_org, x="valor_repasse", y="orgao_concedente",
+                orientation="h",
+                title="🏦 Top 10 Órgãos Concedentes — Valor Repasse",
+                color="valor_repasse", color_continuous_scale="Blues",
+                labels={"valor_repasse": "Valor (R$)", "orgao_concedente": ""},
+                text="label"
+            )
+            fig.update_layout(coloraxis_showscale=False, height=420,
+                              margin=dict(l=10, r=80, t=50, b=10))
+            fig.update_traces(textposition="outside")
+            st.plotly_chart(fig, use_container_width=True)
+
+    with g2:
+        if "municipio_beneficiario" in dff.columns and "valor_repasse" in dff.columns:
+            top_mun = (
+                dff.groupby("municipio_beneficiario")["valor_repasse"].sum()
+                .reset_index()
+                .nlargest(10, "valor_repasse")
+                .sort_values("valor_repasse")
+            )
+            top_mun["label"] = top_mun["valor_repasse"].apply(lambda x: f"R$ {x/1e6:.1f}M")
+            fig = px.bar(
+                top_mun, x="valor_repasse", y="municipio_beneficiario",
+                orientation="h",
+                title="🏙️ Top 10 Municípios — Valor Repasse",
+                color="valor_repasse", color_continuous_scale="Greens",
+                labels={"valor_repasse": "Valor (R$)", "municipio_beneficiario": ""},
+                text="label"
+            )
+            fig.update_layout(coloraxis_showscale=False, height=420,
+                              margin=dict(l=10, r=80, t=50, b=10))
+            fig.update_traces(textposition="outside")
+            st.plotly_chart(fig, use_container_width=True)
+
+    # Situação + Evolução
+    g3, g4 = st.columns(2, gap="large")
+
+    with g3:
+        if "situacao" in dff.columns:
+            sit = dff.groupby("situacao").size().reset_index(name="qtd")
+            fig = go.Figure(go.Pie(
+                labels=sit["situacao"], values=sit["qtd"],
+                hole=0.45, textinfo="percent",
+                marker=dict(colors=px.colors.qualitative.Set2,
+                            line=dict(color="white", width=2))
+            ))
+            fig.update_layout(
+                title="📌 Distribuição por Situação", height=420,
+                legend=dict(orientation="v", x=1.02, y=0.5),
+                margin=dict(l=10, r=180, t=50, b=10)
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+    with g4:
+        if "ano_assinatura" in dff.columns and "valor_repasse" in dff.columns:
+            evo = (
+                dff.groupby("ano_assinatura")
+                .agg(valor=("valor_repasse", "sum"), qtd=("valor_repasse", "count"))
+                .reset_index().sort_values("ano_assinatura")
+            )
+            from plotly.subplots import make_subplots
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
+            fig.add_trace(go.Bar(x=evo["ano_assinatura"], y=evo["valor"],
+                                 name="Valor Repasse", marker_color="#1f77b4"),
+                          secondary_y=False)
+            fig.add_trace(go.Scatter(x=evo["ano_assinatura"], y=evo["qtd"],
+                                     name="Qtd Convênios", mode="lines+markers",
+                                     line=dict(color="orange", width=2)),
+                          secondary_y=True)
+            fig.update_layout(title="📅 Evolução por Ano", height=420,
+                              legend=dict(orientation="h", yanchor="bottom", y=-0.25),
+                              margin=dict(l=10, r=10, t=50, b=80))
+            st.plotly_chart(fig, use_container_width=True)
+
+    # ── Tabela + Download ─────────────────────────────────────────────────────
+    with st.expander("🔍 Dados detalhados"):
+        colunas_tabela = [c for c in [
+            "nr_convenio", "situacao", "municipio_beneficiario",
+            "orgao_concedente", "orgao_superior", "modalidade",
+            "valor_global", "valor_repasse", "valor_contrapartida",
+            "valor_empenhado", "valor_desembolsado", "dt_assinatura"
+        ] if c in dff.columns]
+
+        st.dataframe(
+            dff[colunas_tabela].sort_values("valor_repasse", ascending=False)
+            if "valor_repasse" in dff.columns else dff[colunas_tabela],
+            use_container_width=True,
+            hide_index=True
         )
-        return
 
-    # Carrega dados
-    df_raw = carregar_dados()
+        # ✅ Botão de download
+        csv_bytes = dff[colunas_tabela].to_csv(
+            index=False, sep=";", encoding="utf-8-sig"
+        ).encode("utf-8-sig")
 
-    if df_raw.empty:
-        st.warning("Nenhum dado disponivel.")
-        return
-
-    # Info de atualizacao
-    data_mod = datetime.fromtimestamp(os.path.getmtime(ARQUIVO))
-    st.caption(
-        f"Fonte: Transferegov — repositorio.dados.gov.br/seges/detru | "
-        f"Arquivo gerado em: {data_mod.strftime('%d/%m/%Y %H:%M')}"
-    )
-
-    # Aplica filtros da sidebar
-    df_filtrado = aplicar_filtros(df_raw)
-
-    if df_filtrado.empty:
-        st.warning("Nenhum registro encontrado com os filtros selecionados.")
-        return
-
-    # KPIs
-    bloco_kpis(df_filtrado)
-
-    st.markdown("---")
-
-    # Tabela
-    bloco_tabela(df_filtrado)
-
-    # Exportacao
-    bloco_exportacao(df_filtrado)
+        st.download_button(
+            label="📥 Baixar Relatório CSV",
+            data=csv_bytes,
+            file_name="discricionarias_to_filtrado.csv",
+            mime="text/csv",
+            type="primary"
+        )

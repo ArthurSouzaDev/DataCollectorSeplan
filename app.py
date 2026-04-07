@@ -500,24 +500,36 @@ with aba2:
         )
 
 # ─── RODAPÉ ────────────────────────────────────────────────────────────────────
-st.divider()
-st.caption("📊 Desenvolvido por Seplan TO · Dados: Transferegov")
-# app.py — adicione a aba de Discricionarias
-import app_discricionarias
+# ═══════════════════════════════════════════════════════════════════════════════
+# ABAS PRINCIPAIS
+# ═══════════════════════════════════════════════════════════════════════════════
+import app_discricionarias  # ← no topo do arquivo junto com os outros imports
 
-tab1, tab2, tab3 = st.tabs([
-    "Emendas Parlamentares",
-    "Discricionarias e Legais",
-    "Fundo a Fundo"
+aba1, aba2, aba3 = st.tabs([
+    "⭐  Especiais",
+    "📂  Discricionárias e Legais",
+    "🔄  Fundo a Fundo"
 ])
 
-with tab1:
-    # seu codigo atual de emendas
-    pass
+with aba1:
+    # Aba Especiais
+    st.download_button(
+        label="📥 Baixar Relatório CSV",
+        data=df_e.to_csv(index=False, sep=";", encoding="utf-8-sig").encode("utf-8-sig"),
+        file_name="especiais_to_filtrado.csv",
+        mime="text/csv",
+        type="primary"
+    )
 
-with tab2:
+with aba2:
     app_discricionarias.render()
 
-with tab3:
-    # fundo a fundo
-    pass
+with aba3:
+    # Aba Fundo a Fundo
+    st.download_button(
+        label="📥 Baixar Relatório CSV",
+        data=df_f2.to_csv(index=False, sep=";", encoding="utf-8-sig").encode("utf-8-sig"),
+        file_name="fundo_a_fundo_to_filtrado.csv",
+        mime="text/csv",
+        type="primary"
+    )
