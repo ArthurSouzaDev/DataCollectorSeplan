@@ -69,6 +69,7 @@ COLUNAS_SAIDA = {
     "nm_munic_proponente":        "municipio_beneficiario",
     "nm_proponente":              "proponente",
     "cnpj_proponente":            "cnpj_proponente",
+    "natureza_juridica":          "natureza_juridica", 
     "desc_orgao_sup":             "orgao_superior",
     "nm_orgao_sup_conv":          "orgao_superior",
     "desc_orgao":                 "orgao_concedente",

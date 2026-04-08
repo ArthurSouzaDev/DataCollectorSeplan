@@ -25,6 +25,7 @@ COLUNAS_ESSENCIAIS = [
     "orgao_concedente",
     "valor_global",
     "valor_repasse",
+    "natureza_juridica",
 ]
 
 
@@ -164,7 +165,18 @@ def load_discricionarias() -> pd.DataFrame:
         if col in df.columns:
             df[col] = df[col].astype(str).str.replace(".0", "", regex=False)
 
-    return df  
+    # ← ADICIONAR: fallback se coluna não veio no CSV
+    if "natureza_juridica" not in df.columns:
+        df["natureza_juridica"] = "Não informado"
+
+    # Otimiza memória com category
+    for col in ["situacao", "orgao_concedente", "municipio_beneficiario",
+                "natureza_juridica"]:         
+        if col in df.columns:
+            df[col] = df[col].astype("category")
+
+    return df
+
 
 
 # ─── RENDER PRINCIPAL ──────────────────────────────────────────────────────────
@@ -219,7 +231,7 @@ def render():
 
     # ── Filtros ───────────────────────────────────────────────────────────
     with st.expander("🔎 Filtros", expanded=True):
-        c1, c2, c3, c4, c5 = st.columns(5)
+        c1, c2, c3, c4, c5, c6 = st.columns(6)
 
         anos_ass  = (["Todos"] + sorted(df["ano_assinatura"].dropna().unique().tolist())
                     if "ano_assinatura" in df.columns else ["Todos"])
@@ -231,12 +243,16 @@ def render():
                 if "orgao_concedente" in df.columns else ["Todos"])
         munis  = (["Todos"] + sorted(df["municipio_beneficiario"].dropna().unique().tolist())
                 if "municipio_beneficiario" in df.columns else ["Todos"])
+        nats   = (["Todas"] + sorted(df["natureza_juridica"].dropna().unique().tolist())
+                if "natureza_juridica" in df.columns else ["Todas"])  # ← NOVO
 
-        f_ano_ass  = c1.selectbox("Ano Assinatura",  anos_ass,  key="disc_ano_ass")
-        f_ano_prop = c2.selectbox("Ano Proposta",    anos_prop, key="disc_ano_prop")
-        f_sit      = c3.selectbox("Situação",        sits,      key="disc_sit")
-        f_org      = c4.selectbox("Órgão Concedente",orgaos,    key="disc_org")
-        f_muni     = c5.selectbox("Município",       munis,     key="disc_muni")
+        f_ano_ass  = c1.selectbox("Ano Assinatura",   anos_ass,  key="disc_ano_ass")
+        f_ano_prop = c2.selectbox("Ano Proposta",      anos_prop, key="disc_ano_prop")
+        f_sit      = c3.selectbox("Situação",          sits,      key="disc_sit")
+        f_org      = c4.selectbox("Órgão Concedente",  orgaos,    key="disc_org")
+        f_muni     = c5.selectbox("Município",         munis,     key="disc_muni")
+        f_nat      = c6.selectbox("Natureza Jurídica", nats,      key="disc_nat") 
+
     # ── Aplicação ───────────────────────────────────────────────────────────
     dff = df.copy()
     if f_ano_ass  != "Todos" and "ano_assinatura"         in dff.columns:
@@ -249,6 +265,8 @@ def render():
         dff = dff[dff["orgao_concedente"] == f_org]
     if f_muni     != "Todos" and "municipio_beneficiario" in dff.columns:
         dff = dff[dff["municipio_beneficiario"] == f_muni]
+    if f_nat      != "Todas" and "natureza_juridica"      in dff.columns:  # ← NOVO
+        dff = dff[dff["natureza_juridica"] == f_nat]
 
     # ── KPIs ──────────────────────────────────────────────────────────────
     k1, k2, k3, k4 = st.columns(4)
@@ -311,7 +329,8 @@ def render():
             st.plotly_chart(fig, use_container_width=True)
 
     # ── Gráficos — Linha 2 ───────────────────────────────────────────────
-    g3, g4 = st.columns(2, gap="large")
+# ── Gráficos — Linha 2 ───────────────────────────────────────────
+    g3, g4, g5 = st.columns(3, gap="large")   # ← era 2, agora 3
 
     with g3:
         if "situacao" in dff.columns:
@@ -334,14 +353,14 @@ def render():
                 labels=principais["situacao"], values=principais["qtd"],
                 hole=0.45, textinfo="percent",
                 hovertemplate="<b>%{label}</b><br>Qtd: %{value}<br>"
-                              "%{percent}<extra></extra>",
+                            "%{percent}<extra></extra>",
                 textposition="inside", insidetextorientation="radial",
                 marker=dict(colors=px.colors.qualitative.Set2,
                             line=dict(color="white", width=2))
             ))
             fig.update_layout(
                 title=dict(text="📌 Distribuição por Situação",
-                           x=0, font=dict(size=15)),
+                        x=0, font=dict(size=15)),
                 height=420,
                 legend=dict(orientation="v", x=1.02, y=0.5,
                             yanchor="middle", font=dict(size=11)),
@@ -354,19 +373,19 @@ def render():
             evo = (
                 dff.groupby("ano_assinatura")
                 .agg(valor=("valor_repasse", "sum"),
-                     qtd=("valor_repasse", "count"))
+                    qtd=("valor_repasse", "count"))
                 .reset_index().sort_values("ano_assinatura")
             )
             fig = make_subplots(specs=[[{"secondary_y": True}]])
             fig.add_trace(
                 go.Bar(x=evo["ano_assinatura"], y=evo["valor"],
-                       name="Valor Repasse", marker_color="#1f77b4"),
+                    name="Valor Repasse", marker_color="#1f77b4"),
                 secondary_y=False
             )
             fig.add_trace(
                 go.Scatter(x=evo["ano_assinatura"], y=evo["qtd"],
-                           name="Qtd Convênios", mode="lines+markers",
-                           line=dict(color="orange", width=2)),
+                        name="Qtd Convênios", mode="lines+markers",
+                        line=dict(color="orange", width=2)),
                 secondary_y=True
             )
             fig.update_layout(
@@ -378,11 +397,52 @@ def render():
             fig.update_yaxes(title_text="Quantidade",  secondary_y=True)
             st.plotly_chart(fig, use_container_width=True)
 
+# ── NOVO: Gráfico Natureza Jurídica ──────────────────────────────
+    with g5:
+        if "natureza_juridica" in dff.columns:
+            nat = (dff.groupby("natureza_juridica", observed=True)
+                .size().reset_index(name="qtd")
+                .sort_values("qtd", ascending=False))
+            total_n = nat["qtd"].sum()
+            nat["pct"] = nat["qtd"] / total_n * 100
+            principais_n = nat[nat["pct"] >= 2].copy()
+            outros_n = nat[nat["pct"] < 2]["qtd"].sum()
+            if outros_n > 0:
+                principais_n = pd.concat([
+                    principais_n,
+                    pd.DataFrame([{
+                        "natureza_juridica": "Outros",
+                        "qtd": outros_n,
+                        "pct": outros_n / total_n * 100
+                    }])
+                ], ignore_index=True)
+
+            fig = go.Figure(go.Pie(
+                labels=principais_n["natureza_juridica"],
+                values=principais_n["qtd"],
+                hole=0.45, textinfo="percent",
+                hovertemplate="<b>%{label}</b><br>Qtd: %{value}<br>"
+                            "%{percent}<extra></extra>",
+                textposition="inside", insidetextorientation="radial",
+                marker=dict(colors=px.colors.qualitative.Pastel,
+                            line=dict(color="white", width=2))
+            ))
+            fig.update_layout(
+                title=dict(text="🏢 Natureza Jurídica", x=0, font=dict(size=15)),
+                height=420,
+                legend=dict(orientation="v", x=1.02, y=0.5,
+                            yanchor="middle", font=dict(size=10)),
+                margin=dict(l=10, r=180, t=50, b=10)
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+
     # ── Tabela + Download ─────────────────────────────────────────────────
     with st.expander("🔍 Dados detalhados"):
         colunas_tabela = [c for c in [
             "nr_convenio", "situacao", "municipio_beneficiario",
             "orgao_concedente", "orgao_superior", "modalidade",
+            "natureza_juridica",          
             "valor_global", "valor_repasse", "valor_contrapartida",
             "valor_empenhado", "valor_desembolsado", "dt_assinatura"
         ] if c in dff.columns]
