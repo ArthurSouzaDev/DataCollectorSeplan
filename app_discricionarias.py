@@ -244,14 +244,12 @@ def render():
                     if "orgao_concedente" in df.columns else ["Todos"])
         nats      = (["Todas"] + sorted(df["natureza_juridica"].dropna().unique().tolist())
                     if "natureza_juridica" in df.columns else ["Todas"])
-        props     = (["Todos"] + sorted(df["proponente"].dropna().unique().tolist())
-                    if "proponente" in df.columns else ["Todos"])
 
-        f_ano_ass  = c1.selectbox("Ano Assinatura",   anos_ass,  key="disc_ano_ass")
-        f_ano_prop = c2.selectbox("Ano Proposta",      anos_prop, key="disc_ano_prop")
-        f_sit      = c3.selectbox("Situação",          sits,      key="disc_sit")
-        f_org      = c4.selectbox("Órgão Concedente",  orgaos,    key="disc_org")
-        f_nat = c5.selectbox("Proponente", nats, key="disc_nat")
+        f_ano_ass  = c1.selectbox("Ano Assinatura",  anos_ass,  key="disc_ano_ass")
+        f_ano_prop = c2.selectbox("Ano Proposta",    anos_prop, key="disc_ano_prop")
+        f_sit      = c3.selectbox("Situação",        sits,      key="disc_sit")
+        f_org      = c4.selectbox("Órgão Concedente",orgaos,    key="disc_org")
+        f_nat      = c5.selectbox("Proponente",      nats,      key="disc_nat")
 
 
     # ── Aplicação ───────────────────────────────────────────────────────────
@@ -266,7 +264,7 @@ def render():
     if f_org      != "Todos" and "orgao_concedente"  in dff.columns:
         dff = dff[dff["orgao_concedente"] == f_org]
     if f_nat      != "Todas" and "natureza_juridica" in dff.columns:
-        dff = dff[dff["natureza_juridica"] == f_nat]    
+        dff = dff[dff["natureza_juridica"] == f_nat]
 
     # ── KPIs ──────────────────────────────────────────────────────────────
 
