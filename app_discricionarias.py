@@ -3,6 +3,7 @@ import os
 import sys
 import importlib
 import datetime
+from contextlib import nullcontext
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -49,6 +50,12 @@ def colunas_ausentes(df: pd.DataFrame) -> list[str]:
     return [col for col in COLUNAS_ESSENCIAIS if col not in df.columns]
 
 
+def atualizar_status(status, **kwargs):
+    """Atualiza o status apenas quando o objeto existe."""
+    if status is not None and hasattr(status, "update"):
+        status.update(**kwargs)
+
+
 def _diagnostico_cache():
     """Exibe diagnóstico dos arquivos de cache no status atual."""
     st.write("🔎 Verificando arquivos em cache...")
@@ -82,7 +89,11 @@ def executar_coletor(forcar: bool = False):
         else "⏳ Coletando dados do Transferegov..."
     )
 
-    with st.status(label_inicial, expanded=True) as status:
+    status_ctx = st.status(label_inicial, expanded=True)
+    if status_ctx is None:
+        status_ctx = nullcontext(None)
+
+    with status_ctx as status:
         try:
             st.write("📡 Importando coletor...")
             coletor = _importar_coletor()
@@ -93,13 +104,14 @@ def executar_coletor(forcar: bool = False):
             df = coletor.consolidar(forcar=forcar)
 
             if df is None:
-                status.update(label="❌ Coletor não retornou dados", state="error")
+                atualizar_status(status, label="❌ Coletor não retornou dados", state="error")
                 st.error("O coletor falhou em alguma etapa e retornou `None`.")
                 st.info("Revise as mensagens de CONVENIO, PROPOSTA e EMENDA exibidas acima.")
                 return pd.DataFrame()
 
             if not df.empty:
-                status.update(
+                atualizar_status(
+                    status,
                     label=f"✅ {len(df):,} registros coletados!",
                     state="complete"
                 )
@@ -112,13 +124,13 @@ def executar_coletor(forcar: bool = False):
                 st.cache_data.clear()
                 return df
 
-            status.update(label="⚠️ Coleta finalizada sem dados", state="error")
+            atualizar_status(status, label="⚠️ Coleta finalizada sem dados", state="error")
             st.warning("O coletor executou, mas retornou um DataFrame vazio.")
             st.info("Isso normalmente indica filtro excessivo ou etapa anterior zerada.")
             return pd.DataFrame()
 
         except Exception as e:
-            status.update(label="❌ Erro na coleta", state="error")
+            atualizar_status(status, label="❌ Erro na coleta", state="error")
             st.error(f"**Erro:** {e}")
             import traceback
             st.code(traceback.format_exc(), language="python")

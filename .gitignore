@@ -1,5 +1,7 @@
 .env
 main.html
+__pycache__/
+*.py[cod]
 # Dados brutos
 data_discricionarias/cache_bruto/
 data_discricionarias/*.csv
