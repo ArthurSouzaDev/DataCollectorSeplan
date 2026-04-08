@@ -23,9 +23,10 @@ jobs:
         run: pip install requests pandas python-dotenv
 
       - name: Executar extração
+        
         env:
-          fundo_a_fundo:   ${{ secrets.URL_FUNDO_A_FUNDO }}    # ← esquerda = nome do os.getenv()
-          transf_especial: ${{ secrets.URL_TRANSF_ESPECIAL }}   # ← esquerda = nome do os.getenv()
+          URL_FUNDO_A_FUNDO:   ${{ secrets.URL_FUNDO_A_FUNDO }}
+          URL_TRANSF_ESPECIAL: ${{ secrets.URL_TRANSF_ESPECIAL }}
         run: python api.py
 
       - name:  Commit e push dos CSVs
