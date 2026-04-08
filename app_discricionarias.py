@@ -230,45 +230,46 @@ def render():
             executar_coletor(forcar=True)
 
     # ── Filtros ───────────────────────────────────────────────────────────
+
     with st.expander("🔎 Filtros", expanded=True):
-        c1, c2, c3, c4, c5, c6 = st.columns(6)
+        c1, c2, c3, c4, c5 = st.columns(5)
 
         anos_ass  = (["Todos"] + sorted(df["ano_assinatura"].dropna().unique().tolist())
                     if "ano_assinatura" in df.columns else ["Todos"])
         anos_prop = (["Todos"] + sorted(df["ano_proposta"].dropna().unique().tolist())
                     if "ano_proposta" in df.columns else ["Todos"])
-        sits   = (["Todas"] + sorted(df["situacao"].dropna().unique().tolist())
-                if "situacao" in df.columns else ["Todas"])
-        orgaos = (["Todos"] + sorted(df["orgao_concedente"].dropna().unique().tolist())
-                if "orgao_concedente" in df.columns else ["Todos"])
-        munis  = (["Todos"] + sorted(df["municipio_beneficiario"].dropna().unique().tolist())
-                if "municipio_beneficiario" in df.columns else ["Todos"])
-        nats   = (["Todas"] + sorted(df["natureza_juridica"].dropna().unique().tolist())
-                if "natureza_juridica" in df.columns else ["Todas"])  # ← NOVO
+        sits      = (["Todas"] + sorted(df["situacao"].dropna().unique().tolist())
+                    if "situacao" in df.columns else ["Todas"])
+        orgaos    = (["Todos"] + sorted(df["orgao_concedente"].dropna().unique().tolist())
+                    if "orgao_concedente" in df.columns else ["Todos"])
+        nats      = (["Todas"] + sorted(df["natureza_juridica"].dropna().unique().tolist())
+                    if "natureza_juridica" in df.columns else ["Todas"])
+        props     = (["Todos"] + sorted(df["proponente"].dropna().unique().tolist())
+                    if "proponente" in df.columns else ["Todos"])
 
         f_ano_ass  = c1.selectbox("Ano Assinatura",   anos_ass,  key="disc_ano_ass")
         f_ano_prop = c2.selectbox("Ano Proposta",      anos_prop, key="disc_ano_prop")
         f_sit      = c3.selectbox("Situação",          sits,      key="disc_sit")
         f_org      = c4.selectbox("Órgão Concedente",  orgaos,    key="disc_org")
-        f_muni     = c5.selectbox("Município",         munis,     key="disc_muni")
-        f_nat      = c6.selectbox("Natureza Jurídica", nats,      key="disc_nat") 
+        f_nat = c5.selectbox("Proponente", nats, key="disc_nat")
+
 
     # ── Aplicação ───────────────────────────────────────────────────────────
+
     dff = df.copy()
-    if f_ano_ass  != "Todos" and "ano_assinatura"         in dff.columns:
+    if f_ano_ass  != "Todos" and "ano_assinatura"    in dff.columns:
         dff = dff[dff["ano_assinatura"].astype(str) == str(f_ano_ass)]
-    if f_ano_prop != "Todos" and "ano_proposta"           in dff.columns:
+    if f_ano_prop != "Todos" and "ano_proposta"      in dff.columns:
         dff = dff[dff["ano_proposta"].astype(str) == str(f_ano_prop)]
-    if f_sit      != "Todas" and "situacao"               in dff.columns:
+    if f_sit      != "Todas" and "situacao"          in dff.columns:
         dff = dff[dff["situacao"] == f_sit]
-    if f_org      != "Todos" and "orgao_concedente"       in dff.columns:
+    if f_org      != "Todos" and "orgao_concedente"  in dff.columns:
         dff = dff[dff["orgao_concedente"] == f_org]
-    if f_muni     != "Todos" and "municipio_beneficiario" in dff.columns:
-        dff = dff[dff["municipio_beneficiario"] == f_muni]
-    if f_nat      != "Todas" and "natureza_juridica"      in dff.columns:  # ← NOVO
-        dff = dff[dff["natureza_juridica"] == f_nat]
+    if f_nat      != "Todas" and "natureza_juridica" in dff.columns:
+        dff = dff[dff["natureza_juridica"] == f_nat]    
 
     # ── KPIs ──────────────────────────────────────────────────────────────
+
     k1, k2, k3, k4 = st.columns(4)
     k1.metric("📋 Total de Convênios",
               f"{len(dff):,}".replace(",", "."))
