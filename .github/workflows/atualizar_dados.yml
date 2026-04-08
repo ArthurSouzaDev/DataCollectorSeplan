@@ -24,8 +24,8 @@ jobs:
 
       - name: Executar extração
         env:
-          URL_fundo_a_fundo:   ${{ secrets.URL_FUNDO_A_FUNDO }}    # ← esquerda = nome do os.getenv()
-          URL_transf_especial: ${{ secrets.URL_TRANSF_ESPECIAL }}   # ← esquerda = nome do os.getenv()
+          fundo_a_fundo:   ${{ secrets.URL_FUNDO_A_FUNDO }}    # ← esquerda = nome do os.getenv()
+          transf_especial: ${{ secrets.URL_TRANSF_ESPECIAL }}   # ← esquerda = nome do os.getenv()
         run: python api.py
 
       - name:  Commit e push dos CSVs
