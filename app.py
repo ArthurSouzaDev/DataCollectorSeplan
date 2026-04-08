@@ -513,3 +513,19 @@ with aba3:
         type="primary",
         key="f_download"
     )
+# Na sidebar do app.py
+with st.sidebar:
+    st.markdown("### 📅 Atualização dos Dados")
+
+    # Lê data do último commit dos CSVs via git
+    try:
+        import subprocess
+        ultima = subprocess.check_output(
+            ["git", "log", "-1", "--format=%cd", "--date=format:%d/%m/%Y %H:%M", "fundo_a_fundo.csv"],
+            stderr=subprocess.DEVNULL
+        ).decode().strip()
+        st.success(f"✅ Última atualização:\n{ultima}")
+    except:
+        st.info("ℹ️ Data de atualização não disponível")
+
+    st.caption("Atualização automática: toda segunda-feira às 02h")

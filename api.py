@@ -11,9 +11,6 @@ load_dotenv()
 fundo_a_fundo = os.getenv("URL_fundo_a_fundo")
 transf_especial = os.getenv("URL_transf_especial")
 
-# ─────────────────────────────────────────────
-# CACHE de natureza jurídica (evita repetir CNPJ)
-# ─────────────────────────────────────────────
 _cache_natureza = {}
 
 def limpar_cnpj(cnpj: str) -> str:
@@ -64,8 +61,7 @@ def enriquecer_natureza(df: pd.DataFrame, coluna_cnpj: str) -> pd.DataFrame:
     return df
 
 
-# ─────────────────────────────────────────────
-# EXTRAÇÃO PAGINADA
+
 # ─────────────────────────────────────────────
 def extrair_dados(endpoint, params):
     todos_os_dados = []
@@ -100,8 +96,6 @@ def extrair_dados(endpoint, params):
     return todos_os_dados
 
 
-# ─────────────────────────────────────────────
-#  HELPERS
 # ─────────────────────────────────────────────
 def tratar_float(valor):
     if valor is None:
@@ -158,7 +152,6 @@ def tratar_dados(dados):
     return dados_tratados
 
 
-# ─────────────────────────────────────────────
 #  TRATAMENTO — EMENDAS PARLAMENTARES
 # ─────────────────────────────────────────────
 def tratar_dados_emenda(dados):
@@ -197,41 +190,54 @@ def tratar_dados_emenda(dados):
 
     return dados_tratados
 
-
 # ─────────────────────────────────────────────
-#  EXECUÇÃO
+#  EXECUÇÃO — 
 # ─────────────────────────────────────────────
-params_fundo   = {'uf_ente_recebedor_plano_acao':  'eq.TO'}
-params_especial = {'uf_beneficiario_plano_acao':   'eq.TO'}
+if __name__ == "__main__":
+    params_fundo    = {'uf_ente_recebedor_plano_acao': 'eq.TO'}
+    params_especial = {'uf_beneficiario_plano_acao':   'eq.TO'}
 
-# Extração
-dados           = extrair_dados(fundo_a_fundo, params_fundo)
-dados_tratados  = tratar_dados(dados)
+    # Extração
+    dados          = extrair_dados(fundo_a_fundo, params_fundo)
+    dados_tratados = tratar_dados(dados)
 
-dados_emenda          = extrair_dados(transf_especial, params_especial)
-dados_tratados_emendas = tratar_dados_emenda(dados_emenda)
+    dados_emenda           = extrair_dados(transf_especial, params_especial)
+    dados_tratados_emendas = tratar_dados_emenda(dados_emenda)
 
-print(f"\nTotal extraído fundo a fundo:  {len(dados)}")
-print(f"Total tratado  fundo a fundo:  {len(dados_tratados)}")
-print(f"Total extraído especiais:      {len(dados_emenda)}")
-print(f"Total tratado  especiais:      {len(dados_tratados_emendas)}")
+    # DataFrames
+    df_fundo  = pd.DataFrame(dados_tratados)
+    df_emenda = pd.DataFrame(dados_tratados_emendas)
 
-# DataFrames
-df_fundo  = pd.DataFrame(dados_tratados)
-df_emenda = pd.DataFrame(dados_tratados_emendas)
+    df_fundo["data_inicio"] = pd.to_datetime(df_fundo["data_inicio"], errors="coerce")
+    df_fundo["data_fim"]    = pd.to_datetime(df_fundo["data_fim"],    errors="coerce")
 
-df_fundo["data_inicio"] = pd.to_datetime(df_fundo["data_inicio"], errors="coerce")
-df_fundo["data_fim"]    = pd.to_datetime(df_fundo["data_fim"],    errors="coerce")
+    # Enriquecimento
+    print("\n━━━ Enriquecendo FUNDO A FUNDO ━━━")
+    df_fundo  = enriquecer_natureza(df_fundo,  "cnpj_recebedor")
 
-# ─── Enriquecimento com Natureza Jurídica ───
-print("\n━━━ Enriquecendo FUNDO A FUNDO ━━━")
-df_fundo  = enriquecer_natureza(df_fundo,  "cnpj_recebedor")
+    print("\n━━━ Enriquecendo EMENDAS ━━━")
+    df_emenda = enriquecer_natureza(df_emenda, "cnpj_beneficiario")
 
-print("\n━━━ Enriquecendo EMENDAS ━━━")
-df_emenda = enriquecer_natureza(df_emenda, "cnpj_beneficiario")
+    # Exportação
+    df_fundo.to_csv("fundo_a_fundo.csv", index=False, sep=";", date_format="%Y-%m-%d")
+    df_emenda.to_csv("emendas_to.csv",   index=False, sep=";")
 
-# Exportação
-df_fundo.to_csv("fundo_a_fundo.csv",  index=False, sep=";", date_format="%Y-%m-%d")
-df_emenda.to_csv("emendas_to.csv",    index=False, sep=";")
+    print("\n✅ CSVs exportados com sucesso!")
 
-print("\n✅ CSVs exportados com natureza_juridica!")
+    CACHE_FILE = "cache_natureza.json"
+
+    def _carregar_cache():
+        if os.path.exists(CACHE_FILE):
+            import json
+            with open(CACHE_FILE) as f:
+                return json.load(f)
+        return {}
+
+    def _salvar_cache():
+        import json
+        with open(CACHE_FILE, "w") as f:
+            json.dump(_cache_natureza, f, ensure_ascii=False)
+
+    _cache_natureza = _carregar_cache()
+
+    _salvar_cache()  # ← persiste novos CNPJs consultados
