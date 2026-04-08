@@ -234,9 +234,9 @@ def render():
     with st.expander("🔎 Filtros", expanded=True):
         c1, c2, c3, c4, c5 = st.columns(5)
 
-        anos_ass  = (sorted(df["ano_assinatura"].dropna().unique().tolist())
+        anos_ass  = (sorted(df["ano_assinatura"].dropna().astype(int).unique().tolist())
                     if "ano_assinatura" in df.columns else [])
-        anos_prop = (sorted(df["ano_proposta"].dropna().unique().tolist())
+        anos_prop = (sorted(df["ano_proposta"].dropna().astype(int).unique().tolist())
                     if "ano_proposta" in df.columns else [])
         sits      = (["Todas"] + sorted(df["situacao"].dropna().unique().tolist())
                     if "situacao" in df.columns else ["Todas"])
@@ -251,20 +251,19 @@ def render():
         f_org      = c4.selectbox("Órgão Concedente",  orgaos,    key="disc_org")
         f_nat      = c5.selectbox("Proponente",        nats,      key="disc_nat")
 
-
-    # ── Aplicação ───────────────────────────────────────────────────────────
-
+    # ── Aplicação ────────────────────────────────────────────────────────────────
     dff = df.copy()
     if f_ano_ass and "ano_assinatura" in dff.columns:
-        dff = dff[dff["ano_assinatura"].astype(str).isin([str(a) for a in f_ano_ass])]
+        dff = dff[dff["ano_assinatura"].astype(int).isin(f_ano_ass)]
     if f_ano_prop and "ano_proposta" in dff.columns:
-        dff = dff[dff["ano_proposta"].astype(str).isin([str(a) for a in f_ano_prop])]
+        dff = dff[dff["ano_proposta"].astype(int).isin(f_ano_prop)]
     if f_sit != "Todas" and "situacao" in dff.columns:
         dff = dff[dff["situacao"] == f_sit]
     if f_org != "Todos" and "orgao_concedente" in dff.columns:
         dff = dff[dff["orgao_concedente"] == f_org]
     if f_nat != "Todas" and "natureza_juridica" in dff.columns:
         dff = dff[dff["natureza_juridica"] == f_nat]
+
 
 
     # ── Aplicação ───────────────────────────────────────────────────────────
