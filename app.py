@@ -110,26 +110,26 @@ with aba1:
     with st.expander("🔎 Filtros", expanded=True):
         f1, f2, f3, f4, f5 = st.columns(5)
 
-        anos_e = ["Todos"] + sorted(df_emendas["ano_emenda"].dropna().unique().tolist())
+        anos_e = sorted(df_emendas["ano_emenda"].dropna().unique().tolist())
         sits_e = ["Todas"] + sorted(df_emendas["situacao"].dropna().unique().tolist())
         parls  = ["Todos"] + sorted(df_emendas["parlamentar"].dropna().unique().tolist())
         munis  = ["Todos"] + sorted(df_emendas["beneficiario"].dropna().unique().tolist())
         nats_e = ["Todas"] + sorted(df_emendas["natureza_juridica"].dropna().unique().tolist())
 
-        f_ano   = f1.multiselect("Ano",               anos_e, placeholder="Todos", key="f_ano")
-        f_sit   = f2.selectbox("Situação",               sits_e, key="e_sit")
-        f_parl  = f3.selectbox("Parlamentar",            parls,  key="e_parl")
-        f_muni  = f4.selectbox("Município Beneficiário", munis,  key="e_muni")
-        f_nat_e = f5.selectbox("Natureza Jurídica",      nats_e, key="e_nat")
+        f_ano   = f1.multiselect("Ano",                   anos_e, placeholder="Todos", key="e_ano")
+        f_sit   = f2.selectbox("Situação",                sits_e, key="e_sit")
+        f_parl  = f3.selectbox("Parlamentar",             parls,  key="e_parl")
+        f_muni  = f4.selectbox("Município Beneficiário",  munis,  key="e_muni")
+        f_nat_e = f5.selectbox("Natureza Jurídica",       nats_e, key="e_nat")
 
     # ── Aplicar filtros SEM .copy() desnecessário ─────────────────────────────
     mask = pd.Series(True, index=df_emendas.index)
-    if f_ano   != "Todos": mask &= df_emendas["ano_emenda"]        == f_ano
+    if f_ano:            mask &= df_emendas["ano_emenda"].astype(str).isin([str(a) for a in f_ano])
     if f_sit   != "Todas": mask &= df_emendas["situacao"]          == f_sit
     if f_parl  != "Todos": mask &= df_emendas["parlamentar"]       == f_parl
     if f_muni  != "Todos": mask &= df_emendas["beneficiario"]      == f_muni
     if f_nat_e != "Todas": mask &= df_emendas["natureza_juridica"] == f_nat_e
-    df_e = df_emendas[mask]  # ← view, não cópia
+    df_e = df_emendas[mask]
 
     # ── KPIs ──────────────────────────────────────────────────────────────────
     k1, k2, k3, k4 = st.columns(4)
