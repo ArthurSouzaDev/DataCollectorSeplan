@@ -116,7 +116,7 @@ with aba1:
         munis  = ["Todos"] + sorted(df_emendas["beneficiario"].dropna().unique().tolist())
         nats_e = ["Todas"] + sorted(df_emendas["natureza_juridica"].dropna().unique().tolist())
 
-        f_ano   = f1.selectbox("Ano da Emenda",          anos_e, key="e_ano")
+        f_ano   = f1.multiselect("Ano",               anos_e, placeholder="Todos", key="f_ano")
         f_sit   = f2.selectbox("Situação",               sits_e, key="e_sit")
         f_parl  = f3.selectbox("Parlamentar",            parls,  key="e_parl")
         f_muni  = f4.selectbox("Município Beneficiário", munis,  key="e_muni")
