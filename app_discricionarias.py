@@ -1,6 +1,7 @@
 # app_discricionarias.py
 import os
 import sys
+import importlib
 import datetime
 import streamlit as st
 import pandas as pd
@@ -11,39 +12,98 @@ from plotly.subplots import make_subplots
 BASE_DIR  = os.path.dirname(os.path.abspath(__file__))
 CSV_PATH  = os.path.join(BASE_DIR, "data_discricionarias", "discricionarias_to.csv")
 
+ALIASES_COLUNAS = {
+    "munic_proponente": "municipio_beneficiario",
+    "desc_orgao_sup": "orgao_superior",
+    "desc_orgao": "orgao_concedente",
+}
+
 
 # ─── HELPERS ───────────────────────────────────────────────────────────────────
 def fmt_brl(v: float) -> str:
     return f"R$ {v:,.0f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
-def executar_coletor():
-    """Importa e executa o coletor diretamente no mesmo processo Python."""
+def harmonizar_colunas(df: pd.DataFrame) -> pd.DataFrame:
+    """Ajusta nomes antigos/brutos para os nomes esperados pela interface."""
+    renomear = {
+        origem: destino
+        for origem, destino in ALIASES_COLUNAS.items()
+        if origem in df.columns and destino not in df.columns
+    }
+    if renomear:
+        df = df.rename(columns=renomear)
+    return df
+
+
+def _diagnostico_cache():
+    """Exibe diagnóstico dos arquivos de cache no status atual."""
+    st.write("🔎 Verificando arquivos em cache...")
+    cache_dir = os.path.join(BASE_DIR, "data_discricionarias", "cache_bruto")
+    for nome in ["siconv_convenio.csv", "siconv_proposta.csv", "siconv_emenda.csv"]:
+        caminho = os.path.join(cache_dir, nome)
+        if os.path.exists(caminho):
+            mb = os.path.getsize(caminho) / 1024 / 1024
+            st.write(f"  ✅ {nome} — {mb:.0f} MB")
+        else:
+            st.write(f"  ⬇️ {nome} — será baixado")
+
+
+def _importar_coletor():
+    """Garante reimport limpo do módulo coletor_discricionarias."""
     if BASE_DIR not in sys.path:
         sys.path.insert(0, BASE_DIR)
 
-    with st.status("⏳ Coletando dados do Transferegov...", expanded=True) as status:
+    # Remove versão antiga do cache de módulos para forçar reimport
+    if "coletor_discricionarias" in sys.modules:
+        del sys.modules["coletor_discricionarias"]
+
+    import coletor_discricionarias as coletor
+    importlib.reload(coletor)
+    return coletor
+
+def executar_coletor(forcar: bool = False):
+    """Importa e executa o coletor diretamente no mesmo processo Python."""
+    label_inicial = (
+        "⏳ Forçando re-download dos dados..." if forcar
+        else "⏳ Coletando dados do Transferegov..."
+    )
+
+    with st.status(label_inicial, expanded=True) as status:
         try:
             st.write("📡 Importando coletor...")
-            import coletor_discricionarias as coletor
+            coletor = _importar_coletor()
 
-            st.write("📡 Baixando e processando siconv_convenio...")
-            df = coletor.consolidar(forcar=False)
+            _diagnostico_cache()
 
-            if df is not None and len(df) > 0:
-                status.update(label=f"✅ {len(df):,} registros coletados!", state="complete")
+            st.write("⚙️ Consolidando dados TO...")
+            df = coletor.consolidar(forcar=forcar)
+
+            if df is not None and not df.empty:
+                status.update(
+                    label=f"✅ {len(df):,} registros coletados!",
+                    state="complete"
+                )
+
+                if os.path.exists(CSV_PATH):
+                    st.write(f"✅ CSV final encontrado em: {CSV_PATH}")
+                else:
+                    st.warning(f"⚠️ O DataFrame foi gerado, mas o CSV não foi encontrado em: {CSV_PATH}")
+
                 st.cache_data.clear()
-                st.rerun()
+                return df
+
             else:
                 status.update(label="⚠️ Coleta finalizada sem dados", state="error")
                 st.warning("Nenhum dado retornado. Verifique os filtros no coletor.")
+                return pd.DataFrame()
 
         except Exception as e:
             status.update(label="❌ Erro na coleta", state="error")
             st.error(f"**Erro:** {e}")
             import traceback
             st.code(traceback.format_exc(), language="python")
-
+            return pd.DataFrame()
 
 # ─── CARGA DE DADOS ───────────────────────────────────────────────────────────
 @st.cache_data(show_spinner="⏳ Carregando Discricionárias...")
@@ -58,22 +118,22 @@ def load_discricionarias() -> pd.DataFrame:
     sep = ";" if ";" in primeira_linha else ("\t" if "\t" in primeira_linha else ",")
 
     df = pd.read_csv(CSV_PATH, sep=sep, encoding="utf-8-sig", low_memory=False)
+    df = harmonizar_colunas(df)
 
     if df.empty:
+        st.warning("O CSV foi encontrado, mas está vazio.")
         return df
 
-    # Converte colunas numéricas
     for col in ["valor_global", "valor_repasse", "valor_contrapartida",
                 "valor_empenhado", "valor_desembolsado"]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0)
 
-    # Limpa colunas de ano
     for col in ["ano_proposta", "ano_assinatura"]:
         if col in df.columns:
             df[col] = df[col].astype(str).str.replace(".0", "", regex=False)
 
-    return df  # ← SEM filtro de UF aqui, já foi feito no coletor
+    return df  
 
 
 # ─── RENDER PRINCIPAL ──────────────────────────────────────────────────────────
@@ -88,7 +148,7 @@ def render():
         st.info("Clique no botão abaixo para coletar os dados do Transferegov "
                 "(pode demorar alguns minutos).")
         if st.button("🚀 Coletar Dados Agora", type="primary"):
-            executar_coletor()
+            executar_coletor(forcar=False)
         return
 
     # ── Carrega dados ─────────────────────────────────────────────────────
@@ -98,19 +158,24 @@ def render():
         st.error("❌ O CSV existe mas está vazio ou não foi lido corretamente.")
         st.info(f"📂 Caminho: `{CSV_PATH}`")
         if st.button("🚀 Re-coletar Dados", type="primary"):
-            executar_coletor()
+            executar_coletor(forcar=False)
         return
 
-    # ── Info + botão atualizar ────────────────────────────────────────────
-    col_info, col_btn = st.columns([8, 2])
+    # ── Info + botões atualizar / forçar re-download ───────────────────────
+    col_info, col_btn, col_force = st.columns([6, 2, 2])
     with col_info:
         mtime = os.path.getmtime(CSV_PATH)
         dt    = datetime.datetime.fromtimestamp(mtime).strftime("%d/%m/%Y %H:%M")
         st.caption(f"🕒 Última atualização: **{dt}** · {len(df):,} registros")
     with col_btn:
         if st.button("🔄 Atualizar Dados"):
+            df_novo = executar_coletor()
+            if not df_novo.empty:
+                st.rerun()
+    with col_force:
+        if st.button("⚠️ Forçar Re-download", use_container_width=True):
             st.cache_data.clear()
-            executar_coletor()
+            executar_coletor(forcar=True)
 
     # ── Filtros ───────────────────────────────────────────────────────────
     with st.expander("🔎 Filtros", expanded=True):
