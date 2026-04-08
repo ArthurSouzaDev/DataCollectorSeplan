@@ -234,10 +234,10 @@ def render():
     with st.expander("🔎 Filtros", expanded=True):
         c1, c2, c3, c4, c5 = st.columns(5)
 
-        anos_ass  = (["Todos"] + sorted(df["ano_assinatura"].dropna().unique().tolist())
-                    if "ano_assinatura" in df.columns else ["Todos"])
-        anos_prop = (["Todos"] + sorted(df["ano_proposta"].dropna().unique().tolist())
-                    if "ano_proposta" in df.columns else ["Todos"])
+        anos_ass  = (sorted(df["ano_assinatura"].dropna().unique().tolist())
+                    if "ano_assinatura" in df.columns else [])
+        anos_prop = (sorted(df["ano_proposta"].dropna().unique().tolist())
+                    if "ano_proposta" in df.columns else [])
         sits      = (["Todas"] + sorted(df["situacao"].dropna().unique().tolist())
                     if "situacao" in df.columns else ["Todas"])
         orgaos    = (["Todos"] + sorted(df["orgao_concedente"].dropna().unique().tolist())
@@ -245,11 +245,26 @@ def render():
         nats      = (["Todas"] + sorted(df["natureza_juridica"].dropna().unique().tolist())
                     if "natureza_juridica" in df.columns else ["Todas"])
 
-        f_ano_ass  = c1.selectbox("Ano Assinatura",  anos_ass,  key="disc_ano_ass")
-        f_ano_prop = c2.selectbox("Ano Proposta",    anos_prop, key="disc_ano_prop")
-        f_sit      = c3.selectbox("Situação",        sits,      key="disc_sit")
-        f_org      = c4.selectbox("Órgão Concedente",orgaos,    key="disc_org")
-        f_nat      = c5.selectbox("Proponente",      nats,      key="disc_nat")
+        f_ano_ass  = c1.multiselect("Ano Assinatura",  anos_ass,  placeholder="Todos", key="disc_ano_ass")
+        f_ano_prop = c2.multiselect("Ano Proposta",    anos_prop, placeholder="Todos", key="disc_ano_prop")
+        f_sit      = c3.selectbox("Situação",          sits,      key="disc_sit")
+        f_org      = c4.selectbox("Órgão Concedente",  orgaos,    key="disc_org")
+        f_nat      = c5.selectbox("Proponente",        nats,      key="disc_nat")
+
+
+    # ── Aplicação ───────────────────────────────────────────────────────────
+
+    dff = df.copy()
+    if f_ano_ass and "ano_assinatura" in dff.columns:
+        dff = dff[dff["ano_assinatura"].astype(str).isin([str(a) for a in f_ano_ass])]
+    if f_ano_prop and "ano_proposta" in dff.columns:
+        dff = dff[dff["ano_proposta"].astype(str).isin([str(a) for a in f_ano_prop])]
+    if f_sit != "Todas" and "situacao" in dff.columns:
+        dff = dff[dff["situacao"] == f_sit]
+    if f_org != "Todos" and "orgao_concedente" in dff.columns:
+        dff = dff[dff["orgao_concedente"] == f_org]
+    if f_nat != "Todas" and "natureza_juridica" in dff.columns:
+        dff = dff[dff["natureza_juridica"] == f_nat]
 
 
     # ── Aplicação ───────────────────────────────────────────────────────────

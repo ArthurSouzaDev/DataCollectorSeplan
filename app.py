@@ -303,28 +303,29 @@ with aba2:
 # ABA 3 — FUNDO A FUNDO
 # ───────────────────────────────────────────────────────────────────────────────
 with aba3:
+    # ──  filtros  ───────────────────────────────────────────
 
-    # ── Filtros ───────────────────────────────────────────────────────────────
     with st.expander("🔎 Filtros", expanded=True):
         g1, g2, g3, g4 = st.columns(4)
 
-        anos_f = ["Todos"] + sorted(df_fundo["ano"].dropna().unique().tolist())
+        anos_f = sorted(df_fundo["ano"].dropna().unique().tolist())
         sits_f = ["Todas"] + sorted(df_fundo["situacao"].dropna().unique().tolist())
         orgaos = ["Todos"] + sorted(df_fundo["sigla_orgao"].dropna().unique().tolist())
         nats_f = ["Todas"] + sorted(df_fundo["natureza_juridica"].dropna().unique().tolist())
 
-        gf_ano = g1.selectbox("Ano",               anos_f, key="f_ano")
-        gf_sit = g2.selectbox("Situação",          sits_f, key="f_sit")
-        gf_org = g3.selectbox("Órgão Repassador",  orgaos, key="f_org")
-        gf_nat = g4.selectbox("Natureza Jurídica", nats_f, key="f_nat")
+        gf_ano = g1.multiselect("Ano",               anos_f, placeholder="Todos", key="f_ano")
+        gf_sit = g2.selectbox("Situação",            sits_f, key="f_sit")
+        gf_org = g3.selectbox("Órgão Repassador",    orgaos, key="f_org")
+        gf_nat = g4.selectbox("Natureza Jurídica",   nats_f, key="f_nat")
 
     # ── Aplicar filtros via máscara ───────────────────────────────────────────
     mask_f = pd.Series(True, index=df_fundo.index)
-    if gf_ano != "Todos": mask_f &= df_fundo["ano"]              == gf_ano
-    if gf_sit != "Todas": mask_f &= df_fundo["situacao"]         == gf_sit
-    if gf_org != "Todos": mask_f &= df_fundo["sigla_orgao"]      == gf_org
+    if gf_ano: mask_f &= df_fundo["ano"].astype(str).isin([str(a) for a in gf_ano])
+    if gf_sit != "Todas": mask_f &= df_fundo["situacao"]          == gf_sit
+    if gf_org != "Todos": mask_f &= df_fundo["sigla_orgao"]       == gf_org
     if gf_nat != "Todas": mask_f &= df_fundo["natureza_juridica"] == gf_nat
-    df_f2 = df_fundo[mask_f]  # ← view, não cópia
+    df_f2 = df_fundo[mask_f]
+
 
     # ── KPIs ──────────────────────────────────────────────────────────────────
     k1, k2, k3, k4 = st.columns(4)
