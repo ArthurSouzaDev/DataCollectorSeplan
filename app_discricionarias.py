@@ -18,6 +18,14 @@ ALIASES_COLUNAS = {
     "desc_orgao": "orgao_concedente",
 }
 
+COLUNAS_ESSENCIAIS = [
+    "situacao",
+    "municipio_beneficiario",
+    "orgao_concedente",
+    "valor_global",
+    "valor_repasse",
+]
+
 
 # ─── HELPERS ───────────────────────────────────────────────────────────────────
 def fmt_brl(v: float) -> str:
@@ -34,6 +42,11 @@ def harmonizar_colunas(df: pd.DataFrame) -> pd.DataFrame:
     if renomear:
         df = df.rename(columns=renomear)
     return df
+
+
+def colunas_ausentes(df: pd.DataFrame) -> list[str]:
+    """Retorna colunas mínimas esperadas que não vieram no CSV."""
+    return [col for col in COLUNAS_ESSENCIAIS if col not in df.columns]
 
 
 def _diagnostico_cache():
@@ -79,7 +92,13 @@ def executar_coletor(forcar: bool = False):
             st.write("⚙️ Consolidando dados TO...")
             df = coletor.consolidar(forcar=forcar)
 
-            if df is not None and not df.empty:
+            if df is None:
+                status.update(label="❌ Coletor não retornou dados", state="error")
+                st.error("O coletor falhou em alguma etapa e retornou `None`.")
+                st.info("Revise as mensagens de CONVENIO, PROPOSTA e EMENDA exibidas acima.")
+                return pd.DataFrame()
+
+            if not df.empty:
                 status.update(
                     label=f"✅ {len(df):,} registros coletados!",
                     state="complete"
@@ -93,10 +112,10 @@ def executar_coletor(forcar: bool = False):
                 st.cache_data.clear()
                 return df
 
-            else:
-                status.update(label="⚠️ Coleta finalizada sem dados", state="error")
-                st.warning("Nenhum dado retornado. Verifique os filtros no coletor.")
-                return pd.DataFrame()
+            status.update(label="⚠️ Coleta finalizada sem dados", state="error")
+            st.warning("O coletor executou, mas retornou um DataFrame vazio.")
+            st.info("Isso normalmente indica filtro excessivo ou etapa anterior zerada.")
+            return pd.DataFrame()
 
         except Exception as e:
             status.update(label="❌ Erro na coleta", state="error")
@@ -158,6 +177,15 @@ def render():
         st.error("❌ O CSV existe mas está vazio ou não foi lido corretamente.")
         st.info(f"📂 Caminho: `{CSV_PATH}`")
         if st.button("🚀 Re-coletar Dados", type="primary"):
+            executar_coletor(forcar=False)
+        return
+
+    faltantes = colunas_ausentes(df)
+    if faltantes:
+        st.error("❌ O CSV foi carregado, mas está com esquema incompatível para a aba.")
+        st.warning("Colunas ausentes: " + ", ".join(faltantes))
+        st.info(f"📂 Caminho: `{CSV_PATH}`")
+        if st.button("🔄 Reprocessar Dados", type="primary"):
             executar_coletor(forcar=False)
         return
 
