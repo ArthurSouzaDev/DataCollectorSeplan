@@ -174,29 +174,79 @@ def extrair_ano(df: pd.DataFrame, col: str, nova_col: str) -> pd.DataFrame:
     return df
 
 
+def _detectar_coluna_uf(df: pd.DataFrame, label: str) -> str | None:
+    """
+    Detecta a coluna de UF com segurança:
+    1. Tenta lista de nomes conhecidos (prioridade)
+    2. Inspeciona valores reais para confirmar que é coluna de UF brasileira
+    """
+    CANDIDATAS_CONHECIDAS = [
+        "uf_proponente", "uf_propon",
+        "uf_proponente_conv", "uf_munic_proponente",
+        "uf_convenente", "uf_beneficiario",
+    ]
+
+    # Prioridade 1: nomes conhecidos
+    for c in CANDIDATAS_CONHECIDAS:
+        if c in df.columns:
+            print(f"  [UF] Coluna detectada por nome: '{c}'")
+            return c
+
+    # Prioridade 2: busca heurística por valores reais (siglas de UF)
+    UFS_BRASILEIRAS = {
+        "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA",
+        "MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN",
+        "RS","RO","RR","SC","SP","SE","TO"
+    }
+    for c in df.columns:
+        if "uf" in c.lower():
+            amostra = set(df[c].dropna().astype(str).str.strip().str.upper().unique()[:30])
+            if amostra and amostra.issubset(UFS_BRASILEIRAS):
+                print(f"  [UF] Coluna detectada por heurística: '{c}' | valores: {amostra}")
+                return c
+
+    print(f"  [AVISO] {label}: nenhuma coluna de UF encontrada.")
+    print(f"  Colunas disponíveis: {list(df.columns[:20])}")
+    return None
+
+
 def filtrar_uf(df: pd.DataFrame, label: str,
                colunas_uf: list[str] | None = None) -> pd.DataFrame:
     """
-    Filtra por UF usando apenas as colunas explicitamente informadas.
-    Se colunas_uf=None, usa lista padrão SEM busca genérica por 'uf' no nome.
+    Filtra por UF=TO com detecção robusta de coluna.
+    Nunca retorna vazio silenciosamente — sempre loga o motivo.
     """
-    # ← FIX: removida busca genérica — evita pegar coluna errada
-    if colunas_uf is None:
-        colunas_uf = [
-            "uf_proponente", "uf_propon",
-            "uf_proponente_conv", "uf_munic_proponente"
-        ]
+    col = None
 
-    col = next((c for c in colunas_uf if c in df.columns), None)
+    # Se colunas_uf foi passado explicitamente, tenta primeiro
+    if colunas_uf:
+        col = next((c for c in colunas_uf if c in df.columns), None)
+        if col:
+            print(f"  [UF] Usando coluna explícita: '{col}'")
 
-    if col:
-        antes = len(df)
-        df = df[df[col].astype(str).str.strip().str.upper() == FILTROS["uf"]]
-        print(f"  [FILTRO UF=TO via '{col}'] {antes:,} -> {len(df):,}")
-    else:
-        print(f"  [INFO] {label}: coluna UF nao encontrada — sem filtro UF")
-        print(f"  Colunas disponíveis: {list(df.columns[:15])}")
+    # Fallback: detecção automática
+    if col is None:
+        col = _detectar_coluna_uf(df, label)
 
+    if col is None:
+        print(f"  [INFO] {label}: sem filtro UF aplicado — coluna não encontrada.")
+        return df
+
+    # Diagnóstico antes do filtro
+    valores_unicos = df[col].dropna().astype(str).str.strip().str.upper().unique()
+    tem_to = "TO" in valores_unicos
+    print(f"  [UF DEBUG] Coluna='{col}' | Únicos (amostra): {list(valores_unicos[:10])}")
+    print(f"  [UF DEBUG] Contém 'TO': {tem_to} | Total antes: {len(df):,}")
+
+    if not tem_to:
+        print(f"  [CRÍTICO] UF='TO' não encontrado na coluna '{col}'!")
+        print(f"  Todos os valores: {list(valores_unicos)}")
+        # ← Retorna o df original em vez de zerar — evita falha silenciosa
+        return df
+
+    antes = len(df)
+    df = df[df[col].astype(str).str.strip().str.upper() == FILTROS["uf"]]
+    print(f"  [FILTRO UF=TO via '{col}'] {antes:,} → {len(df):,}")
     return df
 
 
@@ -229,22 +279,25 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
     df = normalizar_colunas(df)
     print(f"  Bruto: {len(df):,} linhas | Colunas: {list(df.columns[:10])}")
 
-    # ← FIX: convenio NÃO filtra por UF — UF só existe na proposta
-    # filtrar_uf removido daqui para evitar zerar o DataFrame
-
-    df = extrair_ano(df, "dia_assin_conv",   "ano_assinatura")
+    df = extrair_ano(df, "dia_assin_conv",      "ano_assinatura")
     df = extrair_ano(df, "dia_inic_vigenc_conv", "ano_inicio")
 
-    # ← FIX: filtro de ano só se a coluna existir e tiver dados
     if "ano_assinatura" in df.columns:
+        nulos = df["ano_assinatura"].isna().sum()
+        print(f"  [ANO] ano_assinatura: {df['ano_assinatura'].nunique()} anos únicos | "
+              f"nulos: {nulos:,} | range: "
+              f"{df['ano_assinatura'].min()} - {df['ano_assinatura'].max()}")
+
         antes = len(df)
         df_filtrado = df[df["ano_assinatura"].isin(FILTROS["anos_assinatura"])]
-        # ← FIX: se filtro zerar, mantém original com aviso
+
         if len(df_filtrado) == 0:
             print(f"  [AVISO] Filtro ano zerou convenios — mantendo todos ({antes:,})")
         else:
             df = df_filtrado
-            print(f"  [FILTRO ANO ASSINATURA] {antes:,} -> {len(df):,}")
+            print(f"  [FILTRO ANO ASSINATURA] {antes:,} → {len(df):,}")
+    else:
+        print("  [AVISO] Coluna 'dia_assin_conv' não encontrada — sem filtro de ano")
 
     df = converter_valores(df)
     print(f"  Convenios mantidos: {len(df):,}")
@@ -260,18 +313,20 @@ def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
     df = normalizar_colunas(df)
     print(f"  Bruto: {len(df):,} linhas | Colunas: {list(df.columns[:10])}")
 
-    # UF está na proposta — filtra TO com colunas explícitas
+    # ← CORRIGIDO: usa detecção robusta com fallback heurístico
     df = filtrar_uf(df, "proposta", colunas_uf=["uf_proponente", "uf_propon"])
 
-    # ← FIX: se saiu vazio, mostra valores reais de UF para diagnóstico
     if len(df) == 0:
+        print("  [FALHA] DataFrame vazio após filtro UF.")
+        # Diagnóstico extra: mostra colunas reais do arquivo
         df_raw = baixar_e_extrair("proposta", forcar=False)
         if df_raw is not None:
             df_raw = normalizar_colunas(df_raw)
-            col_uf = next((c for c in df_raw.columns if "uf" in c.lower()), None)
-            if col_uf:
-                print(f"  [DEBUG] Valores únicos em '{col_uf}': "
-                      f"{df_raw[col_uf].unique()[:20]}")
+            print(f"  [DEBUG] Todas as colunas: {list(df_raw.columns)}")
+            for c in df_raw.columns:
+                if "uf" in c.lower() or "estado" in c.lower():
+                    print(f"  [DEBUG] '{c}' valores: "
+                          f"{df_raw[c].dropna().unique()[:20]}")
         return pd.DataFrame()
 
     df = extrair_ano(df, "dt_proposta", "ano_proposta_dt")
@@ -286,7 +341,7 @@ def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
             print(f"  [AVISO] Filtro ano zerou propostas — mantendo todas ({antes:,})")
         else:
             df = df_filtrado
-            print(f"  [FILTRO ANO PROPOSTA] {antes:,} -> {len(df):,}")
+            print(f"  [FILTRO ANO PROPOSTA] {antes:,} → {len(df):,}")
 
     print(f"  Propostas TO mantidas: {len(df):,}")
     return df.copy()
@@ -333,53 +388,52 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
     df_prop   = processar_proposta(forcar)
     df_emenda = processar_emenda(forcar)
 
-    # ← FIX: validação explícita com mensagem clara
     if df_conv is None:
         print("\n[FALHA] siconv_convenio indisponivel.")
         return None
 
     if df_prop is None or len(df_prop) == 0:
         print("\n[FALHA] siconv_proposta indisponivel ou vazio após filtros.")
-        print("  → Verifique se a coluna 'uf_proponente' existe no arquivo.")
         return None
 
     df_base = df_prop.copy()
     print(f"\n[BASE] Propostas TO: {len(df_base):,}")
 
     # ── Join proposta → convenio ──────────────────────────────────────────
-    col_prop_id = next((c for c in df_base.columns
-                        if c in ["id_proposta", "nr_proposta"]), None)
-    col_conv_id = next((c for c in df_conv.columns
-                        if c in ["id_proposta", "nr_proposta"]), None)
+    # ← CORRIGIDO: tenta múltiplas combinações de chave para garantir o match
+    CHAVES_POSSIVEIS = ["id_proposta", "nr_proposta"]
 
-    print(f"  [JOIN] Chave proposta: '{col_prop_id}' | Chave convenio: '{col_conv_id}'")
+    col_prop_id = next((c for c in CHAVES_POSSIVEIS if c in df_base.columns), None)
+    col_conv_id = next((c for c in CHAVES_POSSIVEIS if c in df_conv.columns), None)
+
+    print(f"  [JOIN] Chaves disponíveis proposta: "
+          f"{[c for c in CHAVES_POSSIVEIS if c in df_base.columns]}")
+    print(f"  [JOIN] Chaves disponíveis convenio: "
+          f"{[c for c in CHAVES_POSSIVEIS if c in df_conv.columns]}")
+    print(f"  [JOIN] Usando → proposta='{col_prop_id}' | convenio='{col_conv_id}'")
 
     if col_prop_id and col_conv_id:
+        # Deduplica convenio preventivamente
+        df_conv_dedup = df_conv.drop_duplicates(subset=[col_conv_id])
+        print(f"  [DEDUP] Convenios únicos por '{col_conv_id}': "
+              f"{len(df_conv):,} → {len(df_conv_dedup):,}")
+
         antes = len(df_base)
         df_base = pd.merge(
-            df_base, df_conv,
+            df_base, df_conv_dedup,
             left_on=col_prop_id, right_on=col_conv_id,
             how="left", suffixes=("", "_conv")
         )
         df_base = df_base.loc[:, ~df_base.columns.duplicated()]
-        print(f"  [MERGE proposta<->convenio] {antes:,} -> {len(df_base):,} linhas")
 
-        if len(df_base) > antes * 1.05:
-            print("  ⚠️  MERGE multiplicou linhas! "
-                  "Deduplica convenio por id_proposta.")
-            # ← FIX: deduplica convenio antes do merge para evitar explosão
-            df_conv_dedup = df_conv.drop_duplicates(subset=[col_conv_id])
-            df_base = pd.merge(
-                df_prop, df_conv_dedup,
-                left_on=col_prop_id, right_on=col_conv_id,
-                how="left", suffixes=("", "_conv")
-            )
-            df_base = df_base.loc[:, ~df_base.columns.duplicated()]
-            print(f"  [MERGE dedup] -> {len(df_base):,} linhas")
+        match_rate = df_base[col_conv_id + "_conv" if col_conv_id + "_conv"
+                             in df_base.columns else col_conv_id].notna().sum()
+        print(f"  [MERGE proposta↔convenio] {antes:,} → {len(df_base):,} | "
+              f"com match: {match_rate:,}")
     else:
-        print(f"  [AVISO] Chave id_proposta não encontrada!")
-        print(f"  Colunas proposta:  {list(df_prop.columns[:10])}")
-        print(f"  Colunas convenio:  {list(df_conv.columns[:10])}")
+        print(f"  [AVISO] Nenhuma chave de join encontrada — sem merge com convenio")
+        print(f"  Colunas proposta:  {list(df_prop.columns[:15])}")
+        print(f"  Colunas convenio:  {list(df_conv.columns[:15])}")
 
     # ── Join com emendas ──────────────────────────────────────────────────
     if df_emenda is not None and len(df_emenda) > 0:
@@ -411,7 +465,7 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
             df_base = df_base.loc[:, ~df_base.columns.duplicated()]
             com_emenda = df_base["nr_emenda"].notna().sum() \
                          if "nr_emenda" in df_base.columns else 0
-            print(f"  [MERGE emendas] {antes:,} -> {len(df_base):,} | "
+            print(f"  [MERGE emendas] {antes:,} → {len(df_base):,} | "
                   f"Com emenda: {com_emenda:,}")
 
     # ── Finaliza ──────────────────────────────────────────────────────────
@@ -423,7 +477,6 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
 
     df_base = df_base.loc[:, ~df_base.columns.duplicated()]
 
-    # ← FIX: validação final antes de salvar
     if len(df_base) == 0:
         print("\n[FALHA] DataFrame final vazio — CSV não será salvo.")
         return None
