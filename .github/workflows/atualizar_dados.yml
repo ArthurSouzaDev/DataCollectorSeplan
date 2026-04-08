@@ -1,10 +1,14 @@
 name: Atualizar Dados Transferegov
 
+
 on:
   schedule:
     - cron: "0 5 * * 1"   # toda segunda-feira às 05h UTC (02h Brasília)
   workflow_dispatch:        # permite rodar manualmente pelo GitHub
-
+  
+permissions:
+  contents: write   # ← permite que o Actions faça push no repositório
+  
 jobs:
   extrair-dados:
     runs-on: ubuntu-latest
@@ -13,6 +17,8 @@ jobs:
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name:  Setup Python
         uses: actions/setup-python@v5
