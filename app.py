@@ -160,7 +160,7 @@ with aba1:
         fig.update_layout(coloraxis_showscale=False, height=420,
                           margin=dict(l=10, r=30, t=50, b=10))
         fig.update_traces(textposition="outside")
-        st.plotly_chart(fig, use_container_width=True, key="e_top_parl")   
+        st.plotly_chart(fig, use_container_width=True, key="chart_e_top_parl")
 
     with c2:
         top_mun = (
@@ -180,7 +180,7 @@ with aba1:
         fig.update_layout(coloraxis_showscale=False, height=420,
                           margin=dict(l=10, r=80, t=50, b=10))
         fig.update_traces(textposition="outside")
-        st.plotly_chart(fig, use_container_width=True, key="e_top_mun")    # top municípios
+        st.plotly_chart(fig, use_container_width=True, key="chart_e_top_mun")
 
 
     # ── Gráficos — Linha 2 ────────────────────────────────────────────────────
@@ -203,7 +203,7 @@ with aba1:
                         yanchor="middle", font=dict(size=11)),
             margin=dict(l=10, r=160, t=50, b=10)
         )
-        st.plotly_chart(fig, use_container_width=True, key="e_sit")        # distribuição situação
+        st.plotly_chart(fig, use_container_width=True, key="chart_e_sit")        # ← era "e_sit"
 
     with c4:
         evolucao = (
@@ -224,7 +224,7 @@ with aba1:
                           margin=dict(l=10, r=10, t=50, b=80))
         fig.update_yaxes(title_text="Valor (R$)", secondary_y=False)
         fig.update_yaxes(title_text="Quantidade",  secondary_y=True)
-        st.plotly_chart(fig, use_container_width=True, key="e_evolucao")   # evolução por ano
+        st.plotly_chart(fig, use_container_width=True, key="chart_e_evolucao")
 
     with c5:
         nat_e = df_e.groupby("natureza_juridica", observed=True).size().reset_index(name="qtd")
@@ -254,7 +254,7 @@ with aba1:
                         yanchor="middle", font=dict(size=10)),
             margin=dict(l=10, r=180, t=50, b=10)
         )
-        st.plotly_chart(fig, use_container_width=True, key="e_nat")        # natureza jurídica
+        st.plotly_chart(fig, use_container_width=True, key="chart_e_nat")
 
     # ── Custeio vs Investimento ───────────────────────────────────────────────
     st.subheader("📊 Custeio vs Investimento por Ano")
@@ -272,7 +272,7 @@ with aba1:
                       xaxis_title="Ano", yaxis_title="Valor (R$)",
                       legend=dict(orientation="h", yanchor="bottom", y=1.02),
                       margin=dict(l=10, r=10, t=30, b=10))
-    st.plotly_chart(fig, use_container_width=True, key="e_custeio_inv")
+    st.plotly_chart(fig, use_container_width=True, key="chart_e_custeio_inv")
 
     # ── Tabela ────────────────────────────────────────────────────────────────
     with st.expander("🔍 Dados detalhados"):
@@ -359,7 +359,7 @@ with aba3:
         fig.update_layout(coloraxis_showscale=False, height=420,
                           margin=dict(l=10, r=80, t=50, b=10))
         fig.update_traces(textposition="outside")
-        st.plotly_chart(fig, use_container_width=True, key="f_top_org")    # top órgãos
+        st.plotly_chart(fig, use_container_width=True, key="chart_f_top_org")
 
     with d2:
         top_mun_f = (
@@ -379,7 +379,7 @@ with aba3:
         fig.update_layout(coloraxis_showscale=False, height=420,
                           margin=dict(l=10, r=80, t=50, b=10))
         fig.update_traces(textposition="outside")
-        st.plotly_chart(fig, use_container_width=True, key="f_top_mun")    # top municípios
+        st.plotly_chart(fig, use_container_width=True, key="chart_f_top_mun")
 
     # ── Gráficos — Linha 2 ────────────────────────────────────────────────────
     d3, d4, d5 = st.columns(3, gap="large")
@@ -415,7 +415,7 @@ with aba3:
                         yanchor="middle", font=dict(size=11), itemsizing="constant"),
             margin=dict(l=10, r=180, t=50, b=10)
         )
-        st.plotly_chart(fig, use_container_width=True, key="f_sit")        # distribuição situação
+        st.plotly_chart(fig, use_container_width=True, key="chart_f_sit")        # ← era "f_sit"
 
     with d4:
         evolucao_f = (
@@ -436,7 +436,7 @@ with aba3:
                           margin=dict(l=10, r=10, t=50, b=80))
         fig.update_yaxes(title_text="Valor (R$)", secondary_y=False)
         fig.update_yaxes(title_text="Quantidade",  secondary_y=True)
-        st.plotly_chart(fig, use_container_width=True, key="f_evolucao")   # evolução por ano  ← corrigir df também
+        st.plotly_chart(fig, use_container_width=True, key="chart_f_evolucao")
 
     with d5:
         nat_f = (df_f2.groupby("natureza_juridica", observed=True).size()
@@ -466,7 +466,7 @@ with aba3:
                         yanchor="middle", font=dict(size=10)),
             margin=dict(l=10, r=180, t=50, b=10)
         )
-        st.plotly_chart(fig, use_container_width=True, key="f_nat")        # natureza jurídica
+        st.plotly_chart(fig, use_container_width=True, key="chart_f_nat")
 
 
     # ── Composição do Repasse ─────────────────────────────────────────────────
@@ -491,7 +491,7 @@ with aba3:
                       xaxis_title="Órgão", yaxis_title="Valor (R$)",
                       legend=dict(orientation="h", yanchor="bottom", y=1.02),
                       margin=dict(l=10, r=10, t=30, b=10))
-    st.plotly_chart(fig, use_container_width=True, key="f_composicao")
+    st.plotly_chart(fig, use_container_width=True, key="chart_f_composicao")
 
     # ── Tabela ────────────────────────────────────────────────────────────────
     with st.expander("🔍 Dados detalhados"):
