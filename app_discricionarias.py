@@ -29,32 +29,40 @@ COLUNAS_ESSENCIAIS = [
     ""
 ]
 
+ALIASES_ESSENCIAIS = {
+    "situacao":               ["sit_convenio", "sit_proposta", "situacao"],
+    "municipio_beneficiario": ["munic_proponente", "nm_munic_proponente", "municipio_beneficiario"],
+    "orgao_concedente":       ["desc_orgao", "nm_orgao_conv", "orgao_concedente"],
+    "valor_global":           ["vl_global_conv", "vl_global_prop", "valor_global"],
+    "valor_repasse":          ["vl_repasse_conv", "vl_repasse_prop", "valor_repasse"],
+    "natureza_juridica":      ["natureza_juridica"],
+}
+
 
 # ─── HELPERS ───────────────────────────────────────────────────────────────────
 def fmt_brl(v: float) -> str:
     return f"R$ {v:,.0f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
-
 def harmonizar_colunas(df: pd.DataFrame) -> pd.DataFrame:
     """Ajusta nomes antigos/brutos para os nomes esperados pela interface."""
-    renomear = {}
-    for origem, destino in ALIASES_COLUNAS.items():
-        if origem in df.columns and destino not in df.columns:
-            renomear[origem] = destino
-        elif origem in df.columns and destino in df.columns:
-            # ← NOVO: destino já existe, dropa a duplicata em vez de sobrescrever
-            print(f"  [HARMONIZAR] '{destino}' já existe — descartando '{origem}'")
-            df = df.drop(columns=[origem])
-    if renomear:
-        df = df.rename(columns=renomear)
-    return df
+    for destino, origens in ALIASES_ESSENCIAIS.items():
+        if destino in df.columns:
+            continue  # já existe com o nome correto
+        for origem in origens:
+            if origem in df.columns:
+                print(f"  [HARMONIZAR] '{origem}' → '{destino}'")
+                df = df.rename(columns={origem: destino})
+                break
 
+    return df
 
 def colunas_ausentes(df: pd.DataFrame) -> list[str]:
     """Retorna colunas mínimas esperadas que não vieram no CSV."""
-    return [col for col in COLUNAS_ESSENCIAIS if col not in df.columns]
-
-
+    ausentes = [col for col in COLUNAS_ESSENCIAIS if col not in df.columns]
+    if ausentes:
+        st.write("**Colunas presentes no CSV:**")
+        st.code(", ".join(df.columns.tolist()))
+    return ausentes
 def atualizar_status(status, **kwargs):
     """Atualiza o status apenas quando o objeto existe."""
     if status is not None and hasattr(status, "update"):
