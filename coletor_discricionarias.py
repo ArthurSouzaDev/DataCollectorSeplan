@@ -97,29 +97,40 @@ COLUNAS_SAIDA = {
     "valor_emenda_custeio":       "valor_custeio",
     "valor_emenda_investimento":  "valor_investimento",
     "ano_emenda":                 "ano_emenda",
+     # ── Financeiro extra ──────────────────────────────────────────────────
+    "vl_saldo_conta":           "valor_saldo_conta",   # ← ADICIONAR
+    "valor_pago":               "valor_pago",           # ← ADICIONAR (idempotente)
+
 }
 
 
 
 # --- UTILITARIOS --------------------------------------------------------------
+def _detectar_sep(caminho_ou_conteudo: str) -> str:
+    """Detecta separador lendo a primeira linha."""
+    linha = caminho_ou_conteudo.split("\n")[0] if "\n" in caminho_ou_conteudo \
+            else open(caminho_ou_conteudo, encoding="utf-8-sig").readline()
+    return ";" if ";" in linha else ("\t" if "\t" in linha else ",")
+
 def baixar_pagamento(forcar: bool = False) -> pd.DataFrame:
     """Baixa pagamento.csv e retorna agregado por convênio."""
     if not forcar and os.path.exists(CACHE_PAGAMENTO):
         print("[PAGAMENTO] Usando cache...")
-        df = pd.read_csv(
-            CACHE_PAGAMENTO, sep=";", encoding="utf-8-sig", low_memory=False
-        )
+        sep = _detectar_sep(CACHE_PAGAMENTO)
+        df  = pd.read_csv(CACHE_PAGAMENTO, sep=sep, encoding="utf-8-sig", low_memory=False)
     else:
         print("[PAGAMENTO] Baixando...")
-        df = pd.read_csv(
-            URL_PAGAMENTO, sep=";", encoding="utf-8-sig", low_memory=False
-        )
+        resp = requests.get(URL_PAGAMENTO, headers=HEADERS, timeout=300)
+        resp.raise_for_status()
+        conteudo = resp.content.decode("utf-8-sig")
+        sep = _detectar_sep(conteudo)
+        df  = pd.read_csv(io.StringIO(conteudo), sep=sep, low_memory=False)
         df.to_csv(CACHE_PAGAMENTO, index=False, sep=";", encoding="utf-8-sig")
 
-    # Normaliza nomes de colunas para minúsculo
+    # Normaliza nomes de colunas
     df.columns = df.columns.str.strip().str.lower()
 
-    # Identifica coluna de valor pago (tolerância de nome)
+    # Identifica colunas com tolerância de nome
     col_vl = next(
         (c for c in df.columns if c in ["vl_pago", "valor_pago", "vl_valor_pago"]),
         None
@@ -142,8 +153,7 @@ def baixar_pagamento(forcar: bool = False) -> pd.DataFrame:
     )
     agg["nr_convenio"] = agg["nr_convenio"].astype(str).str.strip()
     print(f"  [PAGAMENTO] {len(agg):,} convênios com pagamento agregado.")
-    return agg
-
+    return agg   # ← return obrigatório
 
 def verificar_data_carga() -> str:
     url = f"{REPOSITORIO}/data_carga_siconv.txt"
@@ -310,19 +320,27 @@ def filtrar_uf(df: pd.DataFrame, label: str,
     print(f"  [FILTRO UF=TO via '{col}'] {antes:,} → {len(df):,}")
     return df
 
-
 def converter_valores(df: pd.DataFrame) -> pd.DataFrame:
     for col in df.columns:
-        if col.startswith("vl_") or col.startswith("valor_"):
-            df[col] = (
-                df[col].astype(str).str.strip()
-                .str.replace(".", "", regex=False)
-                .str.replace(",", ".", regex=False)
-                .pipe(pd.to_numeric, errors="coerce")
-                .fillna(0.0)
-            )
-    return df
+        if not (col.startswith("vl_") or col.startswith("valor_")):
+            continue
 
+        amostra = df[col].dropna().astype(str).str.strip().head(100)
+        tem_virgula = bool(amostra.str.contains(",").any())
+        tem_ponto   = bool(amostra.str.contains(r"\.", regex=True).any())
+        formato_br  = tem_virgula and tem_ponto
+
+        serie = df[col].astype(str).str.strip()
+
+        if formato_br:
+            serie = serie.str.replace(".", "", regex=False).str.replace(",", ".", regex=False)
+        elif tem_virgula:
+            serie = serie.str.replace(",", ".", regex=False)
+        # else: formato internacional — não mexe
+
+        df[col] = pd.to_numeric(serie, errors="coerce").fillna(0.0)
+
+    return df
 
 def renomear_colunas(df: pd.DataFrame) -> pd.DataFrame:
     mapa = {}
@@ -335,7 +353,6 @@ def renomear_colunas(df: pd.DataFrame) -> pd.DataFrame:
                 print(f"  [AVISO] Coluna destino '{destino}' já mapeada — ignorando '{origem}'")
     return df.rename(columns=mapa)
 # --- PROCESSAMENTO ------------------------------------------------------------
-
 def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
     print("\n[CONVENIO]")
     df = baixar_e_extrair("convenio", forcar)
@@ -356,7 +373,6 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
 
         antes = len(df)
         df_filtrado = df[df["ano_assinatura"].isin(FILTROS["anos_assinatura"])]
-
         if len(df_filtrado) == 0:
             print(f"  [AVISO] Filtro ano zerou convenios — mantendo todos ({antes:,})")
         else:
@@ -365,8 +381,46 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
     else:
         print("  [AVISO] Coluna 'dia_assin_conv' não encontrada — sem filtro de ano")
 
+    # ── Diagnóstico do formato bruto ANTES de converter ──────────────────
+    if "vl_saldo_conta" in df.columns:
+        amostra = df["vl_saldo_conta"].dropna().astype(str).str.strip().head(5).tolist()
+        print(f"  [SALDO RAW] Amostra bruta vl_saldo_conta: {amostra}")
+
     df = converter_valores(df)
-    print(f"  Convenios mantidos: {len(df):,}")
+
+    # ── Alias PRIMEIRO — nome estável antes do dedup ──────────────────────
+    ALIASES_SALDO = [
+        "vl_saldo_conta", "saldo_conta",
+        "vl_saldo_ctabancaria", "valor_saldo_ctabancaria",
+    ]
+    for alias in ALIASES_SALDO:
+        if alias in df.columns and "valor_saldo_conta" not in df.columns:
+            df = df.rename(columns={alias: "valor_saldo_conta"})
+            print(f"  [SALDO CONTA] '{alias}' → 'valor_saldo_conta'")
+            break
+
+    if "valor_saldo_conta" not in df.columns:
+        df["valor_saldo_conta"] = 0.0
+        print("  [SALDO CONTA] Coluna ausente — preenchida com 0.0")
+
+    # ── Dedup ÚNICO por nr_convenio — após alias, nome já é estável ───────
+    if "nr_convenio" in df.columns:
+        antes_dedup = len(df)
+        df = (
+            df.sort_values("valor_saldo_conta", ascending=False, na_position="last")
+              .drop_duplicates(subset=["nr_convenio"], keep="first")
+              .reset_index(drop=True)
+        )
+        print(f"  [DEDUP nr_convenio] {antes_dedup:,} → {len(df):,} "
+              f"(critério: maior 'valor_saldo_conta')")
+    else:
+        print("  [AVISO] Coluna 'nr_convenio' não encontrada — dedup ignorado")
+
+    # ── Relatório final ───────────────────────────────────────────────────
+    saldo_total = df["valor_saldo_conta"].sum()
+    print(f"  Convênios mantidos:  {len(df):,}")
+    print(f"  Saldo conta total:   R$ {saldo_total:,.2f}  ← conferir vs Transferegov")
+
     return df
 
 
@@ -478,13 +532,15 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
     print(f"  [JOIN] Usando → proposta='{col_prop_id}' | convenio='{col_conv_id}'")
 
     if col_prop_id and col_conv_id:
-        df_conv_dedup = df_conv.drop_duplicates(subset=[col_conv_id])
-        print(f"  [DEDUP] Convenios únicos por '{col_conv_id}': "
-              f"{len(df_conv):,} → {len(df_conv_dedup):,}")
+        antes_conv = len(df_conv)
+        df_conv_join = df_conv.drop_duplicates(subset=[col_conv_id], keep="first")
+        if antes_conv != len(df_conv_join):
+            print(f"  [DEDUP JOIN] {antes_conv:,} → {len(df_conv_join):,} "
+                f"(por '{col_conv_id}' para segurança do merge)")
 
         antes = len(df_base)
         df_base = pd.merge(
-            df_base, df_conv_dedup,
+            df_base, df_conv_join,          
             left_on=col_prop_id, right_on=col_conv_id,
             how="left", suffixes=("", "_conv")
         )
