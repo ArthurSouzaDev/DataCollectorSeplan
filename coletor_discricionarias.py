@@ -326,19 +326,41 @@ def converter_valores(df: pd.DataFrame) -> pd.DataFrame:
             continue
 
         amostra = df[col].dropna().astype(str).str.strip().head(100)
-        tem_virgula = bool(amostra.str.contains(",").any())
-        tem_ponto   = bool(amostra.str.contains(r"\.", regex=True).any())
-        formato_br  = tem_virgula and tem_ponto
+
+        # Conta vírgulas e pontos para determinar o formato real
+        n_virgula = amostra.str.count(",").sum()
+        n_ponto   = amostra.str.count(r"\.").sum()
+
+        tem_virgula     = n_virgula > 0
+        tem_ponto       = n_ponto > 0
+        multiplos_pontos = amostra.str.count(r"\.").max() > 1  # ex: 32.571.009
 
         serie = df[col].astype(str).str.strip()
 
-        if formato_br:
+        if tem_virgula and tem_ponto:
+            # Formato BR claro: 1.234,56 → remove ponto, troca vírgula por ponto
             serie = serie.str.replace(".", "", regex=False).str.replace(",", ".", regex=False)
-        elif tem_virgula:
+
+        elif tem_virgula and not tem_ponto:
+            # Só vírgula: 1234,56 → troca vírgula por ponto
             serie = serie.str.replace(",", ".", regex=False)
-        # else: formato internacional — não mexe
+
+        elif not tem_virgula and multiplos_pontos:
+
+            serie = serie.str.replace(".", "", regex=False)
+
+        # else: formato internacional sem separador → não mexe
 
         df[col] = pd.to_numeric(serie, errors="coerce").fillna(0.0)
+
+        # ── Proteção pós-conversão: saldo não pode exceder repasse ────────────
+        if col == "vl_saldo_conta" and "vl_repasse_conv" in df.columns:
+            repasse = pd.to_numeric(df["vl_repasse_conv"], errors="coerce").fillna(0.0)
+            mascara_invalida = df[col] > repasse * 1.1  # tolerância de 10%
+            if mascara_invalida.sum() > 0:
+                print(f"  [SALDO CONTA] ⚠️ {mascara_invalida.sum()} registros com saldo > repasse "
+                      f"— dividindo por 100 (conversão centavos→reais)")
+                df.loc[mascara_invalida, col] = df.loc[mascara_invalida, col] / 100
 
     return df
 
@@ -381,14 +403,15 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
     else:
         print("  [AVISO] Coluna 'dia_assin_conv' não encontrada — sem filtro de ano")
 
-    # ── Diagnóstico RAW antes de converter ───────────────────────────────────────
+    # ── 1. Diagnóstico RAW ANTES de converter ────────────────────────────────────
     if "vl_saldo_conta" in df.columns:
         amostra = df["vl_saldo_conta"].dropna().astype(str).str.strip().head(5).tolist()
         print(f"  [SALDO RAW] Amostra bruta vl_saldo_conta: {amostra}")
 
+    # ── 2. Converte valores ──────────────────────────────────────────────────────
     df = converter_valores(df)
 
-    # ── Alias ANTES do dedup ──────────────────────────────────────────────────────
+    # ── 3. Alias vl_saldo_conta → valor_saldo_conta (APÓS converter) ────────────
     ALIASES_SALDO = [
         "vl_saldo_conta", "saldo_conta",
         "vl_saldo_ctabancaria", "valor_saldo_ctabancaria",
@@ -403,33 +426,37 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
         df["valor_saldo_conta"] = 0.0
         print("  [SALDO CONTA] Coluna ausente — preenchida com 0.0")
 
-    # ── Proteção: zera saldo de convênios encerrados ──────────────────────────────
-    SITUACOES_ENCERRADAS = {
-        "prestacao de contas concluida",
-        "prestação de contas concluída",
-        "prestacao de contas aprovada",
-        "prestação de contas aprovada",
-        "prestacao de contas aprovada com ressalvas",
-        "inadimplente",
-        "rescindido",
-        "cancelado",
-        "rejeitado",
-        "devolvido",
-    }
-
-    if "sit_convenio" in df.columns:
-        mask_encerrado = df["sit_convenio"].astype(str).str.strip().str.lower().isin(
-            SITUACOES_ENCERRADAS
-        )
-        df.loc[mask_encerrado, "valor_saldo_conta"] = 0.0
-        print(f"  [SALDO CONTA] Zerado em {mask_encerrado.sum():,} convênios encerrados")
-
-    # ── Proteção: clip de negativos ───────────────────────────────────────────────
+    # ── 4. Clip negativos ────────────────────────────────────────────────────────
     df["valor_saldo_conta"] = pd.to_numeric(
         df["valor_saldo_conta"], errors="coerce"
     ).fillna(0.0).clip(lower=0)
 
-    # ── Dedup ÚNICO por nr_convenio ───────────────────────────────────────────────
+    # ── 5. Validação cruzada saldo vs repasse (APÓS alias e converter) ───────────
+    if "valor_saldo_conta" in df.columns and "vl_repasse_conv" in df.columns:
+        repasse = pd.to_numeric(df["vl_repasse_conv"], errors="coerce").fillna(0.0)
+        saldo   = df["valor_saldo_conta"]
+
+        mask_invalido = saldo > (repasse * 1.1)
+        qtd_invalidos = mask_invalido.sum()
+
+        if qtd_invalidos > 0:
+            print(f"  [VALIDAÇÃO] ⚠️ {qtd_invalidos} convênios com saldo > repasse")
+            amostra_inv = df.loc[
+                mask_invalido,
+                ["nr_convenio", "vl_repasse_conv", "valor_saldo_conta"]
+            ].head(5)
+            print(f"  [VALIDAÇÃO] Amostra:\n{amostra_inv.to_string()}")
+            df.loc[mask_invalido, "valor_saldo_conta"] = (
+                df.loc[mask_invalido, "valor_saldo_conta"] / 100
+            )
+            print(f"  [VALIDAÇÃO] ✅ Corrigido — dividido por 100")
+        else:
+            print(f"  [VALIDAÇÃO] ✅ Todos os saldos dentro do esperado")
+
+        saldo_pos = df["valor_saldo_conta"].clip(lower=0)
+        print(f"  [SALDO CONTA] Após validação: R$ {saldo_pos.sum():,.2f}")
+
+    # ── 6. Dedup por nr_convenio ─────────────────────────────────────────────────
     if "nr_convenio" in df.columns:
         antes_dedup = len(df)
         df = (
@@ -437,49 +464,7 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
               .drop_duplicates(subset=["nr_convenio"], keep="first")
               .reset_index(drop=True)
         )
-        print(f"  [DEDUP nr_convenio] {antes_dedup:,} → {len(df):,} "
-              f"(critério: maior 'valor_saldo_conta')")
-    else:
-        print("  [AVISO] Coluna 'nr_convenio' não encontrada — dedup ignorado")
-
-    saldo_total = df["valor_saldo_conta"].sum()
-    qtd_com_saldo = (df["valor_saldo_conta"] > 0).sum()
-    print(f"  Convênios mantidos:     {len(df):,}")
-    print(f"  Com saldo > 0:          {qtd_com_saldo:,}")
-    print(f"  Saldo conta total:      R$ {saldo_total:,.2f}  ← conferir vs Transferegov")
-
-    return df
-
-    # ── Alias ANTES do dedup ──────────────────────────────────────────────────────
-    ALIASES_SALDO = [
-        "vl_saldo_conta", "saldo_conta",
-        "vl_saldo_ctabancaria", "valor_saldo_ctabancaria",
-    ]
-    for alias in ALIASES_SALDO:
-        if alias in df.columns and "valor_saldo_conta" not in df.columns:
-            df = df.rename(columns={alias: "valor_saldo_conta"})
-            print(f"  [SALDO CONTA] '{alias}' → 'valor_saldo_conta'")
-            break
-
-    if "valor_saldo_conta" not in df.columns:
-        df["valor_saldo_conta"] = 0.0
-        print("  [SALDO CONTA] Coluna ausente — preenchida com 0.0")
-
-    # ── Proteção: clip de negativos antes do dedup ────────────────────────────────
-    df["valor_saldo_conta"] = pd.to_numeric(
-        df["valor_saldo_conta"], errors="coerce"
-    ).fillna(0.0).clip(lower=0)
-
-    # ── Dedup ÚNICO por nr_convenio ───────────────────────────────────────────────
-    if "nr_convenio" in df.columns:
-        antes_dedup = len(df)
-        df = (
-            df.sort_values("valor_saldo_conta", ascending=False, na_position="last")
-              .drop_duplicates(subset=["nr_convenio"], keep="first")
-              .reset_index(drop=True)
-        )
-        print(f"  [DEDUP nr_convenio] {antes_dedup:,} → {len(df):,} "
-              f"(critério: maior 'valor_saldo_conta')")
+        print(f"  [DEDUP nr_convenio] {antes_dedup:,} → {len(df):,}")
     else:
         print("  [AVISO] Coluna 'nr_convenio' não encontrada — dedup ignorado")
 
@@ -488,8 +473,6 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
     print(f"  Saldo conta total:   R$ {saldo_total:,.2f}  ← conferir vs Transferegov")
 
     return df
-
-
 
 def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
     print("\n[PROPOSTA]")
