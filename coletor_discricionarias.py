@@ -403,6 +403,68 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
         df["valor_saldo_conta"] = 0.0
         print("  [SALDO CONTA] Coluna ausente — preenchida com 0.0")
 
+    # ── Proteção: zera saldo de convênios encerrados ──────────────────────────────
+    SITUACOES_ENCERRADAS = {
+        "prestacao de contas concluida",
+        "prestação de contas concluída",
+        "prestacao de contas aprovada",
+        "prestação de contas aprovada",
+        "prestacao de contas aprovada com ressalvas",
+        "inadimplente",
+        "rescindido",
+        "cancelado",
+        "rejeitado",
+        "devolvido",
+    }
+
+    if "sit_convenio" in df.columns:
+        mask_encerrado = df["sit_convenio"].astype(str).str.strip().str.lower().isin(
+            SITUACOES_ENCERRADAS
+        )
+        df.loc[mask_encerrado, "valor_saldo_conta"] = 0.0
+        print(f"  [SALDO CONTA] Zerado em {mask_encerrado.sum():,} convênios encerrados")
+
+    # ── Proteção: clip de negativos ───────────────────────────────────────────────
+    df["valor_saldo_conta"] = pd.to_numeric(
+        df["valor_saldo_conta"], errors="coerce"
+    ).fillna(0.0).clip(lower=0)
+
+    # ── Dedup ÚNICO por nr_convenio ───────────────────────────────────────────────
+    if "nr_convenio" in df.columns:
+        antes_dedup = len(df)
+        df = (
+            df.sort_values("valor_saldo_conta", ascending=False, na_position="last")
+              .drop_duplicates(subset=["nr_convenio"], keep="first")
+              .reset_index(drop=True)
+        )
+        print(f"  [DEDUP nr_convenio] {antes_dedup:,} → {len(df):,} "
+              f"(critério: maior 'valor_saldo_conta')")
+    else:
+        print("  [AVISO] Coluna 'nr_convenio' não encontrada — dedup ignorado")
+
+    saldo_total = df["valor_saldo_conta"].sum()
+    qtd_com_saldo = (df["valor_saldo_conta"] > 0).sum()
+    print(f"  Convênios mantidos:     {len(df):,}")
+    print(f"  Com saldo > 0:          {qtd_com_saldo:,}")
+    print(f"  Saldo conta total:      R$ {saldo_total:,.2f}  ← conferir vs Transferegov")
+
+    return df
+
+    # ── Alias ANTES do dedup ──────────────────────────────────────────────────────
+    ALIASES_SALDO = [
+        "vl_saldo_conta", "saldo_conta",
+        "vl_saldo_ctabancaria", "valor_saldo_ctabancaria",
+    ]
+    for alias in ALIASES_SALDO:
+        if alias in df.columns and "valor_saldo_conta" not in df.columns:
+            df = df.rename(columns={alias: "valor_saldo_conta"})
+            print(f"  [SALDO CONTA] '{alias}' → 'valor_saldo_conta'")
+            break
+
+    if "valor_saldo_conta" not in df.columns:
+        df["valor_saldo_conta"] = 0.0
+        print("  [SALDO CONTA] Coluna ausente — preenchida com 0.0")
+
     # ── Proteção: clip de negativos antes do dedup ────────────────────────────────
     df["valor_saldo_conta"] = pd.to_numeric(
         df["valor_saldo_conta"], errors="coerce"

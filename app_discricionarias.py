@@ -589,4 +589,20 @@ def render():
         file_name="discricionarias_to_filtrado.csv",
         mime="text/csv",
         type="primary"
-    )
+    )# ── DEBUG TEMPORÁRIO — remover após diagnóstico ───────────────────────────────
+    with st.expander("🔬 DEBUG — Saldo em Conta", expanded=False):
+        if "valor_saldo_conta" in dff.columns:
+            st.write(f"**Total bruto:** R$ {dff['valor_saldo_conta'].sum():,.2f}")
+            st.write(f"**Registros com saldo > 0:** {(dff['valor_saldo_conta'] > 0).sum()}")
+            st.write(f"**Registros com saldo > 1.000.000:** {(dff['valor_saldo_conta'] > 1_000_000).sum()}")
+            
+            # Top 10 maiores saldos
+            st.dataframe(
+                dff[dff["valor_saldo_conta"] > 0][[
+                    "nr_convenio", "situacao", "municipio_beneficiario",
+                    "proponente", "valor_repasse", "valor_saldo_conta"
+                ]].sort_values("valor_saldo_conta", ascending=False).head(10),
+                use_container_width=True
+            )
+        else:
+            st.warning("Coluna valor_saldo_conta não encontrada")
