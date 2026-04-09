@@ -14,9 +14,9 @@ BASE_DIR  = os.path.dirname(os.path.abspath(__file__))
 CSV_PATH  = os.path.join(BASE_DIR, "data_discricionarias", "discricionarias_to.csv")
 
 ALIASES_COLUNAS = {
-    "munic_proponente": "municipio_beneficiario",
-    "desc_orgao_sup": "orgao_superior",
-    "desc_orgao": "orgao_concedente",
+    "munic_proponente":  "municipio_beneficiario",
+    "desc_orgao_sup":    "orgao_superior",
+    "desc_orgao":        "orgao_concedente",
 }
 
 COLUNAS_ESSENCIAIS = [
@@ -26,17 +26,18 @@ COLUNAS_ESSENCIAIS = [
     "valor_global",
     "valor_repasse",
     "natureza_juridica",
-    ""
 ]
 
+# ── ALIASES para tolerância de nomes brutos ───────────────────────────────────
 ALIASES_ESSENCIAIS = {
-    "situacao":               ["sit_convenio", "sit_proposta", "situacao"],
-    "municipio_beneficiario": ["munic_proponente", "nm_munic_proponente", "municipio_beneficiario"],
-    "orgao_concedente":       ["desc_orgao", "nm_orgao_conv", "orgao_concedente"],
-    "valor_global":           ["vl_global_conv", "vl_global_prop", "valor_global"],
-    "valor_repasse":          ["vl_repasse_conv", "vl_repasse_prop", "valor_repasse"],
+    "situacao":               ["situacao", "sit_convenio", "sit_proposta"],
+    "municipio_beneficiario": ["municipio_beneficiario", "munic_proponente", "nm_munic_proponente"],
+    "orgao_concedente":       ["orgao_concedente", "desc_orgao", "nm_orgao_conv"],
+    "valor_global":           ["valor_global", "vl_global_conv", "vl_global_prop"],
+    "valor_repasse":          ["valor_repasse", "vl_repasse_conv", "vl_repasse_prop"],
     "natureza_juridica":      ["natureza_juridica"],
 }
+
 
 
 # ─── HELPERS ───────────────────────────────────────────────────────────────────
@@ -45,28 +46,30 @@ def fmt_brl(v: float) -> str:
 
 def harmonizar_colunas(df: pd.DataFrame) -> pd.DataFrame:
     """Ajusta nomes antigos/brutos para os nomes esperados pela interface."""
-    for destino, origens in ALIASES_ESSENCIAIS.items():
+    # 1. Aliases diretos
+    renomear = {
+        origem: destino
+        for origem, destino in ALIASES_COLUNAS.items()
+        if origem in df.columns and destino not in df.columns
+    }
+    if renomear:
+        df = df.rename(columns=renomear)
+
+    # 2. Tolerância para colunas essenciais com nomes alternativos
+    for destino, candidatas in ALIASES_ESSENCIAIS.items():
         if destino in df.columns:
-            continue  # já existe com o nome correto
-        for origem in origens:
+            continue
+        for origem in candidatas:
             if origem in df.columns:
-                print(f"  [HARMONIZAR] '{origem}' → '{destino}'")
                 df = df.rename(columns={origem: destino})
+                print(f"  [HARMONIZAR] '{origem}' → '{destino}'")
                 break
 
     return df
 
 def colunas_ausentes(df: pd.DataFrame) -> list[str]:
     """Retorna colunas mínimas esperadas que não vieram no CSV."""
-    ausentes = [col for col in COLUNAS_ESSENCIAIS if col not in df.columns]
-    if ausentes:
-        st.write("**Colunas presentes no CSV:**")
-        st.code(", ".join(df.columns.tolist()))
-    return ausentes
-def atualizar_status(status, **kwargs):
-    """Atualiza o status apenas quando o objeto existe."""
-    if status is not None and hasattr(status, "update"):
-        status.update(**kwargs)
+    return [col for col in COLUNAS_ESSENCIAIS if col not in df.columns]
 
 
 def _diagnostico_cache():
@@ -200,11 +203,35 @@ def render():
     # ── Verifica se CSV existe ────────────────────────────────────────────
     if not os.path.exists(CSV_PATH):
         st.warning("⚠️ Dados ainda não coletados.")
-        st.info("Clique no botão abaixo para coletar os dados do Transferegov "
-                "(pode demorar alguns minutos).")
+        st.info("Clique no botão abaixo para coletar os dados do Transferegov.")
         if st.button("🚀 Coletar Dados Agora", type="primary"):
             executar_coletor(forcar=False)
         return
+
+    # ── Carrega e harmoniza ───────────────────────────────────────────────
+    df = load_discricionarias()
+
+    if df.empty:
+        st.error("❌ O CSV existe mas está vazio ou não foi lido corretamente.")
+        st.info(f"📂 Caminho: `{CSV_PATH}`")
+        if st.button("🚀 Re-coletar Dados", type="primary"):
+            executar_coletor(forcar=False)
+        return
+
+    # ── Valida esquema ────────────────────────────────────────────────────
+    faltantes = colunas_ausentes(df)
+    if faltantes:
+        st.error("❌ Colunas ausentes no CSV:")
+        st.warning(", ".join(faltantes))                          # ← mostra quais
+        st.write("**Colunas presentes:**")
+        st.code(", ".join(df.columns.tolist()))                   # ← mostra o que tem
+        st.info(f"📂 Caminho: `{CSV_PATH}`")
+        if st.button("🔄 Reprocessar Dados", type="primary"):
+            executar_coletor(forcar=False)
+        return
+
+    # ... resto do render continua normalmente
+
 
     # ── Carrega dados ─────────────────────────────────────────────────────
     df = load_discricionarias()
