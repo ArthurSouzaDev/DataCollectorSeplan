@@ -330,8 +330,36 @@ def render():
     if f_prop != "Todos" and "proponente"             in dff.columns:  # ← NOVO
         dff = dff[dff["proponente"] == f_prop]
 
-# ── KPIs ──────────────────────────────────────────────────────────────────────
+    # ── KPIs ──────────────────────────────────────────────────────────────────────
     k1, k2, k3, k4, k5, k6 = st.columns(6)
+
+    # ── Cálculos conforme definição da tela de referência ─────────────────────────
+
+    # Valor Global = valor_repasse + valor_contrapartida
+    vl_global = (
+        (dff["valor_repasse"].sum()       if "valor_repasse"       in dff.columns else 0) +
+        (dff["valor_contrapartida"].sum() if "valor_contrapartida" in dff.columns else 0)
+    )
+
+    # Valor Liberado = valor_desembolsado + vl_ingresso_contrapartida + vl_rendimento_aplicacao
+    vl_liberado = (
+        (dff["valor_desembolsado"].sum()          if "valor_desembolsado"          in dff.columns else 0) +
+        (dff["vl_ingresso_contrapartida"].sum()   if "vl_ingresso_contrapartida"   in dff.columns else 0) +
+        (dff["vl_rendimento_aplicacao"].sum()     if "vl_rendimento_aplicacao"     in dff.columns else 0)
+    )
+
+    # Saldo em Conta = vl_saldo_conta  (já é saldo corrente + aplicações no SICONV)
+    # Proteção: descarta valores negativos e outliers (saldo nunca pode ser negativo)
+    if "valor_saldo_conta" in dff.columns:
+        vl_saldo = dff["valor_saldo_conta"].clip(lower=0).sum()
+    else:
+        vl_saldo = 0.0
+
+    # Valores Devolvidos = vl_saldo_reman_tesouro + vl_saldo_reman_convenente
+    vl_devolvidos = (
+        (dff["valor_saldo_tesouro"].sum()          if "valor_saldo_tesouro"          in dff.columns else 0) +
+        (dff["vl_saldo_reman_convenente"].sum()    if "vl_saldo_reman_convenente"    in dff.columns else 0)
+    )
 
     k1.metric(
         "📋 Convênios",
@@ -339,25 +367,25 @@ def render():
     )
     k2.metric(
         "💰 Valor Global",
-        fmt_brl(dff["valor_global"].sum() if "valor_global" in dff.columns else 0)
+        fmt_brl(vl_global)
     )
     k3.metric(
-        "📥 Valor Repasse",
-        fmt_brl(dff["valor_repasse"].sum() if "valor_repasse" in dff.columns else 0)
+        "📤 Valor Liberado",
+        fmt_brl(vl_liberado)
     )
     k4.metric(
         "💳 Contrapartida",
         fmt_brl(dff["valor_contrapartida"].sum() if "valor_contrapartida" in dff.columns else 0)
     )
     k5.metric(
-        "✅ Valor Pago",          
-        fmt_brl(dff["valor_pago"].sum() if "valor_pago" in dff.columns else 0)
+        "🏦 Saldo em Conta",
+        fmt_brl(vl_saldo)
     )
     k6.metric(
-        "🏦 Saldo em Conta",     
-        fmt_brl(dff["valor_saldo_conta"].sum() if "valor_saldo_conta" in dff.columns else 0)
+        "↩️ Valores Devolvidos",
+        fmt_brl(vl_devolvidos)
     )
-    st.divider()
+
 
     # ── Gráficos — Linha 1 ────────────────────────────────────────────────
     g1, g2 = st.columns(2, gap="large")

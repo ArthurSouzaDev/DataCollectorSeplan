@@ -49,7 +49,7 @@ HEADERS = {
 }
 
 COLUNAS_SAIDA = {
-    # ── Convênio ──────────────────────────────────────────────────────────────
+    # ── Convênio ──────────────────────────────────────────────────────────────────
     "nr_convenio":                "nr_convenio",
     "id_proposta":                "id_proposta",
     "dia_assin_conv":             "dt_assinatura",
@@ -64,44 +64,44 @@ COLUNAS_SAIDA = {
     "vl_desembolsado_conv":       "valor_desembolsado",
     "vl_saldo_reman_tesouro":     "valor_saldo_tesouro",
 
-    # ── Proposta ──────────────────────────────────────────────────────────────
+    # ── NOVOS — necessários para KPIs corretos ────────────────────────────────────
+    "vl_ingresso_contrapartida":  "vl_ingresso_contrapartida",   # ← Valor Liberado
+    "vl_rendimento_aplicacao":    "vl_rendimento_aplicacao",     # ← Valor Liberado
+    "vl_saldo_reman_convenente":  "vl_saldo_reman_convenente",   # ← Valores Devolvidos
+
+    # ── Proposta ──────────────────────────────────────────────────────────────────
     "nr_proposta":                "nr_proposta",
     "ano_prop":                   "ano_proposta",
     "modalidade_proposta":        "modalidade",
     "nm_programa":                "nome_programa",
 
-    # ── Proponente / Município ────────────────────────────────────────────────
-    # município: prioridade para nm_munic_proponente; munic_proponente é fallback
-    # a função renomear_colunas() garante que apenas UMA delas vira municipio_beneficiario
-    "nm_munic_proponente":        "municipio_beneficiario",   # ← preferencial
-    "munic_proponente":           "municipio_beneficiario",   # ← fallback
-
-    "nm_proponente":              "proponente",               # nome da entidade (NÃO é município)
+    # ── Proponente / Município ────────────────────────────────────────────────────
+    "nm_munic_proponente":        "municipio_beneficiario",
+    "munic_proponente":           "municipio_beneficiario",
+    "nm_proponente":              "proponente",
     "cnpj_proponente":            "cnpj_proponente",
     "natureza_juridica":          "natureza_juridica",
     "uf_proponente":              "uf",
 
-    # ── Órgão ─────────────────────────────────────────────────────────────────
-    # superior: prioridade para nm_orgao_sup_conv; desc_orgao_sup é fallback
-    "nm_orgao_sup_conv":          "orgao_superior",           # ← preferencial
-    "desc_orgao_sup":             "orgao_superior",           # ← fallback
+    # ── Órgão ─────────────────────────────────────────────────────────────────────
+    "nm_orgao_sup_conv":          "orgao_superior",
+    "desc_orgao_sup":             "orgao_superior",
+    "nm_orgao_conv":              "orgao_concedente",
+    "desc_orgao":                 "orgao_concedente",
 
-    # concedente: prioridade para nm_orgao_conv; desc_orgao é fallback
-    "nm_orgao_conv":              "orgao_concedente",         # ← preferencial
-    "desc_orgao":                 "orgao_concedente",         # ← fallback
-
-    # ── Emenda ────────────────────────────────────────────────────────────────
+    # ── Emenda ────────────────────────────────────────────────────────────────────
     "nm_parlamentar":             "parlamentar",
     "tipo_parlamentar":           "tipo_parlamentar",
     "nr_emenda":                  "nr_emenda",
     "valor_emenda_custeio":       "valor_custeio",
     "valor_emenda_investimento":  "valor_investimento",
     "ano_emenda":                 "ano_emenda",
-     # ── Financeiro extra ──────────────────────────────────────────────────
-    "vl_saldo_conta":           "valor_saldo_conta",   # ← ADICIONAR
-    "valor_pago":               "valor_pago",           # ← ADICIONAR (idempotente)
 
+    # ── Financeiro ────────────────────────────────────────────────────────────────
+    "vl_saldo_conta":             "valor_saldo_conta",
+    "valor_pago":                 "valor_pago",
 }
+
 
 
 
@@ -381,14 +381,14 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
     else:
         print("  [AVISO] Coluna 'dia_assin_conv' não encontrada — sem filtro de ano")
 
-    # ── Diagnóstico do formato bruto ANTES de converter ──────────────────
+    # ── Diagnóstico RAW antes de converter ───────────────────────────────────────
     if "vl_saldo_conta" in df.columns:
         amostra = df["vl_saldo_conta"].dropna().astype(str).str.strip().head(5).tolist()
         print(f"  [SALDO RAW] Amostra bruta vl_saldo_conta: {amostra}")
 
     df = converter_valores(df)
 
-    # ── Alias PRIMEIRO — nome estável antes do dedup ──────────────────────
+    # ── Alias ANTES do dedup ──────────────────────────────────────────────────────
     ALIASES_SALDO = [
         "vl_saldo_conta", "saldo_conta",
         "vl_saldo_ctabancaria", "valor_saldo_ctabancaria",
@@ -403,7 +403,12 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
         df["valor_saldo_conta"] = 0.0
         print("  [SALDO CONTA] Coluna ausente — preenchida com 0.0")
 
-    # ── Dedup ÚNICO por nr_convenio — após alias, nome já é estável ───────
+    # ── Proteção: clip de negativos antes do dedup ────────────────────────────────
+    df["valor_saldo_conta"] = pd.to_numeric(
+        df["valor_saldo_conta"], errors="coerce"
+    ).fillna(0.0).clip(lower=0)
+
+    # ── Dedup ÚNICO por nr_convenio ───────────────────────────────────────────────
     if "nr_convenio" in df.columns:
         antes_dedup = len(df)
         df = (
@@ -416,12 +421,12 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
     else:
         print("  [AVISO] Coluna 'nr_convenio' não encontrada — dedup ignorado")
 
-    # ── Relatório final ───────────────────────────────────────────────────
     saldo_total = df["valor_saldo_conta"].sum()
     print(f"  Convênios mantidos:  {len(df):,}")
     print(f"  Saldo conta total:   R$ {saldo_total:,.2f}  ← conferir vs Transferegov")
 
     return df
+
 
 
 def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
