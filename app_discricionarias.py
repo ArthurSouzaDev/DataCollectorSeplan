@@ -166,34 +166,50 @@ def load_discricionarias() -> pd.DataFrame:
     if not os.path.exists(CSV_PATH):
         return pd.DataFrame()
 
+    # ── Detecta separador ────────────────────────────────────────────────
     with open(CSV_PATH, "r", encoding="utf-8-sig") as f:
         primeira_linha = f.readline()
-
     sep = ";" if ";" in primeira_linha else ("\t" if "\t" in primeira_linha else ",")
-    df  = pd.read_csv(CSV_PATH, sep=sep, encoding="utf-8-sig", low_memory=False)
-    df  = harmonizar_colunas(df)
+
+    df = pd.read_csv(CSV_PATH, sep=sep, encoding="utf-8-sig", low_memory=False)
+    df = harmonizar_colunas(df)
 
     if df.empty:
         return df
 
-    for col in ["valor_global", "valor_repasse", "valor_contrapartida",
-                "valor_empenhado", "valor_desembolsado"]:
+    # ── Aliases para saldo em conta (tolerância de nome bruto) ───────────
+    for alias in ["vl_saldo_conta", "saldo_conta", "vl_saldo_ctabancaria"]:
+        if alias in df.columns and "valor_saldo_conta" not in df.columns:
+            df = df.rename(columns={alias: "valor_saldo_conta"})
+            break
+
+    # ── Garante colunas obrigatórias ─────────────────────────────────────
+    if "natureza_juridica" not in df.columns:
+        df["natureza_juridica"] = "Não informado"
+    if "valor_saldo_conta" not in df.columns:
+        df["valor_saldo_conta"] = 0.0
+    if "valor_pago" not in df.columns:
+        df["valor_pago"] = 0.0
+
+    # ── Converte colunas numéricas ────────────────────────────────────────
+    for col in [
+        "valor_global", "valor_repasse", "valor_contrapartida",
+        "valor_empenhado", "valor_desembolsado",
+        "valor_pago", "valor_saldo_conta",
+    ]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0)
 
+    # ── Normaliza colunas de ano ──────────────────────────────────────────
     for col in ["ano_proposta", "ano_assinatura"]:
         if col in df.columns:
             df[col] = df[col].astype(str).str.replace(".0", "", regex=False)
 
-    if "natureza_juridica" not in df.columns:
-        df["natureza_juridica"] = "Não informado"
-
-    for col in ["situacao", "orgao_concedente", "municipio_beneficiario", "natureza_juridica"]:
-        if col in df.columns:
-            df[col] = df[col].astype("category")
-
-    for col in ["situacao", "orgao_concedente", "municipio_beneficiario",
-            "natureza_juridica", "proponente"]:   # ← adiciona proponente
+    # ── Converte colunas categóricas ─────────────────────────────────────
+    for col in [
+        "situacao", "orgao_concedente", "municipio_beneficiario",
+        "natureza_juridica", "proponente",
+    ]:
         if col in df.columns:
             df[col] = df[col].astype("category")
 
@@ -314,13 +330,33 @@ def render():
     if f_prop != "Todos" and "proponente"             in dff.columns:  # ← NOVO
         dff = dff[dff["proponente"] == f_prop]
 
-    # ── KPIs ──────────────────────────────────────────────────────────────
-    k1, k2, k3, k4 = st.columns(4)
-    k1.metric("📋 Total de Convênios",  f"{len(dff):,}".replace(",", "."))
-    k2.metric("💰 Valor Global",        fmt_brl(dff["valor_global"].sum()        if "valor_global"        in dff.columns else 0))
-    k3.metric("📥 Valor Repasse",       fmt_brl(dff["valor_repasse"].sum()       if "valor_repasse"       in dff.columns else 0))
-    k4.metric("💳 Valor Contrapartida", fmt_brl(dff["valor_contrapartida"].sum() if "valor_contrapartida" in dff.columns else 0))
+# ── KPIs ──────────────────────────────────────────────────────────────────────
+    k1, k2, k3, k4, k5, k6 = st.columns(6)
 
+    k1.metric(
+        "📋 Convênios",
+        f"{len(dff):,}".replace(",", ".")
+    )
+    k2.metric(
+        "💰 Valor Global",
+        fmt_brl(dff["valor_global"].sum() if "valor_global" in dff.columns else 0)
+    )
+    k3.metric(
+        "📥 Valor Repasse",
+        fmt_brl(dff["valor_repasse"].sum() if "valor_repasse" in dff.columns else 0)
+    )
+    k4.metric(
+        "💳 Contrapartida",
+        fmt_brl(dff["valor_contrapartida"].sum() if "valor_contrapartida" in dff.columns else 0)
+    )
+    k5.metric(
+        "✅ Valor Pago",          
+        fmt_brl(dff["valor_pago"].sum() if "valor_pago" in dff.columns else 0)
+    )
+    k6.metric(
+        "🏦 Saldo em Conta",     
+        fmt_brl(dff["valor_saldo_conta"].sum() if "valor_saldo_conta" in dff.columns else 0)
+    )
     st.divider()
 
     # ── Gráficos — Linha 1 ────────────────────────────────────────────────
@@ -460,16 +496,57 @@ def render():
             )
             st.plotly_chart(fig, use_container_width=True)
 
+    st.divider()
+    st.markdown("#### 💹 Execução Financeira")
+
+    ef1, ef2 = st.columns([2, 1])
+
+    with ef1:
+        # Funil: Repasse → Desembolsado → Pago
+        vl_repasse     = dff["valor_repasse"].sum()     if "valor_repasse"     in dff.columns else 0
+        vl_desembolsado= dff["valor_desembolsado"].sum()if "valor_desembolsado"in dff.columns else 0
+        vl_pago        = dff["valor_pago"].sum()        if "valor_pago"        in dff.columns else 0
+
+        fig_funil = go.Figure(go.Funnel(
+            y=["Valor Repasse", "Valor Desembolsado", "Valor Pago"],
+            x=[vl_repasse, vl_desembolsado, vl_pago],
+            textinfo="value+percent initial",
+            texttemplate=[
+                fmt_brl(vl_repasse)      + "<br>100%",
+                fmt_brl(vl_desembolsado) + "<br>%{percentInitial}",
+                fmt_brl(vl_pago)         + "<br>%{percentInitial}",
+            ],
+            marker=dict(color=["#1f77b4", "#2ca02c", "#d62728"]),
+        ))
+        fig_funil.update_layout(
+            title="🔽 Funil de Execução — Repasse → Desembolsado → Pago",
+            height=380,
+            margin=dict(l=10, r=10, t=50, b=10)
+        )
+        st.plotly_chart(fig_funil, use_container_width=True)
+
+    with ef2:
+        # Cards de % execução
+        pct_desemb = (vl_desembolsado / vl_repasse * 100) if vl_repasse > 0 else 0
+        pct_pago   = (vl_pago / vl_repasse * 100)         if vl_repasse > 0 else 0
+        saldo      = dff["valor_saldo_conta"].sum()        if "valor_saldo_conta" in dff.columns else 0
+
+        st.metric("📊 % Desembolsado / Repasse", f"{pct_desemb:.1f}%")
+        st.metric("📊 % Pago / Repasse",         f"{pct_pago:.1f}%")
+        st.metric("🏦 Saldo Total em Conta",     fmt_brl(saldo))
+
     # ── Tabela + Download ──────────────────────────────────────────────────
     with st.expander("🔍 Dados detalhados"):
         colunas_tabela = [c for c in [
             "nr_convenio", "situacao", "municipio_beneficiario",
-            "proponente",
-            "orgao_concedente", "orgao_superior", "modalidade",
-            "natureza_juridica", "valor_global", "valor_repasse",
-            "valor_contrapartida", "valor_empenhado", "valor_desembolsado",
+            "proponente", "orgao_concedente", "orgao_superior", "modalidade",
+            "natureza_juridica",
+            "valor_global", "valor_repasse", "valor_contrapartida",
+            "valor_empenhado", "valor_desembolsado",
+            "valor_pago",         # ← NOVO
+            "valor_saldo_conta",  # ← NOVO
             "dt_assinatura",
-        ] if c in dff.columns]
+        ] if c in dff.columns]  
 
         st.dataframe(
             dff[colunas_tabela].sort_values("valor_repasse", ascending=False)
