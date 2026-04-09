@@ -19,6 +19,7 @@ ALIASES_COLUNAS = {
     "desc_orgao":       "orgao_concedente",
 }
 
+
 COLUNAS_ESSENCIAIS = [
     "situacao",
     "municipio_beneficiario",
@@ -36,6 +37,7 @@ ALIASES_ESSENCIAIS = {
     "valor_repasse":          ["valor_repasse", "vl_repasse_conv", "vl_repasse_prop"],
     "natureza_juridica":      ["natureza_juridica"],
 }
+
 
 
 # ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -190,6 +192,11 @@ def load_discricionarias() -> pd.DataFrame:
         if col in df.columns:
             df[col] = df[col].astype("category")
 
+    for col in ["situacao", "orgao_concedente", "municipio_beneficiario",
+            "natureza_juridica", "proponente"]:   # ← adiciona proponente
+        if col in df.columns:
+            df[col] = df[col].astype("category")
+
     return df
 
 
@@ -247,29 +254,48 @@ def render():
 
     # ── Filtros ────────────────────────────────────────────────────────────
     with st.expander("🔎 Filtros", expanded=True):
-        c1, c2, c3, c4, c5, c6 = st.columns(6)   # ✅ FIX 4: 6 colunas
+        c1, c2, c3, c4, c5, c6 = st.columns(6)
 
         anos_ass  = (sorted(pd.to_numeric(df["ano_assinatura"], errors="coerce")
                             .dropna().astype(int).unique().tolist())
-                     if "ano_assinatura" in df.columns else [])
+                    if "ano_assinatura" in df.columns else [])
         anos_prop = (sorted(pd.to_numeric(df["ano_proposta"], errors="coerce")
                             .dropna().astype(int).unique().tolist())
-                     if "ano_proposta" in df.columns else [])
+                    if "ano_proposta" in df.columns else [])
         sits   = (["Todas"] + sorted(df["situacao"].dropna().unique().tolist())
-                  if "situacao" in df.columns else ["Todas"])
+                if "situacao" in df.columns else ["Todas"])
         orgaos = (["Todos"] + sorted(df["orgao_concedente"].dropna().unique().tolist())
-                  if "orgao_concedente" in df.columns else ["Todos"])
+                if "orgao_concedente" in df.columns else ["Todos"])
         munis  = (["Todos"] + sorted(df["municipio_beneficiario"].dropna().unique().tolist())
-                  if "municipio_beneficiario" in df.columns else ["Todos"])
+                if "municipio_beneficiario" in df.columns else ["Todos"])
         nats   = (["Todas"] + sorted(df["natureza_juridica"].dropna().unique().tolist())
-                  if "natureza_juridica" in df.columns else ["Todas"])
+                if "natureza_juridica" in df.columns else ["Todas"])
 
-        f_ano_ass  = c1.multiselect("Ano Assinatura",   anos_ass,  placeholder="Todos", key="disc_ano_ass")
-        f_ano_prop = c2.multiselect("Ano Proposta",     anos_prop, placeholder="Todos", key="disc_ano_prop")
-        f_sit      = c3.selectbox("Situação",           sits,      key="disc_sit")
-        f_org      = c4.selectbox("Órgão Concedente",   orgaos,    key="disc_org")
-        f_muni     = c5.selectbox("Proponente",          munis,     key="disc_muni")   
-        f_nat      = c6.selectbox("Natureza Jurídica",  nats,      key="disc_nat")    
+        f_ano_ass  = c1.multiselect("Ano Assinatura",  anos_ass,  placeholder="Todos", key="disc_ano_ass")
+        f_ano_prop = c2.multiselect("Ano Proposta",    anos_prop, placeholder="Todos", key="disc_ano_prop")
+        f_sit      = c3.selectbox("Situação",          sits,      key="disc_sit")
+        f_org      = c4.selectbox("Órgão Concedente",  orgaos,    key="disc_org")
+        f_muni     = c5.selectbox("Município",         munis,     key="disc_muni")
+        f_nat      = c6.selectbox("Natureza Jurídica", nats,      key="disc_nat")
+
+        # ── Filtro de Proponente — dependente da Natureza Jurídica ────────────
+        if f_nat != "Todas" and "proponente" in df.columns and "natureza_juridica" in df.columns:
+            df_nat_filtrado = df[df["natureza_juridica"] == f_nat]
+            proponentes = (["Todos"] + 
+                        sorted(df_nat_filtrado["proponente"].dropna().unique().tolist()))
+        elif "proponente" in df.columns:
+            proponentes = ["Todos"] + sorted(df["proponente"].dropna().unique().tolist())
+        else:
+            proponentes = ["Todos"]
+
+        if "proponente" in df.columns:
+            f_prop = st.selectbox(
+                f"🏛️ Proponente{' (' + f_nat + ')' if f_nat != 'Todas' else ''}",
+                proponentes,
+                key="disc_proponente"
+            )
+        else:
+            f_prop = "Todos"
 
     # ── Aplicação dos filtros ──────────────────────────────────────────────
     dff = df.copy()
@@ -277,14 +303,16 @@ def render():
         dff = dff[pd.to_numeric(dff["ano_assinatura"], errors="coerce").isin(f_ano_ass)]
     if f_ano_prop and "ano_proposta" in dff.columns:
         dff = dff[pd.to_numeric(dff["ano_proposta"], errors="coerce").isin(f_ano_prop)]
-    if f_sit  != "Todas" and "situacao"               in dff.columns:
+    if f_sit  != "Todas" and "situacao"              in dff.columns:
         dff = dff[dff["situacao"] == f_sit]
-    if f_org  != "Todos" and "orgao_concedente"        in dff.columns:
+    if f_org  != "Todos" and "orgao_concedente"       in dff.columns:
         dff = dff[dff["orgao_concedente"] == f_org]
-    if f_muni != "Todos" and "municipio_beneficiario"  in dff.columns:
+    if f_muni != "Todos" and "municipio_beneficiario" in dff.columns:
         dff = dff[dff["municipio_beneficiario"] == f_muni]
-    if f_nat  != "Todas" and "natureza_juridica"       in dff.columns:
+    if f_nat  != "Todas" and "natureza_juridica"      in dff.columns:
         dff = dff[dff["natureza_juridica"] == f_nat]
+    if f_prop != "Todos" and "proponente"             in dff.columns:  # ← NOVO
+        dff = dff[dff["proponente"] == f_prop]
 
     # ── KPIs ──────────────────────────────────────────────────────────────
     k1, k2, k3, k4 = st.columns(4)
@@ -436,6 +464,7 @@ def render():
     with st.expander("🔍 Dados detalhados"):
         colunas_tabela = [c for c in [
             "nr_convenio", "situacao", "municipio_beneficiario",
+            "proponente",
             "orgao_concedente", "orgao_superior", "modalidade",
             "natureza_juridica", "valor_global", "valor_repasse",
             "valor_contrapartida", "valor_empenhado", "valor_desembolsado",
