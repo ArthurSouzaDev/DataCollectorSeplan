@@ -26,6 +26,7 @@ COLUNAS_ESSENCIAIS = [
     "valor_global",
     "valor_repasse",
     "natureza_juridica",
+    ""
 ]
 
 
@@ -36,11 +37,14 @@ def fmt_brl(v: float) -> str:
 
 def harmonizar_colunas(df: pd.DataFrame) -> pd.DataFrame:
     """Ajusta nomes antigos/brutos para os nomes esperados pela interface."""
-    renomear = {
-        origem: destino
-        for origem, destino in ALIASES_COLUNAS.items()
-        if origem in df.columns and destino not in df.columns
-    }
+    renomear = {}
+    for origem, destino in ALIASES_COLUNAS.items():
+        if origem in df.columns and destino not in df.columns:
+            renomear[origem] = destino
+        elif origem in df.columns and destino in df.columns:
+            # ← NOVO: destino já existe, dropa a duplicata em vez de sobrescrever
+            print(f"  [HARMONIZAR] '{destino}' já existe — descartando '{origem}'")
+            df = df.drop(columns=[origem])
     if renomear:
         df = df.rename(columns=renomear)
     return df
@@ -252,7 +256,7 @@ def render():
         f_ano_prop = c2.multiselect("Ano Proposta",    anos_prop, placeholder="Todos", key="disc_ano_prop")
         f_sit      = c3.selectbox("Situação",          sits,      key="disc_sit")
         f_org      = c4.selectbox("Órgão Concedente",  orgaos,    key="disc_org")
-        f_nat      = c5.selectbox("Proponente",        nats,      key="disc_nat")
+        f_nat      = c5.selectbox("Natureza jurídica",        nats,      key="disc_nat")
 
     # ── Aplicação ───────────────────────────────────────────────────────────
 
@@ -445,7 +449,8 @@ def render():
             "orgao_concedente", "orgao_superior", "modalidade",
             "natureza_juridica",          
             "valor_global", "valor_repasse", "valor_contrapartida",
-            "valor_empenhado", "valor_desembolsado", "dt_assinatura"
+            "valor_empenhado", "valor_desembolsado", "dt_assinatura",
+
         ] if c in dff.columns]
 
         st.dataframe(

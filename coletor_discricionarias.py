@@ -47,6 +47,7 @@ HEADERS = {
 }
 
 COLUNAS_SAIDA = {
+    # ── Convênio ──────────────────────────────────────────────────────────────
     "nr_convenio":                "nr_convenio",
     "id_proposta":                "id_proposta",
     "dia_assin_conv":             "dt_assinatura",
@@ -60,20 +61,34 @@ COLUNAS_SAIDA = {
     "vl_empenhado_conv":          "valor_empenhado",
     "vl_desembolsado_conv":       "valor_desembolsado",
     "vl_saldo_reman_tesouro":     "valor_saldo_tesouro",
+
+    # ── Proposta ──────────────────────────────────────────────────────────────
     "nr_proposta":                "nr_proposta",
     "ano_prop":                   "ano_proposta",
     "modalidade_proposta":        "modalidade",
     "nm_programa":                "nome_programa",
-    "uf_proponente":              "uf",
-    "munic_proponente":           "municipio_beneficiario",
-    "nm_munic_proponente":        "municipio_beneficiario",
-    "nm_proponente":              "proponente",
+
+    # ── Proponente / Município ────────────────────────────────────────────────
+    # município: prioridade para nm_munic_proponente; munic_proponente é fallback
+    # a função renomear_colunas() garante que apenas UMA delas vira municipio_beneficiario
+    "nm_munic_proponente":        "municipio_beneficiario",   # ← preferencial
+    "munic_proponente":           "municipio_beneficiario",   # ← fallback
+
+    "nm_proponente":              "proponente",               # nome da entidade (NÃO é município)
     "cnpj_proponente":            "cnpj_proponente",
-    "natureza_juridica":          "natureza_juridica", 
-    "desc_orgao_sup":             "orgao_superior",
-    "nm_orgao_sup_conv":          "orgao_superior",
-    "desc_orgao":                 "orgao_concedente",
-    "nm_orgao_conv":              "orgao_concedente",
+    "natureza_juridica":          "natureza_juridica",
+    "uf_proponente":              "uf",
+
+    # ── Órgão ─────────────────────────────────────────────────────────────────
+    # superior: prioridade para nm_orgao_sup_conv; desc_orgao_sup é fallback
+    "nm_orgao_sup_conv":          "orgao_superior",           # ← preferencial
+    "desc_orgao_sup":             "orgao_superior",           # ← fallback
+
+    # concedente: prioridade para nm_orgao_conv; desc_orgao é fallback
+    "nm_orgao_conv":              "orgao_concedente",         # ← preferencial
+    "desc_orgao":                 "orgao_concedente",         # ← fallback
+
+    # ── Emenda ────────────────────────────────────────────────────────────────
     "nm_parlamentar":             "parlamentar",
     "tipo_parlamentar":           "tipo_parlamentar",
     "nr_emenda":                  "nr_emenda",
@@ -81,6 +96,7 @@ COLUNAS_SAIDA = {
     "valor_emenda_investimento":  "valor_investimento",
     "ano_emenda":                 "ano_emenda",
 }
+
 
 
 # --- UTILITARIOS --------------------------------------------------------------
@@ -265,10 +281,15 @@ def converter_valores(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def renomear_colunas(df: pd.DataFrame) -> pd.DataFrame:
-    mapa = {k: v for k, v in COLUNAS_SAIDA.items() if k in df.columns}
+    mapa = {}
+    for origem, destino in COLUNAS_SAIDA.items():
+        if origem in df.columns:
+            # Evita sobrescrever coluna destino já mapeada por outra origem
+            if destino not in mapa.values():
+                mapa[origem] = destino
+            else:
+                print(f"  [AVISO] Coluna destino '{destino}' já mapeada — ignorando '{origem}'")
     return df.rename(columns=mapa)
-
-
 # --- PROCESSAMENTO ------------------------------------------------------------
 
 def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
