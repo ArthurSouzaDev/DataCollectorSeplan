@@ -268,8 +268,8 @@ def render():
         f_ano_prop = c2.multiselect("Ano Proposta",     anos_prop, placeholder="Todos", key="disc_ano_prop")
         f_sit      = c3.selectbox("Situação",           sits,      key="disc_sit")
         f_org      = c4.selectbox("Órgão Concedente",   orgaos,    key="disc_org")
-        f_muni     = c5.selectbox("Município",          munis,     key="disc_muni")   # ✅ c5
-        f_nat      = c6.selectbox("Natureza Jurídica",  nats,      key="disc_nat")    # ✅ c6
+        f_muni     = c5.selectbox("Proponente",          munis,     key="disc_muni")   
+        f_nat      = c6.selectbox("Natureza Jurídica",  nats,      key="disc_nat")    
 
     # ── Aplicação dos filtros ──────────────────────────────────────────────
     dff = df.copy()
