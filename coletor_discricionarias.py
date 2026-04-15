@@ -13,13 +13,13 @@ os.makedirs(DATA_DIR,  exist_ok=True)
 os.makedirs(CACHE_DIR, exist_ok=True)
 
 REPOSITORIO = "http://repositorio.dados.gov.br/seges/detru"
-URL_PAGAMENTO = "https://repositorio.dados.gov.br/seges/detru/pagamento.csv"
-CACHE_PAGAMENTO = os.path.join(CACHE_DIR, "pagamento.csv")
+URL_PAGAMENTO = "https://repositorio.dados.gov.br/seges/detru/siconv_pagamento.csv.zip"
+CACHE_PAGAMENTO = os.path.join(CACHE_DIR, "siconv_pagamento.csv")
 
 ARQUIVOS = {
     "proposta":  "siconv_proposta.csv.zip",
     "convenio":  "siconv_convenio.csv.zip",
-    "emenda":    "siconv_emenda.csv.zip",
+    "emenda":    "siconv_emenda.csv.zip",   
     "programa":  "siconv_programa.csv.zip",
 }
 
@@ -106,24 +106,48 @@ def _detectar_sep(caminho_ou_conteudo: str) -> str:
     return ";" if ";" in linha else ("\t" if "\t" in linha else ",")
 
 def baixar_pagamento(forcar: bool = False) -> pd.DataFrame:
-    """Baixa pagamento.csv e retorna agregado por convênio."""
+    """Baixa siconv_pagamento.csv.zip, extrai o CSV e agrega por convênio."""
     if not forcar and os.path.exists(CACHE_PAGAMENTO):
         print("[PAGAMENTO] Usando cache...")
         sep = _detectar_sep(CACHE_PAGAMENTO)
-        df  = pd.read_csv(CACHE_PAGAMENTO, sep=sep, encoding="utf-8-sig", low_memory=False)
+        df = pd.read_csv(
+            CACHE_PAGAMENTO,
+            sep=sep,
+            encoding="utf-8-sig",
+            low_memory=False,
+            on_bad_lines="skip",
+        )
     else:
         print("[PAGAMENTO] Baixando...")
         resp = requests.get(URL_PAGAMENTO, headers=HEADERS, timeout=300)
         resp.raise_for_status()
-        conteudo = resp.content.decode("utf-8-sig")
-        sep = _detectar_sep(conteudo)
-        df  = pd.read_csv(io.StringIO(conteudo), sep=sep, low_memory=False)
-        df.to_csv(CACHE_PAGAMENTO, index=False, sep=";", encoding="utf-8-sig")
 
-    # Normaliza nomes de colunas
+        with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
+            nome_interno = zf.namelist()[0]
+            with zf.open(nome_interno) as f:
+                dados_csv = f.read()
+
+        # tenta UTF-8 primeiro; se falhar, latin-1
+        try:
+            conteudo = dados_csv.decode("utf-8-sig")
+            encoding_usado = "utf-8-sig"
+        except UnicodeDecodeError:
+            conteudo = dados_csv.decode("latin-1")
+            encoding_usado = "latin-1"
+
+        sep = _detectar_sep(conteudo)
+        df = pd.read_csv(
+            io.StringIO(conteudo),
+            sep=sep,
+            low_memory=False,
+            on_bad_lines="skip",
+        )
+
+        df.to_csv(CACHE_PAGAMENTO, index=False, sep=";", encoding="utf-8-sig")
+        print(f"  [PAGAMENTO] CSV extraído do ZIP com encoding {encoding_usado}")
+
     df.columns = df.columns.str.strip().str.lower()
 
-    # Identifica colunas com tolerância de nome
     col_vl = next(
         (c for c in df.columns if c in ["vl_pago", "valor_pago", "vl_valor_pago"]),
         None
@@ -138,15 +162,26 @@ def baixar_pagamento(forcar: bool = False) -> pd.DataFrame:
         print("  [PAGAMENTO] ⚠️ Colunas esperadas não encontradas — valor_pago zerado.")
         return pd.DataFrame(columns=["nr_convenio", "valor_pago"])
 
+    df[col_nr] = (
+        df[col_nr].astype(str)
+        .str.strip()
+        .str.replace(r"\.0$", "", regex=True)
+        .str.replace(r"[^\d]", "", regex=True)
+    )
+
+    df[col_vl] = pd.to_numeric(df[col_vl], errors="coerce").fillna(0.0)
+
     agg = (
         df.groupby(col_nr)[col_vl]
         .sum()
         .reset_index()
         .rename(columns={col_nr: "nr_convenio", col_vl: "valor_pago"})
     )
+
     agg["nr_convenio"] = agg["nr_convenio"].astype(str).str.strip()
     print(f"  [PAGAMENTO] {len(agg):,} convênios com pagamento agregado.")
-    return agg   # ← return obrigatório
+    
+    return agg
 
 def verificar_data_carga() -> str:
     url = f"{REPOSITORIO}/data_carga_siconv.txt"
@@ -659,6 +694,9 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
         df_base["valor_saldo_conta"] = 0.0
         print("  [SALDO CONTA] Coluna ausente — preenchida com 0.0")
 
+
+
+
     # ── Cruzamento com pagamento.csv ──────────────────────────────────────
     print("\n[PAGAMENTO] Iniciando cruzamento...")
     df_pag = baixar_pagamento(forcar=forcar)
@@ -668,8 +706,16 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
         col_base_nr = next((c for c in CHAVES_CONV if c in df_base.columns), None)
 
         if col_base_nr:
-            df_base[col_base_nr] = df_base[col_base_nr].astype(str).str.strip()
-            df_pag["nr_convenio"] = df_pag["nr_convenio"].astype(str).str.strip()
+            df_base[col_base_nr] = normalizar_chave_convenio(df_base[col_base_nr])
+            df_pag["nr_convenio"] = normalizar_chave_convenio(df_pag["nr_convenio"])
+
+            print("  [DEBUG] Base nr_convenio amostra:",
+                df_base[col_base_nr].dropna().astype(str).head(10).tolist())
+            print("  [DEBUG] Pag  nr_convenio amostra:",
+                df_pag["nr_convenio"].dropna().astype(str).head(10).tolist())
+
+            intersec = set(df_base[col_base_nr].dropna().unique()) & set(df_pag["nr_convenio"].dropna().unique())
+            print(f"  [DEBUG] Interseção de chaves: {len(intersec):,}")
 
             antes = len(df_base)
             df_base = pd.merge(
@@ -679,10 +725,8 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
             )
             df_base = df_base.loc[:, ~df_base.columns.duplicated()]
 
-            match_pag = df_base["valor_pago"].notna().sum() \
-                        if "valor_pago" in df_base.columns else 0
-            print(f"  [MERGE base↔pagamento] {antes:,} → {len(df_base):,} | "
-                  f"com match: {match_pag:,}")
+            match_pag = df_base["valor_pago"].notna().sum() if "valor_pago" in df_base.columns else 0
+            print(f"  [MERGE base↔pagamento] {antes:,} → {len(df_base):,} | com match: {match_pag:,}")
         else:
             print("  [PAGAMENTO] ⚠️ Chave 'nr_convenio' não encontrada em df_base.")
             df_base["valor_pago"] = 0.0
@@ -741,6 +785,13 @@ def diagnosticar():
             print(f"  Linhas:  {len(df):,}")
             print(f"  Colunas: {list(df.columns)}\n")
 
+def normalizar_chave_convenio(serie: pd.Series) -> pd.Series:
+    return (
+        serie.astype(str)
+        .str.strip()
+        .str.replace(r"\.0$", "", regex=True)   # remove final .0
+        .str.replace(r"[^\d]", "", regex=True)  # deixa só números
+    )
 
 # --- ENTRY POINT --------------------------------------------------------------
 
@@ -763,3 +814,4 @@ if __name__ == "__main__":
     else:
         print("Coleta com cache local...")
         consolidar(forcar=False)
+
