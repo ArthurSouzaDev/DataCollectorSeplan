@@ -1,10 +1,3 @@
-# coletor_discricionarias.py
-"""
-Coleta e pre-filtragem dos dados de Discricionarias e Legais do Transferegov.
-Fonte: http://repositorio.dados.gov.br/seges/detru/
-Gera um CSV enxuto (apenas TO) para consumo pelo app.py
-"""
-
 import os
 import io
 import time
