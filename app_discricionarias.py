@@ -331,8 +331,7 @@ def render():
         dff = dff[dff["proponente"] == f_prop]
 
     # ── KPIs ──────────────────────────────────────────────────────────────────────
-    k1, k2, k3, k4, k5, k6 = st.columns(6)
-
+    k1, k2, k3, k4, k5, k6, k7 = st.columns(7)
     # ── Cálculos conforme definição da tela de referência ─────────────────────────
 
     # Valor Global = valor_repasse + valor_contrapartida
@@ -384,6 +383,10 @@ def render():
     k6.metric(
         "↩️ Valores Devolvidos",
         fmt_brl(vl_devolvidos)
+    )
+    k7.metric(
+        "💵 Valor Pago",
+        fmt_brl(dff["valor_pago"].sum() if "valor_pago" in dff.columns else 0)
     )
 
 
@@ -527,8 +530,8 @@ def render():
     st.divider()
     st.markdown("#### 💹 Execução Financeira")
 
-    ef1, ef2 = st.columns([2, 1])
-
+    ef1, ef2 = st.columns(2)
+    
     with ef1:
         # Funil: Repasse → Desembolsado → Pago
         vl_repasse     = dff["valor_repasse"].sum()     if "valor_repasse"     in dff.columns else 0
@@ -562,6 +565,33 @@ def render():
         st.metric("📊 % Desembolsado / Repasse", f"{pct_desemb:.1f}%")
         st.metric("📊 % Pago / Repasse",         f"{pct_pago:.1f}%")
         st.metric("🏦 Saldo Total em Conta",     fmt_brl(saldo))
+
+
+    comparativo_fin = pd.DataFrame({
+        "Etapa": ["Valor Repasse", "Valor Desembolsado", "Valor Pago"],
+        "Valor": [vl_repasse, vl_desembolsado, vl_pago]
+    })
+
+    fig_comp = px.bar(
+        comparativo_fin,
+        x="Etapa",
+        y="Valor",
+        text="Valor",
+        title="📊 Comparativo Financeiro",
+        labels={"Etapa": "", "Valor": "Valor (R$)"}
+    )
+
+    fig_comp.update_traces(
+        texttemplate="R$ %{y:,.0f}",
+        textposition="outside"
+    )
+
+    fig_comp.update_layout(
+        height=380,
+        margin=dict(l=10, r=10, t=50, b=10)
+    )
+
+    st.plotly_chart(fig_comp, use_container_width=True)
 
     # ── Tabela + Download ──────────────────────────────────────────────────
     with st.expander("🔍 Dados detalhados"):
