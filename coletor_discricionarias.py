@@ -1,10 +1,3 @@
-# coletor_discricionarias.py
-"""
-Coleta e pre-filtragem dos dados de Discricionarias e Legais do Transferegov.
-Fonte: http://repositorio.dados.gov.br/seges/detru/
-Gera um CSV enxuto (apenas TO) para consumo pelo app.py
-"""
-
 import os
 import io
 import time
@@ -20,11 +13,13 @@ os.makedirs(DATA_DIR,  exist_ok=True)
 os.makedirs(CACHE_DIR, exist_ok=True)
 
 REPOSITORIO = "http://repositorio.dados.gov.br/seges/detru"
+URL_PAGAMENTO = "https://repositorio.dados.gov.br/seges/detru/siconv_pagamento.csv.zip"
+CACHE_PAGAMENTO = os.path.join(CACHE_DIR, "siconv_pagamento.csv")
 
 ARQUIVOS = {
     "proposta":  "siconv_proposta.csv.zip",
     "convenio":  "siconv_convenio.csv.zip",
-    "emenda":    "siconv_emenda.csv.zip",
+    "emenda":    "siconv_emenda.csv.zip",   
     "programa":  "siconv_programa.csv.zip",
 }
 
@@ -47,6 +42,7 @@ HEADERS = {
 }
 
 COLUNAS_SAIDA = {
+    # ── Convênio ──────────────────────────────────────────────────────────────────
     "nr_convenio":                "nr_convenio",
     "id_proposta":                "id_proposta",
     "dia_assin_conv":             "dt_assinatura",
@@ -60,30 +56,132 @@ COLUNAS_SAIDA = {
     "vl_empenhado_conv":          "valor_empenhado",
     "vl_desembolsado_conv":       "valor_desembolsado",
     "vl_saldo_reman_tesouro":     "valor_saldo_tesouro",
+
+    # ── NOVOS — necessários para KPIs corretos ────────────────────────────────────
+    "vl_ingresso_contrapartida":  "vl_ingresso_contrapartida",   # ← Valor Liberado
+    "vl_rendimento_aplicacao":    "vl_rendimento_aplicacao",     # ← Valor Liberado
+    "vl_saldo_reman_convenente":  "vl_saldo_reman_convenente",   # ← Valores Devolvidos
+
+    # ── Proposta ──────────────────────────────────────────────────────────────────
     "nr_proposta":                "nr_proposta",
     "ano_prop":                   "ano_proposta",
     "modalidade_proposta":        "modalidade",
     "nm_programa":                "nome_programa",
-    "uf_proponente":              "uf",
-    "munic_proponente":           "municipio_beneficiario",
+
+    # ── Proponente / Município ────────────────────────────────────────────────────
     "nm_munic_proponente":        "municipio_beneficiario",
+    "munic_proponente":           "municipio_beneficiario",
     "nm_proponente":              "proponente",
     "cnpj_proponente":            "cnpj_proponente",
-    "natureza_juridica":          "natureza_juridica", 
-    "desc_orgao_sup":             "orgao_superior",
+    "natureza_juridica":          "natureza_juridica",
+    "uf_proponente":              "uf",
+
+    # ── Órgão ─────────────────────────────────────────────────────────────────────
     "nm_orgao_sup_conv":          "orgao_superior",
-    "desc_orgao":                 "orgao_concedente",
+    "desc_orgao_sup":             "orgao_superior",
     "nm_orgao_conv":              "orgao_concedente",
+    "desc_orgao":                 "orgao_concedente",
+
+    # ── Emenda ────────────────────────────────────────────────────────────────────
     "nm_parlamentar":             "parlamentar",
     "tipo_parlamentar":           "tipo_parlamentar",
     "nr_emenda":                  "nr_emenda",
     "valor_emenda_custeio":       "valor_custeio",
     "valor_emenda_investimento":  "valor_investimento",
     "ano_emenda":                 "ano_emenda",
+
+    # ── Financeiro ────────────────────────────────────────────────────────────────
+    "vl_saldo_conta":             "valor_saldo_conta",
+    "valor_pago":                 "valor_pago",
 }
 
 
+
+
 # --- UTILITARIOS --------------------------------------------------------------
+def _detectar_sep(caminho_ou_conteudo: str) -> str:
+    """Detecta separador lendo a primeira linha."""
+    linha = caminho_ou_conteudo.split("\n")[0] if "\n" in caminho_ou_conteudo \
+            else open(caminho_ou_conteudo, encoding="utf-8-sig").readline()
+    return ";" if ";" in linha else ("\t" if "\t" in linha else ",")
+
+def baixar_pagamento(forcar: bool = False) -> pd.DataFrame:
+    """Baixa siconv_pagamento.csv.zip, extrai o CSV e agrega por convênio."""
+    if not forcar and os.path.exists(CACHE_PAGAMENTO):
+        print("[PAGAMENTO] Usando cache...")
+        sep = _detectar_sep(CACHE_PAGAMENTO)
+        df = pd.read_csv(
+            CACHE_PAGAMENTO,
+            sep=sep,
+            encoding="utf-8-sig",
+            low_memory=False,
+            on_bad_lines="skip",
+        )
+    else:
+        print("[PAGAMENTO] Baixando...")
+        resp = requests.get(URL_PAGAMENTO, headers=HEADERS, timeout=300)
+        resp.raise_for_status()
+
+        with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
+            nome_interno = zf.namelist()[0]
+            with zf.open(nome_interno) as f:
+                dados_csv = f.read()
+
+        # tenta UTF-8 primeiro; se falhar, latin-1
+        try:
+            conteudo = dados_csv.decode("utf-8-sig")
+            encoding_usado = "utf-8-sig"
+        except UnicodeDecodeError:
+            conteudo = dados_csv.decode("latin-1")
+            encoding_usado = "latin-1"
+
+        sep = _detectar_sep(conteudo)
+        df = pd.read_csv(
+            io.StringIO(conteudo),
+            sep=sep,
+            low_memory=False,
+            on_bad_lines="skip",
+        )
+
+        df.to_csv(CACHE_PAGAMENTO, index=False, sep=";", encoding="utf-8-sig")
+        print(f"  [PAGAMENTO] CSV extraído do ZIP com encoding {encoding_usado}")
+
+    df.columns = df.columns.str.strip().str.lower()
+
+    col_vl = next(
+        (c for c in df.columns if c in ["vl_pago", "valor_pago", "vl_valor_pago"]),
+        None
+    )
+    col_nr = next(
+        (c for c in df.columns if c in ["nr_convenio", "nr_conv"]),
+        None
+    )
+
+    if col_vl is None or col_nr is None:
+        print(f"  [PAGAMENTO] Colunas disponíveis: {df.columns.tolist()}")
+        print("  [PAGAMENTO] ⚠️ Colunas esperadas não encontradas — valor_pago zerado.")
+        return pd.DataFrame(columns=["nr_convenio", "valor_pago"])
+
+    df[col_nr] = (
+        df[col_nr].astype(str)
+        .str.strip()
+        .str.replace(r"\.0$", "", regex=True)
+        .str.replace(r"[^\d]", "", regex=True)
+    )
+
+    df[col_vl] = pd.to_numeric(df[col_vl], errors="coerce").fillna(0.0)
+
+    agg = (
+        df.groupby(col_nr)[col_vl]
+        .sum()
+        .reset_index()
+        .rename(columns={col_nr: "nr_convenio", col_vl: "valor_pago"})
+    )
+
+    agg["nr_convenio"] = agg["nr_convenio"].astype(str).str.strip()
+    print(f"  [PAGAMENTO] {len(agg):,} convênios com pagamento agregado.")
+    
+    return agg
 
 def verificar_data_carga() -> str:
     url = f"{REPOSITORIO}/data_carga_siconv.txt"
@@ -250,27 +348,61 @@ def filtrar_uf(df: pd.DataFrame, label: str,
     print(f"  [FILTRO UF=TO via '{col}'] {antes:,} → {len(df):,}")
     return df
 
-
 def converter_valores(df: pd.DataFrame) -> pd.DataFrame:
     for col in df.columns:
-        if col.startswith("vl_") or col.startswith("valor_"):
-            df[col] = (
-                df[col].astype(str).str.strip()
-                .str.replace(".", "", regex=False)
-                .str.replace(",", ".", regex=False)
-                .pipe(pd.to_numeric, errors="coerce")
-                .fillna(0.0)
-            )
+        if not (col.startswith("vl_") or col.startswith("valor_")):
+            continue
+
+        amostra = df[col].dropna().astype(str).str.strip().head(100)
+
+        # Conta vírgulas e pontos para determinar o formato real
+        n_virgula = amostra.str.count(",").sum()
+        n_ponto   = amostra.str.count(r"\.").sum()
+
+        tem_virgula     = n_virgula > 0
+        tem_ponto       = n_ponto > 0
+        multiplos_pontos = amostra.str.count(r"\.").max() > 1  # ex: 32.571.009
+
+        serie = df[col].astype(str).str.strip()
+
+        if tem_virgula and tem_ponto:
+            # Formato BR claro: 1.234,56 → remove ponto, troca vírgula por ponto
+            serie = serie.str.replace(".", "", regex=False).str.replace(",", ".", regex=False)
+
+        elif tem_virgula and not tem_ponto:
+            # Só vírgula: 1234,56 → troca vírgula por ponto
+            serie = serie.str.replace(",", ".", regex=False)
+
+        elif not tem_virgula and multiplos_pontos:
+
+            serie = serie.str.replace(".", "", regex=False)
+
+        # else: formato internacional sem separador → não mexe
+
+        df[col] = pd.to_numeric(serie, errors="coerce").fillna(0.0)
+
+        # ── Proteção pós-conversão: saldo não pode exceder repasse ────────────
+        if col == "vl_saldo_conta" and "vl_repasse_conv" in df.columns:
+            repasse = pd.to_numeric(df["vl_repasse_conv"], errors="coerce").fillna(0.0)
+            mascara_invalida = df[col] > repasse * 1.1  # tolerância de 10%
+            if mascara_invalida.sum() > 0:
+                print(f"  [SALDO CONTA] ⚠️ {mascara_invalida.sum()} registros com saldo > repasse "
+                      f"— dividindo por 100 (conversão centavos→reais)")
+                df.loc[mascara_invalida, col] = df.loc[mascara_invalida, col] / 100
+
     return df
 
-
 def renomear_colunas(df: pd.DataFrame) -> pd.DataFrame:
-    mapa = {k: v for k, v in COLUNAS_SAIDA.items() if k in df.columns}
+    mapa = {}
+    for origem, destino in COLUNAS_SAIDA.items():
+        if origem in df.columns:
+            # Evita sobrescrever coluna destino já mapeada por outra origem
+            if destino not in mapa.values():
+                mapa[origem] = destino
+            else:
+                print(f"  [AVISO] Coluna destino '{destino}' já mapeada — ignorando '{origem}'")
     return df.rename(columns=mapa)
-
-
 # --- PROCESSAMENTO ------------------------------------------------------------
-
 def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
     print("\n[CONVENIO]")
     df = baixar_e_extrair("convenio", forcar)
@@ -291,7 +423,6 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
 
         antes = len(df)
         df_filtrado = df[df["ano_assinatura"].isin(FILTROS["anos_assinatura"])]
-
         if len(df_filtrado) == 0:
             print(f"  [AVISO] Filtro ano zerou convenios — mantendo todos ({antes:,})")
         else:
@@ -300,10 +431,76 @@ def processar_convenio(forcar: bool = False) -> pd.DataFrame | None:
     else:
         print("  [AVISO] Coluna 'dia_assin_conv' não encontrada — sem filtro de ano")
 
-    df = converter_valores(df)
-    print(f"  Convenios mantidos: {len(df):,}")
-    return df
+    # ── 1. Diagnóstico RAW ANTES de converter ────────────────────────────────────
+    if "vl_saldo_conta" in df.columns:
+        amostra = df["vl_saldo_conta"].dropna().astype(str).str.strip().head(5).tolist()
+        print(f"  [SALDO RAW] Amostra bruta vl_saldo_conta: {amostra}")
 
+    # ── 2. Converte valores ──────────────────────────────────────────────────────
+    df = converter_valores(df)
+
+    # ── 3. Alias vl_saldo_conta → valor_saldo_conta (APÓS converter) ────────────
+    ALIASES_SALDO = [
+        "vl_saldo_conta", "saldo_conta",
+        "vl_saldo_ctabancaria", "valor_saldo_ctabancaria",
+    ]
+    for alias in ALIASES_SALDO:
+        if alias in df.columns and "valor_saldo_conta" not in df.columns:
+            df = df.rename(columns={alias: "valor_saldo_conta"})
+            print(f"  [SALDO CONTA] '{alias}' → 'valor_saldo_conta'")
+            break
+
+    if "valor_saldo_conta" not in df.columns:
+        df["valor_saldo_conta"] = 0.0
+        print("  [SALDO CONTA] Coluna ausente — preenchida com 0.0")
+
+    # ── 4. Clip negativos ────────────────────────────────────────────────────────
+    df["valor_saldo_conta"] = pd.to_numeric(
+        df["valor_saldo_conta"], errors="coerce"
+    ).fillna(0.0).clip(lower=0)
+
+    # ── 5. Validação cruzada saldo vs repasse (APÓS alias e converter) ───────────
+    if "valor_saldo_conta" in df.columns and "vl_repasse_conv" in df.columns:
+        repasse = pd.to_numeric(df["vl_repasse_conv"], errors="coerce").fillna(0.0)
+        saldo   = df["valor_saldo_conta"]
+
+        mask_invalido = saldo > (repasse * 1.1)
+        qtd_invalidos = mask_invalido.sum()
+
+        if qtd_invalidos > 0:
+            print(f"  [VALIDAÇÃO] ⚠️ {qtd_invalidos} convênios com saldo > repasse")
+            amostra_inv = df.loc[
+                mask_invalido,
+                ["nr_convenio", "vl_repasse_conv", "valor_saldo_conta"]
+            ].head(5)
+            print(f"  [VALIDAÇÃO] Amostra:\n{amostra_inv.to_string()}")
+            df.loc[mask_invalido, "valor_saldo_conta"] = (
+                df.loc[mask_invalido, "valor_saldo_conta"] / 100
+            )
+            print(f"  [VALIDAÇÃO] ✅ Corrigido — dividido por 100")
+        else:
+            print(f"  [VALIDAÇÃO] ✅ Todos os saldos dentro do esperado")
+
+        saldo_pos = df["valor_saldo_conta"].clip(lower=0)
+        print(f"  [SALDO CONTA] Após validação: R$ {saldo_pos.sum():,.2f}")
+
+    # ── 6. Dedup por nr_convenio ─────────────────────────────────────────────────
+    if "nr_convenio" in df.columns:
+        antes_dedup = len(df)
+        df = (
+            df.sort_values("valor_saldo_conta", ascending=False, na_position="last")
+              .drop_duplicates(subset=["nr_convenio"], keep="first")
+              .reset_index(drop=True)
+        )
+        print(f"  [DEDUP nr_convenio] {antes_dedup:,} → {len(df):,}")
+    else:
+        print("  [AVISO] Coluna 'nr_convenio' não encontrada — dedup ignorado")
+
+    saldo_total = df["valor_saldo_conta"].sum()
+    print(f"  Convênios mantidos:  {len(df):,}")
+    print(f"  Saldo conta total:   R$ {saldo_total:,.2f}  ← conferir vs Transferegov")
+
+    return df
 
 def processar_proposta(forcar: bool = False) -> pd.DataFrame | None:
     print("\n[PROPOSTA]")
@@ -401,7 +598,6 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
     print(f"\n[BASE] Propostas TO: {len(df_base):,}")
 
     # ── Join proposta → convenio ──────────────────────────────────────────
-    # ← CORRIGIDO: tenta múltiplas combinações de chave para garantir o match
     CHAVES_POSSIVEIS = ["id_proposta", "nr_proposta"]
 
     col_prop_id = next((c for c in CHAVES_POSSIVEIS if c in df_base.columns), None)
@@ -414,86 +610,167 @@ def consolidar(forcar: bool = False) -> pd.DataFrame | None:
     print(f"  [JOIN] Usando → proposta='{col_prop_id}' | convenio='{col_conv_id}'")
 
     if col_prop_id and col_conv_id:
-        # Deduplica convenio preventivamente
-        df_conv_dedup = df_conv.drop_duplicates(subset=[col_conv_id])
-        print(f"  [DEDUP] Convenios únicos por '{col_conv_id}': "
-              f"{len(df_conv):,} → {len(df_conv_dedup):,}")
+        antes_conv = len(df_conv)
+        df_conv_join = df_conv.drop_duplicates(subset=[col_conv_id], keep="first")
+        if antes_conv != len(df_conv_join):
+            print(f"  [DEDUP JOIN] {antes_conv:,} → {len(df_conv_join):,} "
+                f"(por '{col_conv_id}' para segurança do merge)")
 
         antes = len(df_base)
         df_base = pd.merge(
-            df_base, df_conv_dedup,
+            df_base, df_conv_join,          
             left_on=col_prop_id, right_on=col_conv_id,
             how="left", suffixes=("", "_conv")
         )
         df_base = df_base.loc[:, ~df_base.columns.duplicated()]
 
-        match_rate = df_base[col_conv_id + "_conv" if col_conv_id + "_conv"
-                             in df_base.columns else col_conv_id].notna().sum()
+        col_check = col_conv_id + "_conv" if col_conv_id + "_conv" \
+                    in df_base.columns else col_conv_id
+        match_rate = df_base[col_check].notna().sum()
         print(f"  [MERGE proposta↔convenio] {antes:,} → {len(df_base):,} | "
               f"com match: {match_rate:,}")
     else:
-        print(f"  [AVISO] Nenhuma chave de join encontrada — sem merge com convenio")
+        print("  [AVISO] Nenhuma chave de join encontrada — sem merge com convenio")
         print(f"  Colunas proposta:  {list(df_prop.columns[:15])}")
         print(f"  Colunas convenio:  {list(df_conv.columns[:15])}")
 
-    # ── Join com emendas ──────────────────────────────────────────────────
+    # ── Join base → emenda (com agregação por id_proposta) ───────────────
     if df_emenda is not None and len(df_emenda) > 0:
-        col_base  = next((c for c in df_base.columns   if c == "id_proposta"), None)
-        col_emend = next((c for c in df_emenda.columns if c == "id_proposta"), None)
+        col_base_em  = next((c for c in df_base.columns   if c == "id_proposta"), None)
+        col_emend_id = next((c for c in df_emenda.columns if c == "id_proposta"), None)
 
-        if col_base and col_emend:
+        if col_base_em and col_emend_id:
             agg_dict = {}
-            for campo, agg in [
-                ("nr_emenda",                    lambda x: " | ".join(x.dropna().astype(str).unique())),
-                ("nome_parlamentar",             lambda x: " | ".join(x.dropna().astype(str).unique())),
-                ("tipo_parlamentar",             lambda x: " | ".join(x.dropna().astype(str).unique())),
-                ("ind_impositivo",               lambda x: " | ".join(x.dropna().astype(str).unique())),
-                ("beneficiario_emenda",          lambda x: " | ".join(x.dropna().astype(str).unique())),
-                ("cod_programa_emenda",          lambda x: " | ".join(x.dropna().astype(str).unique())),
-                ("valor_repasse_proposta_emenda","sum"),
-                ("valor_repasse_emenda",         "sum"),
+            for campo, agg_fn in [
+                ("nr_emenda",
+                 lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("nome_parlamentar",
+                 lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("tipo_parlamentar",
+                 lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("ind_impositivo",
+                 lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("beneficiario_emenda",
+                 lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("cod_programa_emenda",
+                 lambda x: " | ".join(x.dropna().astype(str).unique())),
+                ("valor_repasse_proposta_emenda", "sum"),
+                ("valor_repasse_emenda",          "sum"),
             ]:
                 if campo in df_emenda.columns:
-                    agg_dict[campo] = agg
+                    agg_dict[campo] = agg_fn
 
-            df_emenda_agg = df_emenda.groupby(col_emend, as_index=False).agg(agg_dict)
+            df_emenda_agg = df_emenda.groupby(col_emend_id, as_index=False).agg(agg_dict)
+
             antes = len(df_base)
             df_base = pd.merge(
                 df_base, df_emenda_agg,
-                left_on=col_base, right_on=col_emend,
+                left_on=col_base_em, right_on=col_emend_id,
                 how="left", suffixes=("", "_emenda")
             )
             df_base = df_base.loc[:, ~df_base.columns.duplicated()]
+
             com_emenda = df_base["nr_emenda"].notna().sum() \
                          if "nr_emenda" in df_base.columns else 0
-            print(f"  [MERGE emendas] {antes:,} → {len(df_base):,} | "
-                  f"Com emenda: {com_emenda:,}")
+            print(f"  [MERGE base↔emenda] {antes:,} → {len(df_base):,} | "
+                  f"com emenda: {com_emenda:,}")
+        else:
+            print("  [AVISO] Chave 'id_proposta' não encontrada — pulando merge de emenda.")
+    else:
+        print("  [AVISO] df_emenda vazio ou None — pulando merge de emenda.")
 
-    # ── Finaliza ──────────────────────────────────────────────────────────
+    # ── Saldo em conta — alias defensivo ─────────────────────────────────
+    ALIASES_SALDO = [
+        "vl_saldo_conta", "saldo_conta",
+        "vl_saldo_ctabancaria", "valor_saldo_ctabancaria",
+    ]
+    for alias in ALIASES_SALDO:
+        if alias in df_base.columns and "valor_saldo_conta" not in df_base.columns:
+            df_base = df_base.rename(columns={alias: "valor_saldo_conta"})
+            print(f"  [SALDO CONTA] Alias '{alias}' → 'valor_saldo_conta'")
+            break
+
+    if "valor_saldo_conta" not in df_base.columns:
+        df_base["valor_saldo_conta"] = 0.0
+        print("  [SALDO CONTA] Coluna ausente — preenchida com 0.0")
+
+
+
+
+    # ── Cruzamento com pagamento.csv ──────────────────────────────────────
+    print("\n[PAGAMENTO] Iniciando cruzamento...")
+    df_pag = baixar_pagamento(forcar=forcar)
+
+    if df_pag is not None and not df_pag.empty:
+        CHAVES_CONV = ["nr_convenio", "nr_conv"]
+        col_base_nr = next((c for c in CHAVES_CONV if c in df_base.columns), None)
+
+        if col_base_nr:
+            df_base[col_base_nr] = normalizar_chave_convenio(df_base[col_base_nr])
+            df_pag["nr_convenio"] = normalizar_chave_convenio(df_pag["nr_convenio"])
+
+            print("  [DEBUG] Base nr_convenio amostra:",
+                df_base[col_base_nr].dropna().astype(str).head(10).tolist())
+            print("  [DEBUG] Pag  nr_convenio amostra:",
+                df_pag["nr_convenio"].dropna().astype(str).head(10).tolist())
+
+            intersec = set(df_base[col_base_nr].dropna().unique()) & set(df_pag["nr_convenio"].dropna().unique())
+            print(f"  [DEBUG] Interseção de chaves: {len(intersec):,}")
+
+            antes = len(df_base)
+            df_base = pd.merge(
+                df_base, df_pag,
+                left_on=col_base_nr, right_on="nr_convenio",
+                how="left", suffixes=("", "_pag")
+            )
+            df_base = df_base.loc[:, ~df_base.columns.duplicated()]
+
+            match_pag = df_base["valor_pago"].notna().sum() if "valor_pago" in df_base.columns else 0
+            print(f"  [MERGE base↔pagamento] {antes:,} → {len(df_base):,} | com match: {match_pag:,}")
+        else:
+            print("  [PAGAMENTO] ⚠️ Chave 'nr_convenio' não encontrada em df_base.")
+            df_base["valor_pago"] = 0.0
+    else:
+        print("  [PAGAMENTO] ⚠️ df_pag vazio — valor_pago zerado.")
+        df_base["valor_pago"] = 0.0
+
+    # ── Garante numérico em valor_pago e valor_saldo_conta ───────────────
+    df_base["valor_pago"] = (
+        pd.to_numeric(df_base["valor_pago"], errors="coerce").fillna(0.0)
+    )
+    df_base["valor_saldo_conta"] = (
+        pd.to_numeric(df_base["valor_saldo_conta"], errors="coerce").fillna(0.0)
+    )
+
+    # ── Renomeia para nomes padronizados de saída ─────────────────────────
     df_base = renomear_colunas(df_base)
 
+    # ── Garante tipos de ano corretos ─────────────────────────────────────
     for col in ["ano_proposta", "ano_assinatura"]:
         if col in df_base.columns:
             df_base[col] = pd.to_numeric(df_base[col], errors="coerce").astype("Int64")
 
+    # ── Remove colunas duplicadas residuais ───────────────────────────────
     df_base = df_base.loc[:, ~df_base.columns.duplicated()]
 
     if len(df_base) == 0:
         print("\n[FALHA] DataFrame final vazio — CSV não será salvo.")
         return None
 
+    # ── Salva CSV final ───────────────────────────────────────────────────
     saida = os.path.join(DATA_DIR, "discricionarias_to.csv")
     df_base.to_csv(saida, sep=";", index=False, encoding="utf-8-sig")
 
+    # ── Relatório final ───────────────────────────────────────────────────
     print("\n" + "=" * 60)
-    print(f"Arquivo:         {saida}")
-    print(f"Total linhas:    {len(df_base):,}")
-    print(f"Total colunas:   {len(df_base.columns)}")
+    print(f"  Arquivo:       {saida}")
+    print(f"  Total linhas:  {len(df_base):,}")
+    print(f"  Total colunas: {len(df_base.columns)}")
+    print(f"  valor_pago:    R$ {df_base['valor_pago'].sum():,.2f}")
+    print(f"  saldo_conta:   R$ {df_base['valor_saldo_conta'].sum():,.2f}")
     print("=" * 60)
 
     return df_base
-
-
 # --- DIAGNOSTICO --------------------------------------------------------------
 
 def diagnosticar():
@@ -508,6 +785,13 @@ def diagnosticar():
             print(f"  Linhas:  {len(df):,}")
             print(f"  Colunas: {list(df.columns)}\n")
 
+def normalizar_chave_convenio(serie: pd.Series) -> pd.Series:
+    return (
+        serie.astype(str)
+        .str.strip()
+        .str.replace(r"\.0$", "", regex=True)   # remove final .0
+        .str.replace(r"[^\d]", "", regex=True)  # deixa só números
+    )
 
 # --- ENTRY POINT --------------------------------------------------------------
 
@@ -530,3 +814,4 @@ if __name__ == "__main__":
     else:
         print("Coleta com cache local...")
         consolidar(forcar=False)
+

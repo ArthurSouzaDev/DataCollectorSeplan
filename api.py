@@ -8,8 +8,8 @@ import time
 
 load_dotenv()
 
-fundo_a_fundo = os.getenv("URL_fundo_a_fundo")
-transf_especial = os.getenv("URL_transf_especial")
+fundo_a_fundo   = os.getenv("URL_FUNDO_A_FUNDO")
+transf_especial = os.getenv("URL_TRANSF_ESPECIAL")
 
 _cache_natureza = {}
 

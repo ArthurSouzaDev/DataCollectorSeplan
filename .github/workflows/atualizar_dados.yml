@@ -5,16 +5,21 @@ on:
     - cron: "0 5 * * 1"   # toda segunda-feira às 05h UTC (02h Brasília)
   workflow_dispatch:        # permite rodar manualmente pelo GitHub
 
+permissions:
+  contents: write
+
 jobs:
   extrair-dados:
     runs-on: ubuntu-latest
-    timeout-minutes: 60     # segurança — encerra se travar
+    timeout-minutes: 60
 
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name:  Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -23,17 +28,16 @@ jobs:
         run: pip install requests pandas python-dotenv
 
       - name: Executar extração
-        
         env:
           URL_FUNDO_A_FUNDO:   ${{ secrets.URL_FUNDO_A_FUNDO }}
           URL_TRANSF_ESPECIAL: ${{ secrets.URL_TRANSF_ESPECIAL }}
         run: python api.py
 
-      - name:  Commit e push dos CSVs
+      - name: Commit dos dados
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fundo_a_fundo.csv emendas_to.csv
-          git diff --cached --quiet \
-            || git commit -m "🤖 [AUTO] Dados atualizados em $(date +'%d/%m/%Y %H:%M')"
+          git add .
+          git diff --cached --quiet && echo " Nenhuma mudança, commit ignorado." || \
+          git commit -m "🤖 [AUTO] Dados atualizados em $(TZ='America/Sao_Paulo' date +'%d/%m/%Y %H:%M')"
           git push
