@@ -1,17 +1,53 @@
 import requests
 import os
 from dotenv import load_dotenv
-import csv
 import pandas as pd
 from datetime import datetime
 import time
+import json
+from pathlib import Path
 
 load_dotenv()
 
 fundo_a_fundo   = os.getenv("URL_FUNDO_A_FUNDO")
 transf_especial = os.getenv("URL_TRANSF_ESPECIAL")
 
-_cache_natureza = {}
+CACHE_FILE = Path("cache_natureza.json")
+OUTPUT_FUNDO = Path("fundo_a_fundo.csv")
+OUTPUT_EMENDAS = Path("emendas_to.csv")
+MAX_TENTATIVAS = 3
+ESPERA_RETRY_SEGUNDOS = 5
+
+
+def _carregar_cache() -> dict:
+    if CACHE_FILE.exists():
+        with CACHE_FILE.open(encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def _salvar_cache() -> None:
+    with CACHE_FILE.open("w", encoding="utf-8") as f:
+        json.dump(_cache_natureza, f, ensure_ascii=False)
+
+
+_cache_natureza = _carregar_cache()
+
+
+def validar_colunas(df: pd.DataFrame, obrigatorias: list[str], nome_dataset: str) -> None:
+    faltantes = [c for c in obrigatorias if c not in df.columns]
+    if faltantes:
+        print(f"[{nome_dataset}] Dataset inválido. Colunas retornadas: {df.columns.tolist()}")
+        raise Exception(f"[{nome_dataset}] Colunas obrigatórias ausentes: {faltantes}")
+
+
+def validar_dataframe(df: pd.DataFrame, nome_dataset: str, colunas_obrigatorias: list[str]) -> None:
+    print(f"[{nome_dataset}] Registros após tratamento: {len(df):,}")
+    print(f"[{nome_dataset}] Colunas retornadas: {df.columns.tolist()}")
+    if df.empty:
+        print(f"[{nome_dataset}] Dataset inválido: DataFrame vazio.")
+        raise Exception(f"[{nome_dataset}] DataFrame vazio após extração da API.")
+    validar_colunas(df, colunas_obrigatorias, nome_dataset)
 
 def limpar_cnpj(cnpj: str) -> str:
     if not cnpj:
@@ -48,6 +84,7 @@ def get_natureza_juridica(cnpj: str) -> str:
 
 def enriquecer_natureza(df: pd.DataFrame, coluna_cnpj: str) -> pd.DataFrame:
     """Consulta a BrasilAPI para cada CNPJ único e adiciona coluna natureza_juridica"""
+    validar_colunas(df, [coluna_cnpj], "ENRIQUECIMENTO")
     cnpjs_unicos = df[coluna_cnpj].dropna().unique()
     total = len(cnpjs_unicos)
 
@@ -63,7 +100,30 @@ def enriquecer_natureza(df: pd.DataFrame, coluna_cnpj: str) -> pd.DataFrame:
 
 
 # ─────────────────────────────────────────────
-def extrair_dados(endpoint, params):
+def _request_com_retry(endpoint: str, params: dict, nome_dataset: str) -> requests.Response:
+    if not endpoint:
+        raise ValueError(f"[{nome_dataset}] Endpoint não configurado.")
+
+    ultimo_erro = None
+    for tentativa in range(1, MAX_TENTATIVAS + 1):
+        try:
+            print(f"[{nome_dataset}] Requisição tentativa {tentativa}/{MAX_TENTATIVAS} | params={params}")
+            response = requests.get(endpoint, params=params, timeout=60)
+            response.raise_for_status()
+            return response
+        except requests.RequestException as e:
+            ultimo_erro = e
+            status = getattr(getattr(e, "response", None), "status_code", "sem status")
+            print(f"[{nome_dataset}] Tentativa {tentativa} falhou | HTTP={status} | erro={e}")
+            if tentativa < MAX_TENTATIVAS:
+                time.sleep(ESPERA_RETRY_SEGUNDOS)
+
+    raise RuntimeError(
+        f"[{nome_dataset}] Falha após {MAX_TENTATIVAS} tentativas. Último erro: {ultimo_erro}"
+    )
+
+
+def extrair_dados(endpoint, params, nome_dataset):
     todos_os_dados = []
     limit = 1000
     offset = 0
@@ -73,26 +133,23 @@ def extrair_dados(endpoint, params):
         params_local['limit'] = limit
         params_local['offset'] = offset
 
-        response = requests.get(endpoint, params=params_local)
-
-        if response.status_code != 200:
-            print(f"Erro na requisição: {response.status_code}")
-            break
+        response = _request_com_retry(endpoint, params_local, nome_dataset)
 
         dados = response.json()
 
         if not dados:
+            print(f"[{nome_dataset}] Página offset {offset} sem registros.")
             break
 
         todos_os_dados.extend(dados)
-        print(f"Página offset {offset} — {len(dados)} registros recebidos")
+        print(f"[{nome_dataset}] Página offset {offset} — {len(dados)} registros recebidos")
 
         if len(dados) < limit:
             break
 
         offset += limit
 
-    print(f"Total extraído: {len(todos_os_dados)} registros")
+    print(f"[{nome_dataset}] Total extraído: {len(todos_os_dados)} registros")
     return todos_os_dados
 
 
@@ -198,15 +255,18 @@ if __name__ == "__main__":
     params_especial = {'uf_beneficiario_plano_acao':   'eq.TO'}
 
     # Extração
-    dados          = extrair_dados(fundo_a_fundo, params_fundo)
+    dados          = extrair_dados(fundo_a_fundo, params_fundo, "FUNDO_A_FUNDO")
     dados_tratados = tratar_dados(dados)
 
-    dados_emenda           = extrair_dados(transf_especial, params_especial)
+    dados_emenda           = extrair_dados(transf_especial, params_especial, "EMENDAS")
     dados_tratados_emendas = tratar_dados_emenda(dados_emenda)
 
     # DataFrames
     df_fundo  = pd.DataFrame(dados_tratados)
     df_emenda = pd.DataFrame(dados_tratados_emendas)
+
+    validar_dataframe(df_fundo, "FUNDO_A_FUNDO", ["cnpj_recebedor"])
+    validar_dataframe(df_emenda, "EMENDAS", ["cnpj_beneficiario"])
 
     df_fundo["data_inicio"] = pd.to_datetime(df_fundo["data_inicio"], errors="coerce")
     df_fundo["data_fim"]    = pd.to_datetime(df_fundo["data_fim"],    errors="coerce")
@@ -218,26 +278,13 @@ if __name__ == "__main__":
     print("\n━━━ Enriquecendo EMENDAS ━━━")
     df_emenda = enriquecer_natureza(df_emenda, "cnpj_beneficiario")
 
-    # Exportação
-    df_fundo.to_csv("fundo_a_fundo.csv", index=False, sep=";", date_format="%Y-%m-%d")
-    df_emenda.to_csv("emendas_to.csv",   index=False, sep=";")
+    # Exportação segura: só substitui arquivos válidos ao final de uma execução consistente.
+    tmp_fundo = OUTPUT_FUNDO.with_suffix(".csv.tmp")
+    tmp_emendas = OUTPUT_EMENDAS.with_suffix(".csv.tmp")
+    df_fundo.to_csv(tmp_fundo, index=False, sep=";", date_format="%Y-%m-%d")
+    df_emenda.to_csv(tmp_emendas, index=False, sep=";")
+    tmp_fundo.replace(OUTPUT_FUNDO)
+    tmp_emendas.replace(OUTPUT_EMENDAS)
 
     print("\n✅ CSVs exportados com sucesso!")
-
-    CACHE_FILE = "cache_natureza.json"
-
-    def _carregar_cache():
-        if os.path.exists(CACHE_FILE):
-            import json
-            with open(CACHE_FILE) as f:
-                return json.load(f)
-        return {}
-
-    def _salvar_cache():
-        import json
-        with open(CACHE_FILE, "w") as f:
-            json.dump(_cache_natureza, f, ensure_ascii=False)
-
-    _cache_natureza = _carregar_cache()
-
-    _salvar_cache()  # ← persiste novos CNPJs consultados
+    _salvar_cache()
