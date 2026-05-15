@@ -1,9 +1,6 @@
 # app_discricionarias.py
 import os
-import sys
-import importlib
 import datetime
-from contextlib import nullcontext
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -11,7 +8,9 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CSV_PATH = os.path.join(BASE_DIR, "data_discricionarias", "discricionarias_to.csv")
+PARQUET_PATH = os.path.join(
+    BASE_DIR, "data_discricionarias", "processados", "discricionarias_to.parquet"
+)
 
 ALIASES_COLUNAS = {
     "munic_proponente": "municipio_beneficiario",
@@ -45,12 +44,6 @@ def fmt_brl(v: float) -> str:
     return f"R$ {v:,.0f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
-def _atualizar_status(status, label: str, state: str):
-    """Atualiza o st.status de forma segura (evita erro quando status é None)."""
-    if status is not None and hasattr(status, "update"):
-        status.update(label=label, state=state)
-
-
 def harmonizar_colunas(df: pd.DataFrame) -> pd.DataFrame:
     """Ajusta nomes antigos/brutos para os nomes esperados pela interface."""
     renomear = {
@@ -77,101 +70,13 @@ def colunas_ausentes(df: pd.DataFrame) -> list[str]:
     return [col for col in COLUNAS_ESSENCIAIS if col not in df.columns]
 
 
-def _diagnostico_cache():
-    """Exibe diagnóstico dos arquivos de cache no status atual."""
-    st.write("🔎 Verificando arquivos em cache...")
-    cache_dir = os.path.join(BASE_DIR, "data_discricionarias", "cache_bruto")
-    for nome in ["siconv_convenio.csv", "siconv_proposta.csv", "siconv_emenda.csv"]:
-        caminho = os.path.join(cache_dir, nome)
-        if os.path.exists(caminho):
-            mb = os.path.getsize(caminho) / 1024 / 1024
-            st.write(f"  ✅ {nome} — {mb:.0f} MB")
-        else:
-            st.write(f"  ⬇️ {nome} — será baixado")
-
-
-def _importar_coletor():
-    """Garante reimport limpo do módulo coletor_discricionarias."""
-    if BASE_DIR not in sys.path:
-        sys.path.insert(0, BASE_DIR)
-
-    if "coletor_discricionarias" in sys.modules:
-        del sys.modules["coletor_discricionarias"]
-
-    import coletor_discricionarias as coletor
-    importlib.reload(coletor)
-    return coletor
-
-
-def executar_coletor(forcar: bool = False):
-    """Importa e executa o coletor diretamente no mesmo processo Python."""
-    label_inicial = (
-        "⏳ Forçando re-download dos dados..." if forcar
-        else "⏳ Coletando dados do Transferegov..."
-    )
-
-    # ✅ FIX 1: st.status retorna o objeto corretamente; nullcontext apenas como fallback
-    try:
-        status_ctx = st.status(label_inicial, expanded=True)
-    except Exception:
-        status_ctx = nullcontext(None)
-
-    with status_ctx as status:
-        try:
-            st.write("📡 Importando coletor...")
-            coletor = _importar_coletor()
-
-            _diagnostico_cache()
-
-            st.write("⚙️ Consolidando dados TO...")
-            df = coletor.consolidar(forcar=forcar)
-
-            if df is None:
-                # ✅ FIX 2: usa _atualizar_status() definida acima
-                _atualizar_status(status, label="❌ Coletor não retornou dados", state="error")
-                st.error("O coletor falhou em alguma etapa e retornou `None`.")
-                st.info("Revise as mensagens de CONVENIO, PROPOSTA e EMENDA exibidas acima.")
-                return pd.DataFrame()
-
-            if not df.empty:
-                _atualizar_status(
-                    status,
-                    label=f"✅ {len(df):,} registros coletados!",
-                    state="complete"
-                )
-                if os.path.exists(CSV_PATH):
-                    st.write(f"✅ CSV final encontrado em: {CSV_PATH}")
-                else:
-                    st.warning(f"⚠️ DataFrame gerado, mas CSV não encontrado em: {CSV_PATH}")
-
-                st.cache_data.clear()
-                return df
-
-            _atualizar_status(status, label="⚠️ Coleta finalizada sem dados", state="error")
-            st.warning("O coletor executou, mas retornou um DataFrame vazio.")
-            st.info("Isso normalmente indica filtro excessivo ou etapa anterior zerada.")
-            return pd.DataFrame()
-
-        except Exception as e:
-            _atualizar_status(status, label="❌ Erro na coleta", state="error")
-            st.error(f"**Erro:** {e}")
-            import traceback
-            st.code(traceback.format_exc(), language="python")
-            return pd.DataFrame()
-
-
 # ─── CARGA DE DADOS ───────────────────────────────────────────────────────────
 @st.cache_data(show_spinner="⏳ Carregando Discricionárias...")
 def load_discricionarias() -> pd.DataFrame:
-    if not os.path.exists(CSV_PATH):
+    if not os.path.exists(PARQUET_PATH):
         return pd.DataFrame()
 
-    # ── Detecta separador ────────────────────────────────────────────────
-    with open(CSV_PATH, "r", encoding="utf-8-sig") as f:
-        primeira_linha = f.readline()
-    sep = ";" if ";" in primeira_linha else ("\t" if "\t" in primeira_linha else ",")
-
-    df = pd.read_csv(CSV_PATH, sep=sep, encoding="utf-8-sig", low_memory=False)
+    df = pd.read_parquet(PARQUET_PATH)
     df = harmonizar_colunas(df)
 
     if df.empty:
@@ -220,53 +125,35 @@ def load_discricionarias() -> pd.DataFrame:
 def render():
     st.subheader("📂 Discricionárias e Legais — Transferegov")
 
-    # ── Verifica se CSV existe ─────────────────────────────────────────────
-    if not os.path.exists(CSV_PATH):
-        st.warning("⚠️ Dados ainda não coletados.")
-        if st.button("🚀 Coletar Dados Agora", type="primary"):
-            executar_coletor(forcar=False)
-            st.rerun()
+    # ── Verifica se parquet existe ─────────────────────────────────────────
+    if not os.path.exists(PARQUET_PATH):
+        st.warning("⚠️ Dados processados ainda não disponíveis.")
+        st.info("Execute o ETL fora do Streamlit para gerar o parquet em `data_discricionarias/processados/`.")
         return
 
     # ✅ FIX 3: carrega UMA vez e valida UMA vez
     df = load_discricionarias()
 
     if df.empty:
-        st.error("❌ O CSV existe mas está vazio ou não foi lido corretamente.")
-        st.info(f"📂 Caminho: `{CSV_PATH}`")
-        if st.button("🚀 Re-coletar Dados", type="primary"):
-            executar_coletor(forcar=False)
-            st.rerun()
+        st.error("❌ O parquet existe mas está vazio ou não foi lido corretamente.")
+        st.info(f"📂 Caminho: `{PARQUET_PATH}`")
         return
 
     faltantes = colunas_ausentes(df)
     if faltantes:
-        st.error("❌ O CSV foi carregado, mas está com esquema incompatível para a aba.")
+        st.error("❌ O parquet foi carregado, mas está com esquema incompatível para a aba.")
         st.warning("Colunas ausentes: " + ", ".join(faltantes))
         st.write("**Colunas presentes:**")
         st.code(", ".join(df.columns.tolist()))
-        st.info(f"📂 Caminho: `{CSV_PATH}`")
-        if st.button("🔄 Reprocessar Dados", type="primary"):
-            executar_coletor(forcar=False)
-            st.rerun()
+        st.info(f"📂 Caminho: `{PARQUET_PATH}`")
         return
 
-    # ── Info + botões ──────────────────────────────────────────────────────
-    col_info, col_btn, col_force = st.columns([6, 2, 2])
+    # ── Info ───────────────────────────────────────────────────────────────
+    col_info, = st.columns([1])
     with col_info:
-        mtime = os.path.getmtime(CSV_PATH)
+        mtime = os.path.getmtime(PARQUET_PATH)
         dt    = datetime.datetime.fromtimestamp(mtime).strftime("%d/%m/%Y %H:%M")
         st.caption(f"🕒 Última atualização: **{dt}** · {len(df):,} registros")
-    with col_btn:
-        if st.button("🔄 Atualizar Dados"):
-            df_novo = executar_coletor()
-            if not df_novo.empty:
-                st.rerun()
-    with col_force:
-        if st.button("⚠️ Forçar Re-download", use_container_width=True):
-            st.cache_data.clear()
-            executar_coletor(forcar=True)
-            st.rerun()
 
     # ── Filtros ────────────────────────────────────────────────────────────
     with st.expander("🔎 Filtros", expanded=True):

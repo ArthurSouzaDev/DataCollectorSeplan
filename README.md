@@ -52,9 +52,9 @@ DataCollectorSeplan/
 * Consumo de APIs públicas do Governo
 * Coleta automatizada de dados
 * Consolidação de informações públicas
-* Exportação em CSV
-* Utilização de cache local para otimização
-* Organização de dados para análise posterior
+* Processamento em chunks para reduzir uso de memória
+* Exportação final em Parquet compactado
+* Separação entre ETL e interface Streamlit
 
 ---
 
@@ -120,35 +120,50 @@ URL_API=sua_url
 
 ## Execução
 
+Para gerar os dados discricionários processados:
+
+```bash
+python coletor_discricionarias.py
+```
+
 Para executar a aplicação principal:
 
 ```bash
-python app.py
-```
-
-Para executar a coleta de dados discricionários:
-
-```bash
-python app_discricionarias.py
+streamlit run app.py
 ```
 
 ---
 
-## Fluxo da aplicação
+## Fluxo dos dados discricionários
 
-1. O sistema realiza requisições para APIs governamentais
-2. Os dados públicos são coletados automaticamente
-3. As informações são tratadas e organizadas
-4. Os resultados são exportados em CSV
-5. Os arquivos podem ser utilizados para análise e consolidação de dados
+```text
+ETL
+↓
+Download atualizado dos ZIPs GOV
+↓
+Extração dos CSVs
+↓
+Tratamento em chunks
+↓
+Parquet em data_discricionarias/processados/
+↓
+Streamlit lê apenas o parquet pronto
+```
 
 ---
 
 ## Observações
 
-A pasta relacionada aos dados discricionários pode conter arquivos muito grandes e, por esse motivo, nem todos os dados brutos foram adicionados ao repositório.
+A pasta `data_discricionarias/` é organizada em:
 
-O projeto mantém apenas os arquivos essenciais para execução e demonstração da estrutura da aplicação.
+```text
+data_discricionarias/
+├── cache_bruto/   # ZIPs baixados a cada execução do ETL
+├── extraidos/     # CSVs temporários extraídos dos ZIPs
+└── processados/   # Parquet final consumido pelo Streamlit
+```
+
+Os arquivos brutos e extraídos são ignorados pelo Git. O artefato final leve em Parquet pode ser versionado e é atualizado automaticamente pelo workflow do GitHub Actions a cada 12 horas.
 
 ---
 
