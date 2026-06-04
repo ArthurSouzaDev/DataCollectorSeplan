@@ -12,9 +12,11 @@ load_dotenv()
 fundo_a_fundo   = os.getenv("URL_FUNDO_A_FUNDO")
 transf_especial = os.getenv("URL_TRANSF_ESPECIAL")
 
-CACHE_FILE = Path("cache_natureza.json")
-OUTPUT_FUNDO = Path("fundo_a_fundo.csv")
-OUTPUT_EMENDAS = Path("emendas_to.csv")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DATASET_DIR = PROJECT_ROOT / "dataset"
+CACHE_FILE = DATASET_DIR / "cache_natureza.json"
+OUTPUT_FUNDO = DATASET_DIR / "fundo_a_fundo.csv"
+OUTPUT_EMENDAS = DATASET_DIR / "emendas_to.csv"
 MAX_TENTATIVAS = 3
 ESPERA_RETRY_SEGUNDOS = 5
 
@@ -27,6 +29,7 @@ def _carregar_cache() -> dict:
 
 
 def _salvar_cache() -> None:
+    DATASET_DIR.mkdir(parents=True, exist_ok=True)
     with CACHE_FILE.open("w", encoding="utf-8") as f:
         json.dump(_cache_natureza, f, ensure_ascii=False)
 
@@ -251,6 +254,7 @@ def tratar_dados_emenda(dados):
 #  EXECUÇÃO — 
 # ─────────────────────────────────────────────
 if __name__ == "__main__":
+    DATASET_DIR.mkdir(parents=True, exist_ok=True)
     params_fundo    = {'uf_ente_recebedor_plano_acao': 'eq.TO'}
     params_especial = {'uf_beneficiario_plano_acao':   'eq.TO'}
 

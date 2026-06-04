@@ -8,8 +8,9 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
 PARQUET_PATH = os.path.join(
-    BASE_DIR, "data_discricionarias", "processados", "discricionarias_to.parquet"
+    PROJECT_ROOT, "data_discricionarias", "processados", "discricionarias_to.parquet"
 )
 
 ALIASES_COLUNAS = {

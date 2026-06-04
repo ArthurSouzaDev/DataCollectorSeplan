@@ -33,16 +33,16 @@ jobs:
         env:
           URL_FUNDO_A_FUNDO: ${{ secrets.URL_FUNDO_A_FUNDO }}
           URL_TRANSF_ESPECIAL: ${{ secrets.URL_TRANSF_ESPECIAL }}
-        run: python api.py
+        run: python backend/api.py
 
       - name: Executar ETL discricionárias
-        run: python coletor_discricionarias.py
+        run: python backend/coletor_discricionarias.py
 
       - name: Commitar dados atualizados
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fundo_a_fundo.csv emendas_to.csv cache_natureza.json data_discricionarias/processados/discricionarias_to.parquet
+          git add dataset/fundo_a_fundo.csv dataset/emendas_to.csv dataset/cache_natureza.json data_discricionarias/processados/discricionarias_to.parquet
           DATA_ATUALIZACAO="$(TZ=America/Araguaina date '+%d/%m/%Y %H:%M')"
           if git diff --cached --quiet; then
             echo "Nenhuma mudança nos dados. Registrando execução da rotina."

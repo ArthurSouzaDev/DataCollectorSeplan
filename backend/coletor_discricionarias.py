@@ -13,8 +13,8 @@ from typing import Iterable
 import pandas as pd
 import requests
 
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "data_discricionarias"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = PROJECT_ROOT / "data_discricionarias"
 RAW_DIR = DATA_DIR / "cache_bruto"
 EXTRACTED_DIR = DATA_DIR / "extraidos"
 PROCESSED_DIR = DATA_DIR / "processados"

@@ -43,10 +43,12 @@ def fmt_int(valor: int) -> str:
 
 # ─── CARGA DE DADOS ────────────────────────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
+DATASET_DIR = os.path.join(PROJECT_ROOT, "dataset")
 
 @st.cache_data(show_spinner="⏳ Carregando Especiais...")
 def load_emendas() -> pd.DataFrame:
-    path = os.path.join(BASE_DIR, "emendas_to.csv")
+    path = os.path.join(DATASET_DIR, "emendas_to.csv")
     df = pd.read_csv(path, sep=";", low_memory=False)
     df["valor_total"]        = df["valor_custeio"] + df["valor_investimento"]
     df["ano_emenda"]         = df["ano_emenda"].astype(str)
@@ -61,7 +63,7 @@ def load_emendas() -> pd.DataFrame:
 
 @st.cache_data(show_spinner="⏳ Carregando Fundo a Fundo...")
 def load_fundo() -> pd.DataFrame:
-    path = os.path.join(BASE_DIR, "fundo_a_fundo.csv")
+    path = os.path.join(DATASET_DIR, "fundo_a_fundo.csv")
     df = pd.read_csv(path, sep=";", low_memory=False)
     df["data_inicio"] = pd.to_datetime(df["data_inicio"], errors="coerce")
     df["data_fim"]    = pd.to_datetime(df["data_fim"],    errors="coerce")

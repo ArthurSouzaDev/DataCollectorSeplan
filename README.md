@@ -36,10 +36,16 @@ O foco principal do projeto é:
 
 ```bash
 DataCollectorSeplan/
-├── api.py                         # Integrações e chamadas para APIs
-├── app.py                         # Aplicação principal
-├── app_discricionarias.py         # Execução específica para dados discricionários
-├── coletor_discricionarias.py     # Lógica de coleta de dados discricionários
+├── backend/
+│   ├── api.py                     # Integrações e chamadas para APIs
+│   ├── app.py                     # Aplicação principal Streamlit
+│   ├── app_discricionarias.py     # Aba para dados discricionários
+│   └── coletor_discricionarias.py # Lógica de coleta de dados discricionários
+├── dataset/
+│   ├── cache_natureza.json
+│   ├── emendas_to.csv
+│   └── fundo_a_fundo.csv
+├── frontend/                      # Estrutura base React/TypeScript
 ├── requirements.txt               # Dependências do projeto
 ├── .env                           # Variáveis de ambiente
 └── README.md
@@ -123,13 +129,13 @@ URL_API=sua_url
 Para gerar os dados discricionários processados:
 
 ```bash
-python coletor_discricionarias.py
+python backend/coletor_discricionarias.py
 ```
 
 Para executar a aplicação principal:
 
 ```bash
-streamlit run app.py
+streamlit run backend/app.py
 ```
 
 ---
