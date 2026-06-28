@@ -4,10 +4,11 @@
   "type": "module",
   "packageManager": "yarn@4.16.0",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "sync-data": "node scripts/sync-data.mjs"
   },
   "dependencies": {
     "react": "^19.2.7",
@@ -15,6 +16,7 @@
     "react-router-dom": "^7.16.0"
   },
   "devDependencies": {
+    "@types/node": "^26.0.1",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",

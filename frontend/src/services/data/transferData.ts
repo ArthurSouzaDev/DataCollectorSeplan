@@ -41,7 +41,7 @@ export const DATASETS: DatasetConfig[] = [
     title: 'Transferencias Especiais',
     shortTitle: 'Especiais',
     description: 'Emendas parlamentares especiais destinadas ao Tocantins.',
-    source: 'dataset/emendas_to.csv, gerado por backend/api.py',
+    source: 'Transferegov — Emendas Parlamentares Especiais',
     dataUrl: '/data/especiais.csv',
     valueColumn: 'valor_total',
     countLabel: 'Planos',
@@ -67,7 +67,7 @@ export const DATASETS: DatasetConfig[] = [
     title: 'Discricionarias e Legais',
     shortTitle: 'Discricionarias e Legais',
     description: 'Convenios e propostas processados a partir dos dados SICONV.',
-    source: 'data_discricionarias/processados/discricionarias_to.parquet, gerado por backend/coletor_discricionarias.py',
+    source: 'SICONV — Convênios e Transferências Discricionárias',
     dataUrl: '/data/discricionarias-legais.csv',
     valueColumn: 'valor_repasse',
     countLabel: 'Convenios',
@@ -95,7 +95,7 @@ export const DATASETS: DatasetConfig[] = [
     title: 'Fundo a Fundo',
     shortTitle: 'Fundo a Fundo',
     description: 'Planos fundo a fundo filtrados para o estado do Tocantins.',
-    source: 'dataset/fundo_a_fundo.csv, gerado por backend/api.py',
+    source: 'Transferegov — Fundo a Fundo',
     dataUrl: '/data/fundo-a-fundo.csv',
     valueColumn: 'valor_total_repasse',
     countLabel: 'Planos',
@@ -120,7 +120,35 @@ export const DATASETS: DatasetConfig[] = [
   },
 ];
 
+export type DataManifest = Partial<Record<DatasetId, string>>;
+
 const memoryCache = new Map<DatasetId, Promise<TransferRecord[]>>();
+let manifestCache: Promise<DataManifest> | null = null;
+
+export function loadManifest(): Promise<DataManifest> {
+  if (!manifestCache) {
+    manifestCache = fetch('/data/manifest.json')
+      .then((r) => (r.ok ? (r.json() as Promise<DataManifest>) : {}))
+      .catch(() => ({}));
+  }
+  return manifestCache;
+}
+
+export function formatLastModified(isoDate: string | undefined): string {
+  if (!isoDate) return '';
+  try {
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'America/Araguaina',
+    }).format(new Date(isoDate));
+  } catch {
+    return '';
+  }
+}
 
 export function getDatasetConfig(datasetId: DatasetId) {
   return DATASETS.find((dataset) => dataset.id === datasetId);
@@ -237,7 +265,16 @@ export function toNumber(value: unknown) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
   if (typeof value !== 'string') return 0;
 
-  const normalized = value.trim().replace(/\./g, '').replace(',', '.');
+  const trimmed = value.trim();
+  if (!trimmed) return 0;
+
+  // Brazilian format uses comma as decimal separator: "1.234.567,89"
+  // Python CSV uses dot as decimal separator: "1234567.89"
+  // Detect by presence of comma: if comma exists, treat dots as thousands separators
+  const normalized = trimmed.includes(',')
+    ? trimmed.replace(/\./g, '').replace(',', '.')
+    : trimmed;
+
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : 0;
 }

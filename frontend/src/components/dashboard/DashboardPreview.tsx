@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
 
 import type { DatasetConfig, DatasetSummary } from '../../services/data/transferData';
-import { formatCurrency, formatNumber } from '../../services/data/transferData';
+import { formatCurrency, formatLastModified, formatNumber } from '../../services/data/transferData';
 
 type DashboardPreviewProps = {
   config: DatasetConfig;
   summary?: DatasetSummary;
   loading?: boolean;
+  lastModified?: string;
 };
 
-export function DashboardPreview({ config, summary, loading = false }: DashboardPreviewProps) {
+export function DashboardPreview({ config, summary, loading = false, lastModified }: DashboardPreviewProps) {
   const maxValue = Math.max(...(summary?.topEntities.map((item) => item.value) ?? [0]), 1);
 
   return (
@@ -26,29 +27,35 @@ export function DashboardPreview({ config, summary, loading = false }: Dashboard
 
       <p className="card-description">{config.description}</p>
 
-      {loading || !summary ? (
-        <div className="loading-panel">Carregando dados...</div>
-      ) : (
-        <>
-          <div className="kpi-grid compact">
-            <Metric label={config.countLabel} value={formatNumber(summary.totalRecords)} />
-            <Metric label={config.valueLabel} value={formatCurrency(summary.totalValue)} />
-            <Metric label="Anos" value={formatNumber(summary.yearCount)} />
-          </div>
+      <div className="card-body">
+        {loading || !summary ? (
+          <div className="loading-panel">Carregando dados...</div>
+        ) : (
+          <>
+            <div className="kpi-grid compact">
+              <Metric label={config.countLabel} value={formatNumber(summary.totalRecords)} />
+              <Metric label={config.valueLabel} value={formatCurrency(summary.totalValue)} />
+              <Metric label="Anos" value={formatNumber(summary.yearCount)} />
+            </div>
 
-          <div className="mini-chart" aria-label={`Ranking de ${config.entityColumn}`}>
-            {summary.topEntities.map((item) => (
-              <div className="bar-row" key={item.label}>
-                <span>{item.label}</span>
-                <div className="bar-track">
-                  <div className="bar-fill" style={{ width: `${Math.max((item.value / maxValue) * 100, 3)}%` }} />
+            <div className="mini-chart" aria-label={`Ranking de ${config.entityColumn}`}>
+              {summary.topEntities.map((item) => (
+                <div className="bar-row" key={item.label}>
+                  <span title={item.label}>{item.label}</span>
+                  <div className="bar-track">
+                    <div className="bar-fill" style={{ width: `${Math.max((item.value / maxValue) * 100, 3)}%` }} />
+                  </div>
+                  <strong>{formatCurrency(item.value)}</strong>
                 </div>
-                <strong>{formatCurrency(item.value)}</strong>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      {lastModified ? (
+        <p className="card-updated">Atualizado em {formatLastModified(lastModified)}</p>
+      ) : null}
     </article>
   );
 }

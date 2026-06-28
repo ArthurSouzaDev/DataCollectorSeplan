@@ -4,7 +4,6 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import {
   aggregateBy,
   buildCsv,
-  DATASETS,
   filterRows,
   formatCurrency,
   formatNumber,
@@ -13,6 +12,7 @@ import {
   summarizeDataset,
   toNumber,
   uniqueOptions,
+  type DatasetConfig,
   type DatasetId,
   type TransferRecord,
 } from '../services/data/transferData';
@@ -28,6 +28,15 @@ const initialDataState: DataState = { rows: [], loading: true };
 export function DatasetDetailPage() {
   const { datasetId } = useParams();
   const config = getDatasetConfig(datasetId as DatasetId);
+
+  if (!config) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <DatasetView config={config} />;
+}
+
+function DatasetView({ config }: { config: DatasetConfig }) {
   const [dataById, setDataById] = useState<Record<string, DataState>>({});
   const [years, setYears] = useState<string[]>([]);
   const [statuses, setStatuses] = useState<string[]>([]);
@@ -36,10 +45,6 @@ export function DatasetDetailPage() {
   const [sortColumn, setSortColumn] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
-
-  if (!config) {
-    return <Navigate to="/" replace />;
-  }
 
   const currentState = dataById[config.id] ?? initialDataState;
 
@@ -87,6 +92,7 @@ export function DatasetDetailPage() {
     () => aggregateBy(filteredRows, config.groupColumn, config.valueColumn, 8),
     [config, filteredRows],
   );
+
   const availableColumns = config.tableColumns.filter((column) =>
     currentState.rows.some((row) => Object.prototype.hasOwnProperty.call(row, column)),
   );
@@ -99,26 +105,19 @@ export function DatasetDetailPage() {
 
   return (
     <section className="page detail-page">
+      <nav className="breadcrumb" aria-label="Navegação">
+        <Link className="back-link" to="/">
+          Início
+        </Link>
+        <span className="breadcrumb-sep" aria-hidden="true">›</span>
+        <span className="breadcrumb-current">{config.shortTitle}</span>
+      </nav>
+
       <div className="detail-header">
         <div>
-          <Link className="back-link" to="/">
-            Voltar
-          </Link>
-          <p className="eyebrow">Dashboard detalhado</p>
           <h1>{config.title}</h1>
           <p>{config.description}</p>
-          <span className="source-label">Fonte local: {config.source}</span>
-        </div>
-        <div className="dataset-switcher" aria-label="Alternar dashboard">
-          {DATASETS.map((dataset) => (
-            <Link
-              className={dataset.id === config.id ? 'switch-link active' : 'switch-link'}
-              key={dataset.id}
-              to={`/dashboard/${dataset.id}`}
-            >
-              {dataset.shortTitle}
-            </Link>
-          ))}
+          <span className="source-label">Fonte: {config.source}</span>
         </div>
       </div>
 
