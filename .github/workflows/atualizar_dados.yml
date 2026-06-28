@@ -39,18 +39,7 @@ jobs:
         run: python backend/coletor_discricionarias.py
 
       - name: Sincronizar dados para public/data/
-        run: |
-          cp dataset/emendas_to.csv public/data/especiais.csv
-          cp dataset/fundo_a_fundo.csv public/data/fundo-a-fundo.csv
-          python -c "
-import pandas as pd, json, datetime, pathlib
-df = pd.read_parquet('data_discricionarias/processados/discricionarias_to.parquet')
-df.to_csv('public/data/discricionarias-legais.csv', sep=';', index=False, encoding='utf-8-sig')
-now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=-3))).isoformat()
-manifest = {'especiais': now, 'fundo-a-fundo': now, 'discricionarias-legais': now}
-pathlib.Path('public/data/manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
-print('manifest.json gerado em', now)
-"
+        run: python scripts/sync_public_data.py
 
       - name: Commitar dados atualizados
         run: |
