@@ -1,0 +1,67 @@
+name: Atualizar Dados
+
+on:
+  schedule:
+    - cron: "17 */12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: atualizar-dados
+  cancel-in-progress: false
+
+jobs:
+  atualizar-dados:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Extrair fundo a fundo e transferências especiais
+        env:
+          URL_FUNDO_A_FUNDO: ${{ secrets.URL_FUNDO_A_FUNDO }}
+          URL_TRANSF_ESPECIAL: ${{ secrets.URL_TRANSF_ESPECIAL }}
+        run: python backend/api.py
+
+      - name: Executar ETL discricionárias
+        run: python backend/coletor_discricionarias.py
+
+      - name: Sincronizar dados para public/data/
+        run: |
+          cp dataset/emendas_to.csv public/data/especiais.csv
+          cp dataset/fundo_a_fundo.csv public/data/fundo-a-fundo.csv
+          python -c "
+import pandas as pd, json, datetime, pathlib
+df = pd.read_parquet('data_discricionarias/processados/discricionarias_to.parquet')
+df.to_csv('public/data/discricionarias-legais.csv', sep=';', index=False, encoding='utf-8-sig')
+now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=-3))).isoformat()
+manifest = {'especiais': now, 'fundo-a-fundo': now, 'discricionarias-legais': now}
+pathlib.Path('public/data/manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
+print('manifest.json gerado em', now)
+"
+
+      - name: Commitar dados atualizados
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dataset/fundo_a_fundo.csv dataset/emendas_to.csv dataset/cache_natureza.json data_discricionarias/processados/discricionarias_to.parquet public/data/
+          DATA_ATUALIZACAO="$(TZ=America/Araguaina date '+%d/%m/%Y %H:%M')"
+          if git diff --cached --quiet; then
+            echo "Nenhuma mudança nos dados. Registrando execução da rotina."
+            git commit --allow-empty -m "🤖 [AUTO] Rotina executada em ${DATA_ATUALIZACAO}"
+          else
+            git commit -m "🤖 [AUTO] Dados atualizados em ${DATA_ATUALIZACAO}"
+          fi
+          git push
