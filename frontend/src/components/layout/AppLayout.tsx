@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { DATASETS } from '../../services/data/transferData';
 
@@ -19,18 +19,52 @@ function SunIcon() {
   );
 }
 
+function MenuIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <line x1="5" y1="5" x2="19" y2="19" />
+      <line x1="19" y1="5" x2="5" y2="19" />
+    </svg>
+  );
+}
+
 export function AppLayout() {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') ?? 'light');
+  const [navOpen, setNavOpen] = useState(false);
+  const topBarInnerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    if (!navOpen) return;
+
+    function handleOutsideInteraction(event: PointerEvent) {
+      if (!topBarInnerRef.current?.contains(event.target as Node)) {
+        setNavOpen(false);
+      }
+    }
+
+    document.addEventListener('pointerdown', handleOutsideInteraction);
+    return () => document.removeEventListener('pointerdown', handleOutsideInteraction);
+  }, [navOpen]);
+
   return (
     <div className="app-shell">
       <header className="top-bar">
-        <div className="top-bar-inner">
+        <div className="top-bar-inner" ref={topBarInnerRef}>
           <a className="brand" href="/">
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Bras%C3%A3o_do_Tocantins.svg/250px-Bras%C3%A3o_do_Tocantins.svg.png"
@@ -43,12 +77,13 @@ export function AppLayout() {
             </div>
           </a>
 
-          <nav className="top-nav" aria-label="Módulos de dados">
+          <nav id="top-nav-menu" className={`top-nav${navOpen ? ' open' : ''}`} aria-label="Módulos de dados">
             {DATASETS.map((config) => (
               <NavLink
                 key={config.id}
                 to={`/dashboard/${config.id}`}
                 className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}
+                onClick={() => setNavOpen(false)}
               >
                 {config.shortTitle}
               </NavLink>
@@ -63,6 +98,16 @@ export function AppLayout() {
               aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
             >
               {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+            </button>
+            <button
+              className="theme-toggle nav-toggle"
+              type="button"
+              aria-expanded={navOpen}
+              aria-controls="top-nav-menu"
+              aria-label={navOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
+              onClick={() => setNavOpen((current) => !current)}
+            >
+              {navOpen ? <CloseIcon /> : <MenuIcon />}
             </button>
           </div>
         </div>

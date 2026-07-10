@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 
 import {
@@ -166,25 +166,36 @@ function DatasetView({ config }: { config: DatasetConfig }) {
             <section className="panel">
               <h2>Ranking por {config.groupColumn.replaceAll('_', ' ')}</h2>
               <div className="bar-list">
-                {topGroups.map((item) => (
-                  <div className="bar-row detailed" key={item.label}>
-                    <span>{item.label}</span>
-                    <div className="bar-track">
-                      <div className="bar-fill warm" style={{ width: `${Math.max((item.value / maxGroupValue) * 100, 3)}%` }} />
+                {topGroups.map((item, index) => {
+                  const delay = `${Math.min(index * 0.04, 0.4)}s`;
+                  return (
+                    <div className="bar-row detailed" key={item.label} style={{ animationDelay: delay }}>
+                      <span>{item.label}</span>
+                      <div className="bar-track">
+                        <div
+                          className="bar-fill warm"
+                          style={{ width: `${Math.max((item.value / maxGroupValue) * 100, 3)}%`, animationDelay: delay }}
+                        />
+                      </div>
+                      <strong>{formatCurrency(item.value)}</strong>
                     </div>
-                    <strong>{formatCurrency(item.value)}</strong>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
 
             <section className="panel">
               <h2>Evolucao por ano</h2>
               <div className="column-chart">
-                {summary.yearRows.map((item) => (
+                {summary.yearRows.map((item, index) => (
                   <div className="column-item" key={item.label}>
                     <div className="column-track">
-                      <span style={{ height: `${Math.max((item.value / maxYearValue) * 100, 4)}%` }} />
+                      <span
+                        style={{
+                          height: `${Math.max((item.value / maxYearValue) * 100, 4)}%`,
+                          animationDelay: `${Math.min(index * 0.03, 0.3)}s`,
+                        }}
+                      />
                     </div>
                     <small>{item.label}</small>
                   </div>
@@ -306,6 +317,7 @@ function MultiSelect({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const controlId = useId();
+  const containerRef = useRef<HTMLDivElement>(null);
   const selectedSet = useMemo(() => new Set(value), [value]);
   const filteredOptions = useMemo(
     () => options.filter((option) => option.toLowerCase().includes(query.trim().toLowerCase())),
@@ -321,8 +333,21 @@ function MultiSelect({
     onChange([...value, option]);
   }
 
+  useEffect(() => {
+    if (!open) return;
+
+    function handleOutsideInteraction(event: PointerEvent) {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener('pointerdown', handleOutsideInteraction);
+    return () => document.removeEventListener('pointerdown', handleOutsideInteraction);
+  }, [open]);
+
   return (
-    <div className="multi-select">
+    <div className="multi-select" ref={containerRef}>
       <div className="multi-select-label" id={`${controlId}-label`}>
         {label}
       </div>

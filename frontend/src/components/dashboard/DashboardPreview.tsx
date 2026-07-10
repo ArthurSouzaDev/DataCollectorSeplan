@@ -39,15 +39,21 @@ export function DashboardPreview({ config, summary, loading = false, lastModifie
             </div>
 
             <div className="mini-chart" aria-label={`Ranking de ${config.entityColumn}`}>
-              {summary.topEntities.map((item) => (
-                <div className="bar-row" key={item.label}>
-                  <span title={item.label}>{item.label}</span>
-                  <div className="bar-track">
-                    <div className="bar-fill" style={{ width: `${Math.max((item.value / maxValue) * 100, 3)}%` }} />
+              {summary.topEntities.map((item, index) => {
+                const delay = `${Math.min(index * 0.05, 0.4)}s`;
+                return (
+                  <div className="bar-row" key={item.label} style={{ animationDelay: delay }}>
+                    <span title={item.label}>{item.label}</span>
+                    <div className="bar-track">
+                      <div
+                        className="bar-fill"
+                        style={{ width: `${Math.max((item.value / maxValue) * 100, 3)}%`, animationDelay: delay }}
+                      />
+                    </div>
+                    <strong>{formatCurrency(item.value)}</strong>
                   </div>
-                  <strong>{formatCurrency(item.value)}</strong>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </>
         )}

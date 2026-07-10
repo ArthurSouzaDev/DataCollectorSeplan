@@ -1,3 +1,4 @@
+import sys
 import requests
 import os
 from dotenv import load_dotenv
@@ -6,6 +7,9 @@ from datetime import datetime
 import time
 import json
 from pathlib import Path
+
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
 
 load_dotenv()
 
@@ -276,10 +280,10 @@ if __name__ == "__main__":
     df_fundo["data_fim"]    = pd.to_datetime(df_fundo["data_fim"],    errors="coerce")
 
     # Enriquecimento
-    print("\n━━━ Enriquecendo FUNDO A FUNDO ━━━")
+    print("\n--- Enriquecendo FUNDO A FUNDO ---")
     df_fundo  = enriquecer_natureza(df_fundo,  "cnpj_recebedor")
 
-    print("\n━━━ Enriquecendo EMENDAS ━━━")
+    print("\n--- Enriquecendo EMENDAS ---")
     df_emenda = enriquecer_natureza(df_emenda, "cnpj_beneficiario")
 
     # Exportação segura: só substitui arquivos válidos ao final de uma execução consistente.
