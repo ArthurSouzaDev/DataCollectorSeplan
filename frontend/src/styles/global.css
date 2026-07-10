@@ -231,7 +231,7 @@ main { flex: 1; }
   flex-shrink: 0;
 }
 
-.nav-toggle {
+.theme-toggle.nav-toggle {
   display: none;
 }
 
@@ -1324,7 +1324,7 @@ tbody tr:last-child td { border-bottom: none; }
     gap: 10px;
   }
 
-  .nav-toggle {
+  .theme-toggle.nav-toggle {
     display: inline-flex;
   }
 
