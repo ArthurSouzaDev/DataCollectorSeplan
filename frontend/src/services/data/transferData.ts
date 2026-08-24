@@ -221,9 +221,25 @@ export function uniqueOptions(rows: TransferRecord[], column: string) {
   );
 }
 
+// Situações do SICONV que indicam que a proposta ainda não virou convênio
+// formalizado (ainda em aprovação/complementação) ou que foi cancelada.
+const SITUACOES_NAO_FORMALIZADAS = new Set([
+  'Nao informado',
+  'Cancelado',
+  'Proposta/Plano de Trabalho Aprovado',
+  'Proposta/Plano de Trabalho Complementado em Análise',
+]);
+
 export function filterRows(
   rows: TransferRecord[],
-  filters: { years?: string[]; statuses?: string[]; groups?: string[]; natures?: string[]; search?: string },
+  filters: {
+    years?: string[];
+    statuses?: string[];
+    groups?: string[];
+    natures?: string[];
+    onlyFormalized?: boolean;
+    search?: string;
+  },
   config: DatasetConfig,
 ) {
   const term = filters.search?.trim().toLowerCase();
@@ -237,6 +253,7 @@ export function filterRows(
     if (statusSet.size > 0 && !statusSet.has(cleanLabel(row[config.statusColumn]))) return false;
     if (groupSet.size > 0 && !groupSet.has(cleanLabel(row[config.groupColumn]))) return false;
     if (natureSet.size > 0 && !natureSet.has(cleanLabel(row.natureza_juridica))) return false;
+    if (filters.onlyFormalized && SITUACOES_NAO_FORMALIZADAS.has(cleanLabel(row[config.statusColumn]))) return false;
     if (term) {
       const haystack = config.tableColumns.map((column) => cleanLabel(row[column])).join(' ').toLowerCase();
       if (!haystack.includes(term)) return false;

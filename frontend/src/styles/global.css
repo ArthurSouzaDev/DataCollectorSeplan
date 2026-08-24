@@ -930,6 +930,23 @@ main { flex: 1; }
   box-shadow: 0 0 0 3px var(--accent-light);
 }
 
+.filter-panel label.checkbox-filter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-start;
+  align-self: end;
+  min-height: 40px;
+}
+
+.filter-panel label.checkbox-filter input {
+  min-height: 0;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
 /* ══════════════════════════════════════════════════════════
    Multi-Select
 ══════════════════════════════════════════════════════════ */

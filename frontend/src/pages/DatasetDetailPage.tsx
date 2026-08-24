@@ -42,6 +42,7 @@ function DatasetView({ config }: { config: DatasetConfig }) {
   const [statuses, setStatuses] = useState<string[]>([]);
   const [groups, setGroups] = useState<string[]>([]);
   const [natures, setNatures] = useState<string[]>([]);
+  const [onlyFormalized, setOnlyFormalized] = useState(false);
   const [search, setSearch] = useState('');
   const [sortColumn, setSortColumn] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -64,14 +65,15 @@ function DatasetView({ config }: { config: DatasetConfig }) {
     setStatuses([]);
     setGroups([]);
     setNatures([]);
+    setOnlyFormalized(false);
     setSearch('');
     setSortColumn('');
     setSelectedColumns([]);
   }, [config.id]);
 
   const filteredRows = useMemo(
-    () => filterRows(currentState.rows, { years, statuses, groups, natures, search }, config),
-    [config, currentState.rows, groups, natures, search, statuses, years],
+    () => filterRows(currentState.rows, { years, statuses, groups, natures, onlyFormalized, search }, config),
+    [config, currentState.rows, groups, natures, onlyFormalized, search, statuses, years],
   );
 
   const orderedRows = useMemo(() => {
@@ -154,6 +156,14 @@ function DatasetView({ config }: { config: DatasetConfig }) {
               value={natures}
               onChange={setNatures}
             />
+            <label className="checkbox-filter">
+              <input
+                type="checkbox"
+                checked={onlyFormalized}
+                onChange={(event) => setOnlyFormalized(event.target.checked)}
+              />
+              Somente convenios formalizados
+            </label>
             <label>
               Buscar na planilha
               <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Municipio, orgao, codigo..." />
@@ -226,6 +236,7 @@ function DatasetView({ config }: { config: DatasetConfig }) {
                   setStatuses([]);
                   setGroups([]);
                   setNatures([]);
+                  setOnlyFormalized(false);
                   setSearch('');
                   setSelectedColumns([]);
                 }}
@@ -254,6 +265,7 @@ function DatasetView({ config }: { config: DatasetConfig }) {
                 <span>{statuses.length ? `Situacoes: ${statuses.length}` : 'Situacoes: todas'}</span>
                 <span>{groups.length ? `${config.groupColumn.replaceAll('_', ' ')}: ${groups.length}` : 'Agrupamento: todos'}</span>
                 <span>{natures.length ? `Natureza juridica: ${natures.length}` : 'Natureza juridica: todas'}</span>
+                <span>{onlyFormalized ? 'Somente formalizados: sim' : 'Somente formalizados: nao'}</span>
               </div>
             </div>
 
