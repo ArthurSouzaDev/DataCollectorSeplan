@@ -23,6 +23,9 @@ OUTPUT_FUNDO = DATASET_DIR / "fundo_a_fundo.csv"
 OUTPUT_EMENDAS = DATASET_DIR / "emendas_to.csv"
 MAX_TENTATIVAS = 3
 ESPERA_RETRY_SEGUNDOS = 5
+HEADERS_REQUEST = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+}
 
 
 def _carregar_cache() -> dict:
@@ -115,7 +118,7 @@ def _request_com_retry(endpoint: str, params: dict, nome_dataset: str) -> reques
     for tentativa in range(1, MAX_TENTATIVAS + 1):
         try:
             print(f"[{nome_dataset}] Requisição tentativa {tentativa}/{MAX_TENTATIVAS} | params={params}")
-            response = requests.get(endpoint, params=params, timeout=60)
+            response = requests.get(endpoint, params=params, headers=HEADERS_REQUEST, timeout=60)
             response.raise_for_status()
             return response
         except requests.RequestException as e:
