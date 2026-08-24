@@ -223,18 +223,20 @@ export function uniqueOptions(rows: TransferRecord[], column: string) {
 
 export function filterRows(
   rows: TransferRecord[],
-  filters: { years?: string[]; statuses?: string[]; groups?: string[]; search?: string },
+  filters: { years?: string[]; statuses?: string[]; groups?: string[]; natures?: string[]; search?: string },
   config: DatasetConfig,
 ) {
   const term = filters.search?.trim().toLowerCase();
   const yearSet = new Set(filters.years ?? []);
   const statusSet = new Set(filters.statuses ?? []);
   const groupSet = new Set(filters.groups ?? []);
+  const natureSet = new Set(filters.natures ?? []);
 
   return rows.filter((row) => {
     if (yearSet.size > 0 && !yearSet.has(cleanLabel(row[config.yearColumn]))) return false;
     if (statusSet.size > 0 && !statusSet.has(cleanLabel(row[config.statusColumn]))) return false;
     if (groupSet.size > 0 && !groupSet.has(cleanLabel(row[config.groupColumn]))) return false;
+    if (natureSet.size > 0 && !natureSet.has(cleanLabel(row.natureza_juridica))) return false;
     if (term) {
       const haystack = config.tableColumns.map((column) => cleanLabel(row[column])).join(' ').toLowerCase();
       if (!haystack.includes(term)) return false;

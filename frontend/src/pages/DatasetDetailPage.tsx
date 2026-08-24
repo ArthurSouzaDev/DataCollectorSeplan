@@ -41,6 +41,7 @@ function DatasetView({ config }: { config: DatasetConfig }) {
   const [years, setYears] = useState<string[]>([]);
   const [statuses, setStatuses] = useState<string[]>([]);
   const [groups, setGroups] = useState<string[]>([]);
+  const [natures, setNatures] = useState<string[]>([]);
   const [search, setSearch] = useState('');
   const [sortColumn, setSortColumn] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -62,14 +63,15 @@ function DatasetView({ config }: { config: DatasetConfig }) {
     setYears([]);
     setStatuses([]);
     setGroups([]);
+    setNatures([]);
     setSearch('');
     setSortColumn('');
     setSelectedColumns([]);
   }, [config.id]);
 
   const filteredRows = useMemo(
-    () => filterRows(currentState.rows, { years, statuses, groups, search }, config),
-    [config, currentState.rows, groups, search, statuses, years],
+    () => filterRows(currentState.rows, { years, statuses, groups, natures, search }, config),
+    [config, currentState.rows, groups, natures, search, statuses, years],
   );
 
   const orderedRows = useMemo(() => {
@@ -146,6 +148,12 @@ function DatasetView({ config }: { config: DatasetConfig }) {
               value={groups}
               onChange={setGroups}
             />
+            <MultiSelect
+              label="Natureza juridica"
+              options={uniqueOptions(currentState.rows, 'natureza_juridica')}
+              value={natures}
+              onChange={setNatures}
+            />
             <label>
               Buscar na planilha
               <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Municipio, orgao, codigo..." />
@@ -217,6 +225,7 @@ function DatasetView({ config }: { config: DatasetConfig }) {
                   setYears([]);
                   setStatuses([]);
                   setGroups([]);
+                  setNatures([]);
                   setSearch('');
                   setSelectedColumns([]);
                 }}
@@ -244,6 +253,7 @@ function DatasetView({ config }: { config: DatasetConfig }) {
                 <span>{years.length ? `Anos: ${years.join(', ')}` : 'Anos: todos'}</span>
                 <span>{statuses.length ? `Situacoes: ${statuses.length}` : 'Situacoes: todas'}</span>
                 <span>{groups.length ? `${config.groupColumn.replaceAll('_', ' ')}: ${groups.length}` : 'Agrupamento: todos'}</span>
+                <span>{natures.length ? `Natureza juridica: ${natures.length}` : 'Natureza juridica: todas'}</span>
               </div>
             </div>
 
