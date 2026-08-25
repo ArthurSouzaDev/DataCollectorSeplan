@@ -3,19 +3,33 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 
 import {
   aggregateBy,
+  aggregateByYear,
+  aggregateComposition,
+  aggregateShare,
   buildCsv,
   filterRows,
   formatCurrency,
+  formatCurrencyShort,
   formatNumber,
   getDatasetConfig,
   loadDataset,
-  summarizeDataset,
   toNumber,
   uniqueOptions,
   type DatasetConfig,
   type DatasetId,
   type TransferRecord,
 } from '../services/data/transferData';
+import {
+  computeExecution,
+  computeKpis,
+  supportsExecutionPanel,
+  type KpiItem,
+} from '../services/data/datasetKpis';
+import { CategoryDonut } from '../components/charts/CategoryDonut';
+import { CompositionChart } from '../components/charts/CompositionChart';
+import { ExecutionPanel } from '../components/charts/ExecutionPanel';
+import { RankingBarChart } from '../components/charts/RankingBarChart';
+import { YearEvolutionChart } from '../components/charts/YearEvolutionChart';
 
 type DataState = {
   rows: TransferRecord[];
@@ -91,11 +105,51 @@ function DatasetView({ config }: { config: DatasetConfig }) {
     });
   }, [filteredRows, sortColumn, sortDirection]);
 
-  const summary = useMemo(() => summarizeDataset(config, filteredRows), [config, filteredRows]);
   const topGroups = useMemo(
     () => aggregateBy(filteredRows, config.groupColumn, config.valueColumn, 8),
     [config, filteredRows],
   );
+  const kpis = useMemo(() => computeKpis(config, filteredRows), [config, filteredRows]);
+  const yearRows = useMemo(
+    () => aggregateByYear(filteredRows, config.yearColumn, config.valueColumn),
+    [config, filteredRows],
+  );
+  const statusShare = useMemo(
+    () => aggregateShare(filteredRows, config.statusColumn, config.valueColumn),
+    [config, filteredRows],
+  );
+  const natureShare = useMemo(
+    () => aggregateShare(filteredRows, 'natureza_juridica', config.valueColumn),
+    [config, filteredRows],
+  );
+  const composition = useMemo(
+    () => (config.composition ? aggregateComposition(filteredRows, config.composition) : null),
+    [config, filteredRows],
+  );
+  const execution = useMemo(
+    () => (supportsExecutionPanel(config) ? computeExecution(filteredRows) : null),
+    [config, filteredRows],
+  );
+
+  // Cross-filtering: clicar numa barra do ranking aplica (ou remove) o filtro
+  // do agrupamento, e todo o painel — KPIs, funil e tabela — reage junto.
+  function toggleGroupFilter(label: string) {
+    setGroups((current) =>
+      current.includes(label) ? current.filter((item) => item !== label) : [...current, label],
+    );
+  }
+
+  function toggleStatusFilter(label: string) {
+    setStatuses((current) =>
+      current.includes(label) ? current.filter((item) => item !== label) : [...current, label],
+    );
+  }
+
+  function toggleNatureFilter(label: string) {
+    setNatures((current) =>
+      current.includes(label) ? current.filter((item) => item !== label) : [...current, label],
+    );
+  }
 
   const availableColumns = config.tableColumns.filter((column) =>
     currentState.rows.some((row) => Object.prototype.hasOwnProperty.call(row, column)),
@@ -104,8 +158,6 @@ function DatasetView({ config }: { config: DatasetConfig }) {
     ? selectedColumns.filter((column) => availableColumns.includes(column))
     : availableColumns;
 
-  const maxGroupValue = Math.max(...topGroups.map((item) => item.value), 1);
-  const maxYearValue = Math.max(...summary.yearRows.map((item) => item.value), 1);
 
   return (
     <section className="page detail-page">
@@ -170,57 +222,98 @@ function DatasetView({ config }: { config: DatasetConfig }) {
             </label>
           </div>
 
-          <div className="kpi-grid">
-            <Metric label={config.countLabel} value={formatNumber(summary.totalRecords)} />
-            <Metric label={config.valueLabel} value={formatCurrency(summary.totalValue)} />
-            <Metric
-              label={config.id === 'especiais' ? 'Investimento' : config.id === 'fundo-a-fundo' ? 'Saldo disponivel' : 'Valor pago'}
-              value={formatCurrency(summary.secondaryValue)}
-            />
-            <Metric label="Anos filtrados" value={formatNumber(summary.yearCount)} />
+          <div className={`kpi-grid kpi-grid-${kpis.length}`}>
+            {kpis.map((kpi) => (
+              <KpiCard key={kpi.key} kpi={kpi} dense={kpis.length >= 6} />
+            ))}
           </div>
+
+          {execution ? <ExecutionPanel execution={execution} /> : null}
 
           <div className="dashboard-grid">
             <section className="panel">
-              <h2>Ranking por {config.groupColumn.replaceAll('_', ' ')}</h2>
-              <div className="bar-list">
-                {topGroups.map((item, index) => {
-                  const delay = `${Math.min(index * 0.04, 0.4)}s`;
-                  return (
-                    <div className="bar-row detailed" key={item.label} style={{ animationDelay: delay }}>
-                      <span>{item.label}</span>
-                      <div className="bar-track">
-                        <div
-                          className="bar-fill warm"
-                          style={{ width: `${Math.max((item.value / maxGroupValue) * 100, 3)}%`, animationDelay: delay }}
-                        />
-                      </div>
-                      <strong>{formatCurrency(item.value)}</strong>
-                    </div>
-                  );
-                })}
+              <div className="panel-heading">
+                <h2>Ranking por {config.groupColumn.replaceAll('_', ' ')}</h2>
+                {groups.length ? (
+                  <button className="link-button" type="button" onClick={() => setGroups([])}>
+                    Limpar seleção
+                  </button>
+                ) : (
+                  <span className="panel-hint">Clique numa barra para filtrar</span>
+                )}
               </div>
+              <RankingBarChart
+                rows={topGroups}
+                valueLabel={config.valueLabel}
+                selected={groups}
+                onSelect={toggleGroupFilter}
+              />
             </section>
 
             <section className="panel">
-              <h2>Evolucao por ano</h2>
-              <div className="column-chart">
-                {summary.yearRows.map((item, index) => (
-                  <div className="column-item" key={item.label}>
-                    <div className="column-track">
-                      <span
-                        style={{
-                          height: `${Math.max((item.value / maxYearValue) * 100, 4)}%`,
-                          animationDelay: `${Math.min(index * 0.03, 0.3)}s`,
-                        }}
-                      />
-                    </div>
-                    <small>{item.label}</small>
-                  </div>
-                ))}
+              <div className="panel-heading">
+                <h2>Evolução por ano</h2>
+                <span className="panel-hint">Valor e quantidade</span>
               </div>
+              <YearEvolutionChart
+                rows={yearRows}
+                valueLabel={config.valueLabel}
+                countLabel={config.countLabel}
+              />
             </section>
           </div>
+
+          <div className="dashboard-grid halves">
+            <section className="panel">
+              <div className="panel-heading">
+                <h2>Distribuição por situação</h2>
+                {statuses.length ? (
+                  <button className="link-button" type="button" onClick={() => setStatuses([])}>
+                    Limpar seleção
+                  </button>
+                ) : (
+                  <span className="panel-hint">Clique numa fatia para filtrar</span>
+                )}
+              </div>
+              <CategoryDonut
+                slices={statusShare.slices}
+                total={statusShare.total}
+                totalLabel={config.countLabel.toLowerCase()}
+                selected={statuses}
+                onSelect={toggleStatusFilter}
+              />
+            </section>
+
+            <section className="panel">
+              <div className="panel-heading">
+                <h2>Natureza jurídica</h2>
+                {natures.length ? (
+                  <button className="link-button" type="button" onClick={() => setNatures([])}>
+                    Limpar seleção
+                  </button>
+                ) : (
+                  <span className="panel-hint">Clique numa fatia para filtrar</span>
+                )}
+              </div>
+              <CategoryDonut
+                slices={natureShare.slices}
+                total={natureShare.total}
+                totalLabel={config.countLabel.toLowerCase()}
+                selected={natures}
+                onSelect={toggleNatureFilter}
+              />
+            </section>
+          </div>
+
+          {composition && config.composition ? (
+            <section className="panel">
+              <div className="panel-heading">
+                <h2>{config.composition.title}</h2>
+                <span className="panel-hint">{config.composition.hint}</span>
+              </div>
+              <CompositionChart rows={composition} config={config.composition} />
+            </section>
+          ) : null}
 
           <section className="panel spreadsheet-panel">
             <div className="panel-title-row">
@@ -308,11 +401,19 @@ function DatasetView({ config }: { config: DatasetConfig }) {
   );
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+/**
+ * Em linhas com 6 ou 7 cartões o valor por extenso não cabe, então o cartão
+ * mostra a forma abreviada e mantém o valor exato no title (hover).
+ */
+function KpiCard({ kpi, dense }: { kpi: KpiItem; dense: boolean }) {
+  const exact = kpi.kind === 'count' ? formatNumber(kpi.amount) : formatCurrency(kpi.amount);
+  const shown = kpi.kind === 'currency' && dense ? formatCurrencyShort(kpi.amount) : exact;
+
   return (
-    <div className="metric-card">
-      <span>{label}</span>
-      <strong>{value}</strong>
+    <div className={kpi.tone ? `metric-card tone-${kpi.tone}` : 'metric-card'}>
+      <span>{kpi.label}</span>
+      <strong title={shown === exact ? undefined : exact}>{shown}</strong>
+      {kpi.hint ? <em className="metric-hint">{kpi.hint}</em> : null}
     </div>
   );
 }

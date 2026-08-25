@@ -1,9 +1,15 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { AppLayout } from '../../components/layout/AppLayout';
-import { DatasetDetailPage } from '../../pages/DatasetDetailPage';
 import { HomePage } from '../../pages/HomePage';
 import { NotFoundPage } from '../../pages/NotFoundPage';
+
+// A página de detalhe carrega o Recharts. Mantê-la em chunk separado evita que
+// a home baixe a biblioteca de gráficos antes de o usuário abrir um dashboard.
+const DatasetDetailPage = lazy(() =>
+  import('../../pages/DatasetDetailPage').then((module) => ({ default: module.DatasetDetailPage })),
+);
 
 export const router = createBrowserRouter([
   {
@@ -16,7 +22,11 @@ export const router = createBrowserRouter([
       },
       {
         path: 'dashboard/:datasetId',
-        element: <DatasetDetailPage />,
+        element: (
+          <Suspense fallback={<div className="loading-panel">Carregando painel...</div>}>
+            <DatasetDetailPage />
+          </Suspense>
+        ),
       },
       {
         path: '*',

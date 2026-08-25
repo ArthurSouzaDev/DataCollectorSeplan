@@ -48,7 +48,7 @@ USECOLS = {
     "proposta": {
         "ID_PROPOSTA", "UF_PROPONENTE", "MUNIC_PROPONENTE", "NR_PROPOSTA",
         "ANO_PROP", "MODALIDADE", "NM_PROPONENTE", "NATUREZA_JURIDICA",
-        "DESC_ORGAO_SUP", "DESC_ORGAO",
+        "DESC_ORGAO_SUP", "DESC_ORGAO", "SIT_PROPOSTA",
     },
     "emenda": {
         "ID_PROPOSTA", "NR_EMENDA", "NOME_PARLAMENTAR", "TIPO_PARLAMENTAR",
@@ -323,6 +323,49 @@ def process_pagamento() -> pd.DataFrame:
     return df
 
 
+def _consolidar_situacao(df: pd.DataFrame) -> pd.DataFrame:
+    """Preenche `situacao` e marca a fase de cada registro.
+
+    A base final é uma junção de propostas com convênios: só uma fração das
+    propostas do Tocantins chega a virar convênio. Como `situacao` vinha apenas
+    de `SIT_CONVENIO`, todo registro que parou na fase de proposta ficava sem
+    situação — eram 17.622 de 23.562 linhas, 74,8% da base.
+
+    Aqui `situacao` passa a cair para `sit_proposta` quando não há situação de
+    convênio, e a coluna `fase` registra de qual vocabulário veio o valor. Sem
+    esse marcador as duas escalas se misturariam num campo só ("Em execução",
+    de convênio, ao lado de "Proposta/Plano de Trabalho Cadastrados"), e não
+    haveria como distinguir um convênio assinado de uma proposta que nunca saiu
+    do papel.
+    """
+    def _texto(coluna: str) -> pd.Series:
+        if coluna not in df.columns:
+            return pd.Series(pd.NA, index=df.index, dtype="string")
+        serie = df[coluna].astype("string").str.strip()
+        return serie.replace({"": pd.NA, "nan": pd.NA, "None": pd.NA})
+
+    situacao_conv = _texto("situacao")
+    situacao_prop = _texto("sit_proposta")
+
+    # A fase vem do número do convênio, não da situação: existem linhas com
+    # convênio assinado que o SICONV devolve sem SIT_CONVENIO preenchido.
+    df["fase"] = pd.Series("Proposta", index=df.index).where(_texto("nr_convenio").isna(), "Convênio")
+
+    df["situacao"] = situacao_conv.fillna(situacao_prop).fillna("Não informado")
+
+    if "sit_proposta" in df.columns:
+        df = df.drop(columns=["sit_proposta"])
+
+    convenios = int(df["fase"].eq("Convênio").sum())
+    logger.info(
+        "[situacao] fase consolidada | convênios=%s | propostas=%s | sem situação=%s",
+        f"{convenios:,}",
+        f"{len(df) - convenios:,}",
+        f"{int(df['situacao'].eq('Não informado').sum()):,}",
+    )
+    return df
+
+
 def generate_outputs() -> pd.DataFrame:
     """Gera o parquet final; datasets auxiliares podem falhar sem derrubar a execução inteira."""
     started = time.perf_counter()
@@ -359,6 +402,7 @@ def generate_outputs() -> pd.DataFrame:
         final_df = final_df.merge(pagamento, on="nr_convenio", how="left")
 
     final_df = final_df.rename(columns=OUTPUT_RENAME)
+    final_df = _consolidar_situacao(final_df)
     for required, default in {
         "valor_pago": 0.0,
         "valor_saldo_conta": 0.0,
