@@ -1,0 +1,9 @@
+# Normaliza fim de linha no repositorio: LF no git, nativo no checkout.
+# Sem isto, cada arquivo editado no Windows aparece inteiro como modificado.
+* text=auto
+
+*.parquet binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.zip binary
