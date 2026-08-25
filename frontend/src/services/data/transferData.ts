@@ -17,7 +17,22 @@ export type DatasetConfig = {
   yearColumn: string;
   statusColumn: string;
   tableColumns: string[];
+  /** Decomposição do valor em partes (custeio × investimento, tipo de repasse…). */
+  composition?: CompositionConfig;
 };
+
+export type CompositionSeries = { key: string; label: string };
+
+export type CompositionConfig = {
+  title: string;
+  hint: string;
+  groupColumn: string;
+  series: CompositionSeries[];
+  /** Quantos grupos exibir (os demais viram "Outros"). */
+  limit?: number;
+};
+
+export type CompositionRow = { label: string; total: number } & Record<string, number | string>;
 
 export type DatasetSummary = {
   totalRecords: number;
@@ -61,6 +76,15 @@ export const DATASETS: DatasetConfig[] = [
       'valor_total',
       'natureza_juridica',
     ],
+    composition: {
+      title: 'Custeio × investimento por ano',
+      hint: 'Composição do valor total',
+      groupColumn: 'ano_emenda',
+      series: [
+        { key: 'valor_custeio', label: 'Custeio' },
+        { key: 'valor_investimento', label: 'Investimento' },
+      ],
+    },
   },
   {
     id: 'discricionarias-legais',
@@ -78,6 +102,7 @@ export const DATASETS: DatasetConfig[] = [
     statusColumn: 'situacao',
     tableColumns: [
       'nr_convenio',
+      'fase',
       'ano_assinatura',
       'municipio_beneficiario',
       'proponente',
@@ -117,6 +142,17 @@ export const DATASETS: DatasetConfig[] = [
       'saldo_disponivel',
       'natureza_juridica',
     ],
+    composition: {
+      title: 'Composição do repasse por órgão',
+      hint: 'Emenda, específico e voluntário',
+      groupColumn: 'sigla_orgao',
+      series: [
+        { key: 'valor_emenda', label: 'Emenda' },
+        { key: 'valor_especifico', label: 'Específico' },
+        { key: 'valor_voluntario', label: 'Voluntário' },
+      ],
+      limit: 8,
+    },
   },
 ];
 
@@ -215,20 +251,137 @@ export function aggregateBy(
     .slice(0, limit);
 }
 
+export type ShareRow = AggregateRow & { share: number };
+
+/**
+ * Distribuição parte-todo por contagem de registros.
+ *
+ * Categorias abaixo de `minShare` (e tudo além de `maxSlices - 1`) são somadas em
+ * "Outros", como no dashboard Streamlit. O limite existe porque uma rosca deixa de
+ * ser legível acima de ~6 fatias — e porque a paleta categórica tem 6 posições.
+ */
+export function aggregateShare(
+  rows: TransferRecord[],
+  labelColumn: string,
+  valueColumn: string,
+  { maxSlices = 6, minShare = 2 }: { maxSlices?: number; minShare?: number } = {},
+): { slices: ShareRow[]; total: number } {
+  const grouped = new Map<string, AggregateRow>();
+
+  for (const row of rows) {
+    const label = cleanLabel(row[labelColumn]);
+    const current = grouped.get(label) ?? { label, value: 0, count: 0 };
+    current.value += toNumber(row[valueColumn]);
+    current.count += 1;
+    grouped.set(label, current);
+  }
+
+  const total = rows.length;
+  if (!total) return { slices: [], total: 0 };
+
+  const ordered = Array.from(grouped.values()).sort((a, b) => b.count - a.count);
+  const named: ShareRow[] = [];
+  const tail: AggregateRow[] = [];
+
+  for (const item of ordered) {
+    const share = (item.count / total) * 100;
+    if (named.length < maxSlices - 1 && share >= minShare) named.push({ ...item, share });
+    else tail.push(item);
+  }
+
+  if (tail.length) {
+    const value = tail.reduce((sum, item) => sum + item.value, 0);
+    const count = tail.reduce((sum, item) => sum + item.count, 0);
+    named.push({ label: 'Outros', value, count, share: (count / total) * 100 });
+  }
+
+  return { slices: named, total };
+}
+
+/**
+ * Decompõe o valor de cada grupo nas suas parcelas (custeio × investimento,
+ * emenda × específico × voluntário). Grupos além de `limit` viram "Outros".
+ */
+export function aggregateComposition(rows: TransferRecord[], config: CompositionConfig): CompositionRow[] {
+  const keys = config.series.map((serie) => serie.key);
+  const grouped = new Map<string, CompositionRow>();
+
+  for (const row of rows) {
+    const label = cleanLabel(row[config.groupColumn]);
+    let current = grouped.get(label);
+    if (!current) {
+      current = { label, total: 0 };
+      for (const key of keys) current[key] = 0;
+      grouped.set(label, current);
+    }
+    for (const key of keys) {
+      const value = toNumber(row[key]);
+      current[key] = (current[key] as number) + value;
+      current.total += value;
+    }
+  }
+
+  const ordered = Array.from(grouped.values()).sort((a, b) => b.total - a.total);
+  if (!config.limit || ordered.length <= config.limit) {
+    // Sem corte, um eixo de anos deve sair em ordem cronológica.
+    return config.groupColumn.startsWith('ano')
+      ? ordered.sort((a, b) => a.label.localeCompare(b.label))
+      : ordered.reverse();
+  }
+
+  const head = ordered.slice(0, config.limit - 1);
+  const tail = ordered.slice(config.limit - 1);
+  const outros: CompositionRow = { label: 'Outros', total: 0 };
+  for (const key of keys) outros[key] = 0;
+  for (const item of tail) {
+    for (const key of keys) outros[key] = (outros[key] as number) + (item[key] as number);
+    outros.total += item.total;
+  }
+
+  return [...head, outros].reverse();
+}
+
+/** Série temporal ordenada por ano, com valor e quantidade em cada ponto. */
+export function aggregateByYear(rows: TransferRecord[], yearColumn: string, valueColumn: string): AggregateRow[] {
+  const grouped = new Map<string, AggregateRow>();
+
+  for (const row of rows) {
+    const label = String(row[yearColumn] ?? '').trim();
+    if (!label || label === 'nan') continue;
+    const current = grouped.get(label) ?? { label, value: 0, count: 0 };
+    current.value += toNumber(row[valueColumn]);
+    current.count += 1;
+    grouped.set(label, current);
+  }
+
+  return Array.from(grouped.values()).sort((a, b) => a.label.localeCompare(b.label));
+}
+
 export function uniqueOptions(rows: TransferRecord[], column: string) {
   return Array.from(new Set(rows.map((row) => cleanLabel(row[column])).filter(Boolean))).sort((a, b) =>
     a.localeCompare(b),
   );
 }
 
-// Situações do SICONV que indicam que a proposta ainda não virou convênio
-// formalizado (ainda em aprovação/complementação) ou que foi cancelada.
+// Antes da coluna `fase` existir, "formalizado" era inferido pelo rótulo da
+// situação — um proxy que só funcionava porque as propostas chegavam sem
+// situação nenhuma. Mantido como fallback para bases geradas antes da correção
+// do coletor; com `fase` presente, o teste é direto.
 const SITUACOES_NAO_FORMALIZADAS = new Set([
   'Nao informado',
+  'Não informado',
   'Cancelado',
   'Proposta/Plano de Trabalho Aprovado',
   'Proposta/Plano de Trabalho Complementado em Análise',
 ]);
+
+/** Formalizado = a proposta virou convênio e ele não foi cancelado. */
+function isFormalized(row: TransferRecord, config: DatasetConfig) {
+  if (row.fase !== undefined) {
+    return cleanLabel(row.fase) === 'Convênio' && cleanLabel(row[config.statusColumn]) !== 'Cancelado';
+  }
+  return !SITUACOES_NAO_FORMALIZADAS.has(cleanLabel(row[config.statusColumn]));
+}
 
 export function filterRows(
   rows: TransferRecord[],
@@ -253,7 +406,7 @@ export function filterRows(
     if (statusSet.size > 0 && !statusSet.has(cleanLabel(row[config.statusColumn]))) return false;
     if (groupSet.size > 0 && !groupSet.has(cleanLabel(row[config.groupColumn]))) return false;
     if (natureSet.size > 0 && !natureSet.has(cleanLabel(row.natureza_juridica))) return false;
-    if (filters.onlyFormalized && SITUACOES_NAO_FORMALIZADAS.has(cleanLabel(row[config.statusColumn]))) return false;
+    if (filters.onlyFormalized && !isFormalized(row, config)) return false;
     if (term) {
       const haystack = config.tableColumns.map((column) => cleanLabel(row[column])).join(' ').toLowerCase();
       if (!haystack.includes(term)) return false;
@@ -278,6 +431,21 @@ export function formatCurrency(value: number) {
 
 export function formatNumber(value: number) {
   return new Intl.NumberFormat('pt-BR').format(value);
+}
+
+/**
+ * Versão abreviada para cartões estreitos: R$ 7,23 bi / R$ 272,9 mi / R$ 45 mil.
+ * O valor por extenso continua disponível no `title` do cartão.
+ */
+export function formatCurrencyShort(value: number) {
+  const abs = Math.abs(value);
+  const short = (divisor: number, unit: string, digits: number) =>
+    `R$ ${new Intl.NumberFormat('pt-BR', { maximumFractionDigits: digits }).format(value / divisor)} ${unit}`;
+
+  if (abs >= 1_000_000_000) return short(1_000_000_000, 'bi', 2);
+  if (abs >= 1_000_000) return short(1_000_000, 'mi', 1);
+  if (abs >= 100_000) return short(1_000, 'mil', 0);
+  return formatCurrency(value);
 }
 
 export function toNumber(value: unknown) {
