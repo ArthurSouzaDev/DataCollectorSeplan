@@ -16,6 +16,12 @@ load_dotenv()
 fundo_a_fundo   = os.getenv("URL_FUNDO_A_FUNDO")
 transf_especial = os.getenv("URL_TRANSF_ESPECIAL")
 
+# A URL configurada pode apontar para qualquer recurso do serviço "especiais";
+# derivamos a base para montar os endpoints usados.
+_BASE_ESPECIAIS = transf_especial.rstrip("/").rsplit("/", 1)[0] if transf_especial else ""
+URL_PLANOS_ESPECIAIS = f"{_BASE_ESPECIAIS}/planos-acao-especiais" if _BASE_ESPECIAIS else ""
+URL_BENEFICIARIOS_ESPECIAIS = f"{_BASE_ESPECIAIS}/beneficiarios-especiais" if _BASE_ESPECIAIS else ""
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATASET_DIR = PROJECT_ROOT / "dataset"
 CACHE_FILE = DATASET_DIR / "cache_natureza.json"
@@ -133,34 +139,59 @@ def _request_com_retry(endpoint: str, params: dict, nome_dataset: str) -> reques
     )
 
 
-def extrair_dados(endpoint, params, nome_dataset):
+def extrair_dados(endpoint, params, nome_dataset, tamanho_pagina=200):
+    # API paginada: {"data": [...], "total_pages": N, ...} com params pagina/tamanho_da_pagina
     todos_os_dados = []
-    limit = 1000
-    offset = 0
+    pagina = 1
 
     while True:
         params_local = params.copy()
-        params_local['limit'] = limit
-        params_local['offset'] = offset
+        params_local['pagina'] = pagina
+        params_local['tamanho_da_pagina'] = tamanho_pagina
 
         response = _request_com_retry(endpoint, params_local, nome_dataset)
 
-        dados = response.json()
+        corpo = response.json()
+        dados = corpo.get("data") or []
+        total_paginas = corpo.get("total_pages") or 1
 
         if not dados:
-            print(f"[{nome_dataset}] Página offset {offset} sem registros.")
+            print(f"[{nome_dataset}] Página {pagina} sem registros.")
             break
 
         todos_os_dados.extend(dados)
-        print(f"[{nome_dataset}] Página offset {offset} — {len(dados)} registros recebidos")
+        print(f"[{nome_dataset}] Página {pagina}/{total_paginas} — {len(dados)} registros recebidos")
 
-        if len(dados) < limit:
+        if pagina >= total_paginas:
             break
 
-        offset += limit
+        pagina += 1
 
     print(f"[{nome_dataset}] Total extraído: {len(todos_os_dados)} registros")
     return todos_os_dados
+
+
+def extrair_emendas_to(nome_dataset="EMENDAS"):
+    """O endpoint de planos de ação especiais não filtra por UF nem traz dados do
+    beneficiário; busca os beneficiários do TO e consulta os planos de cada um."""
+    beneficiarios = extrair_dados(
+        URL_BENEFICIARIOS_ESPECIAIS, {'uf_beneficiario': 'TO'}, f"{nome_dataset}_BENEFICIARIOS"
+    )
+
+    todos_os_planos = []
+    for i, benef in enumerate(beneficiarios, 1):
+        print(f"[{nome_dataset}] Beneficiário {i}/{len(beneficiarios)}: {benef.get('nome_beneficiario')}")
+        planos = extrair_dados(
+            URL_PLANOS_ESPECIAIS, {'id_beneficiario': benef['id_beneficiario']}, nome_dataset
+        )
+        for plano in planos:
+            plano["uf_beneficiario_plano_acao"]   = benef.get("uf_beneficiario")
+            plano["nome_beneficiario_plano_acao"] = benef.get("nome_beneficiario")
+            plano["cnpj_beneficiario_plano_acao"] = benef.get("cnpj_beneficiario")
+        todos_os_planos.extend(planos)
+
+    print(f"[{nome_dataset}] Total de planos do TO: {len(todos_os_planos)}")
+    return todos_os_planos
 
 
 # ─────────────────────────────────────────────
@@ -262,14 +293,13 @@ def tratar_dados_emenda(dados):
 # ─────────────────────────────────────────────
 if __name__ == "__main__":
     DATASET_DIR.mkdir(parents=True, exist_ok=True)
-    params_fundo    = {'uf_ente_recebedor_plano_acao': 'eq.TO'}
-    params_especial = {'uf_beneficiario_plano_acao':   'eq.TO'}
+    params_fundo = {'uf_ente_recebedor_plano_acao': 'TO'}
 
     # Extração
-    dados          = extrair_dados(fundo_a_fundo, params_fundo, "FUNDO_A_FUNDO")
+    dados          = extrair_dados(fundo_a_fundo, params_fundo, "FUNDO_A_FUNDO", tamanho_pagina=1000)
     dados_tratados = tratar_dados(dados)
 
-    dados_emenda           = extrair_dados(transf_especial, params_especial, "EMENDAS")
+    dados_emenda           = extrair_emendas_to("EMENDAS")
     dados_tratados_emendas = tratar_dados_emenda(dados_emenda)
 
     # DataFrames
