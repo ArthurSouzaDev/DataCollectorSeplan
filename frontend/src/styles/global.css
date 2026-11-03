@@ -1297,6 +1297,76 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 /* ══════════════════════════════════════════════════════════
+   Histórico de atualizações e Ajuda
+══════════════════════════════════════════════════════════ */
+
+.history-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.history-tabs button {
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.history-tabs button.active,
+.history-tabs button[aria-selected="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--surface);
+}
+
+.history-row {
+  cursor: pointer;
+}
+
+.history-detail td {
+  background: var(--surface-muted);
+}
+
+.history-detail-body {
+  display: grid;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 0.9rem;
+}
+
+.history-detail-body h3 {
+  margin: 8px 0 4px;
+  font-size: 0.95rem;
+}
+
+.help-section {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.help-section h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.help-section ul {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.55;
+}
+
+.help-section code {
+  font-size: 0.85em;
+}
+
+/* ══════════════════════════════════════════════════════════
    Scrollbars (WebKit)
 ══════════════════════════════════════════════════════════ */
 

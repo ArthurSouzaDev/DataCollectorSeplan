@@ -2,6 +2,8 @@ import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { AppLayout } from '../../components/layout/AppLayout';
+import { AjudaPage } from '../../pages/AjudaPage';
+import { HistoricoPage } from '../../pages/HistoricoPage';
 import { HomePage } from '../../pages/HomePage';
 import { NotFoundPage } from '../../pages/NotFoundPage';
 
@@ -27,6 +29,14 @@ export const router = createBrowserRouter([
             <DatasetDetailPage />
           </Suspense>
         ),
+      },
+      {
+        path: 'historico',
+        element: <HistoricoPage />,
+      },
+      {
+        path: 'ajuda',
+        element: <AjudaPage />,
       },
       {
         path: '*',

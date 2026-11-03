@@ -39,6 +39,16 @@ jobs:
           PORTAL_TRANSPARENCIA_KEY: ${{ secrets.PORTAL_TRANSPARENCIA_KEY }}
         run: python backend/coletor_portal_convenios.py --modo incremental
 
+      - name: Comparar com a execução anterior (resumo no run)
+        # Compara com a versão commitada em HEAD. Só informativo: não falha o job.
+        run: |
+          git show HEAD:data_discricionarias/processados/discricionarias_to.parquet > "$RUNNER_TEMP/anterior.parquet" 2>/dev/null || true
+          python scripts/comparar_execucoes.py \
+            --anterior "$RUNNER_TEMP/anterior.parquet" \
+            --atual data_discricionarias/processados/discricionarias_to.parquet \
+            --chave id_proposta --titulo "Discricionárias" \
+            --historico public/data/historico.json --dataset-id discricionarias-legais >> "$GITHUB_STEP_SUMMARY"
+
       - name: Sincronizar dados para public/data/
         run: python scripts/sync_public_data.py
 
