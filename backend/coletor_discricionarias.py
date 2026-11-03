@@ -1,99 +1,57 @@
+"""ETL das transferências discricionárias e legais (Tocantins) via API pública do Transferegov.
+
+Fonte: https://api-publica.transferegov.gestao.gov.br/discricionarias
+Substitui os ZIPs do SICONV, removidos da fonte original.
+
+Limitações da API (documentadas no openapi.json):
+- Não há situação de convênio (SIT_CONVENIO), valor desembolsado, valor pago,
+  saldo em conta nem vínculo proposta→emenda. Essas colunas saem zeradas e a
+  base é marcada no log.
+- O número do convênio vem dos planos de trabalho/metas (`meta-crono-fisico`),
+  que só preenchem `nr_convenio` em parte dos registros. A coluna `fase` usa esse
+  campo: "Convênio" quando existe número de convênio, "Proposta" caso contrário.
+"""
 from __future__ import annotations
 
-import gc
-import io
 import logging
-import os
-import shutil
 import time
-import zipfile
 from pathlib import Path
-from typing import Iterable
 
 import pandas as pd
 import requests
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DATA_DIR = PROJECT_ROOT / "data_discricionarias"
-RAW_DIR = DATA_DIR / "cache_bruto"
-EXTRACTED_DIR = DATA_DIR / "extraidos"
-PROCESSED_DIR = DATA_DIR / "processados"
+PROCESSED_DIR = PROJECT_ROOT / "data_discricionarias" / "processados"
 OUTPUT_PATH = PROCESSED_DIR / "discricionarias_to.parquet"
-CHUNK_SIZE = 50_000
 
-URLS = {
-    "convenio": "https://repositorio.dados.gov.br/seges/detru/siconv_convenio.csv.zip",
-    "proposta": "https://repositorio.dados.gov.br/seges/detru/siconv_proposta.csv.zip",
-    "emenda": "https://repositorio.dados.gov.br/seges/detru/siconv_emenda.csv.zip",
-    "pagamento": "https://repositorio.dados.gov.br/seges/detru/siconv_pagamento.csv.zip",
-    "programa": "https://repositorio.dados.gov.br/seges/detru/siconv_programa.csv.zip",
-}
-
+BASE_URL = "https://api-publica.transferegov.gestao.gov.br/discricionarias"
+PAGE_SIZE = 200  # limite da API: 300 ou mais retorna 422
+MAX_TENTATIVAS = 3
+ESPERA_RETRY_SEGUNDOS = 5
+TIMEOUT_SEGUNDOS = 90
 HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
-    )
+    "User-Agent": "DataCollectorSeplan/1.0 (coleta automatizada)",
+    "Accept": "application/json",
 }
 
-USECOLS = {
-    "convenio": {
-        "NR_CONVENIO", "ID_PROPOSTA", "DIA_ASSIN_CONV", "SIT_CONVENIO",
-        "SUBSITUACAO_CONV", "DIA_INIC_VIGENC_CONV", "DIA_FIM_VIGENC_CONV",
-        "VL_GLOBAL_CONV", "VL_REPASSE_CONV", "VL_CONTRAPARTIDA_CONV",
-        "VL_EMPENHADO_CONV", "VL_DESEMBOLSADO_CONV", "VL_SALDO_REMAN_TESOURO",
-        "VL_INGRESSO_CONTRAPARTIDA", "VL_RENDIMENTO_APLICACAO",
-        "VL_SALDO_REMAN_CONVENENTE", "VL_SALDO_CONTA",
-    },
-    "proposta": {
-        "ID_PROPOSTA", "UF_PROPONENTE", "MUNIC_PROPONENTE", "NR_PROPOSTA",
-        "ANO_PROP", "MODALIDADE", "NM_PROPONENTE", "NATUREZA_JURIDICA",
-        "DESC_ORGAO_SUP", "DESC_ORGAO", "SIT_PROPOSTA",
-    },
-    "emenda": {
-        "ID_PROPOSTA", "NR_EMENDA", "NOME_PARLAMENTAR", "TIPO_PARLAMENTAR",
-        "IND_IMPOSITIVO", "BENEFICIARIO_EMENDA", "COD_PROGRAMA_EMENDA",
-        "VALOR_REPASSE_PROPOSTA_EMENDA", "VALOR_REPASSE_EMENDA",
-    },
-    "pagamento": {"NR_CONVENIO", "VL_PAGO"},
+# Campos monetários que chegam como texto ("132897.0") na API.
+CAMPOS_MONETARIOS_PROPOSTA = {
+    "vl_global_prop": "valor_global",
+    "vl_repasse_prop": "valor_repasse",
+    "vl_contrapartida_prop": "valor_contrapartida",
 }
 
-REQUIRED_COLUMNS = {
-    "convenio": {"nr_convenio", "id_proposta"},
-    "proposta": {"id_proposta", "uf_proponente"},
-    "emenda": {"id_proposta"},
-    "pagamento": {"nr_convenio"},
-}
-
-MONETARY_COLUMNS = {
-    "vl_global_conv", "vl_repasse_conv", "vl_contrapartida_conv", "vl_empenhado_conv",
-    "vl_desembolsado_conv", "vl_saldo_reman_tesouro", "vl_ingresso_contrapartida",
-    "vl_rendimento_aplicacao", "vl_saldo_reman_convenente", "vl_saldo_conta",
-    "valor_repasse_proposta_emenda", "valor_repasse_emenda", "vl_pago",
-}
-
-OUTPUT_RENAME = {
-    "sit_convenio": "situacao",
-    "subsituacao_conv": "subsituacao",
-    "dia_assin_conv": "dt_assinatura",
-    "dia_inic_vigenc_conv": "dt_inicio_vigencia",
-    "dia_fim_vigenc_conv": "dt_fim_vigencia",
-    "vl_global_conv": "valor_global",
-    "vl_repasse_conv": "valor_repasse",
-    "vl_contrapartida_conv": "valor_contrapartida",
-    "vl_empenhado_conv": "valor_empenhado",
-    "vl_desembolsado_conv": "valor_desembolsado",
-    "vl_saldo_reman_tesouro": "valor_saldo_tesouro",
-    "vl_saldo_conta": "valor_saldo_conta",
-    "municip_proponente": "municipio_beneficiario",
-    "munic_proponente": "municipio_beneficiario",
-    "nm_proponente": "proponente",
-    "desc_orgao_sup": "orgao_superior",
-    "desc_orgao": "orgao_concedente",
-    "ano_prop": "ano_proposta",
-    "nome_parlamentar": "parlamentar",
-    "valor_repasse_emenda": "valor_emenda",
-    "vl_pago": "valor_pago",
+# Colunas que o painel usa, mas que a API não fornece. Ficam zeradas (ou vazias).
+COLUNAS_SEM_FONTE_NA_API = {
+    "valor_desembolsado": 0.0,
+    "valor_pago": 0.0,
+    "valor_saldo_conta": 0.0,
+    "valor_saldo_tesouro": 0.0,
+    "vl_saldo_reman_convenente": 0.0,
+    "vl_rendimento_aplicacao": 0.0,
+    "vl_ingresso_contrapartida": 0.0,
+    "valor_emenda": 0.0,
+    "parlamentar": "Não informado",
 }
 
 logging.basicConfig(
@@ -104,343 +62,127 @@ logging.basicConfig(
 logger = logging.getLogger("etl_discricionarias")
 
 
-def _ensure_dirs() -> None:
-    for directory in (RAW_DIR, EXTRACTED_DIR, PROCESSED_DIR):
-        directory.mkdir(parents=True, exist_ok=True)
-
-
-def _normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
-    df.columns = (
-        df.columns.str.strip().str.lower().str.replace(" ", "_", regex=False)
-        .str.replace("/", "_", regex=False).str.replace("-", "_", regex=False)
-    )
-    return df
-
-
-def _estimate_memory_mb(df: pd.DataFrame) -> float:
-    return df.memory_usage(index=True, deep=True).sum() / (1024 * 1024)
-
-
-def _detect_sep(path: Path) -> str:
-    with path.open("r", encoding="utf-8-sig", errors="ignore") as handle:
-        first_line = handle.readline()
-    return ";" if ";" in first_line else ("\t" if "\t" in first_line else ",")
-
-
-def _read_chunks(dataset: str) -> Iterable[pd.DataFrame]:
-    csv_path = EXTRACTED_DIR / f"siconv_{dataset}.csv"
-    sep = _detect_sep(csv_path)
-    usecols = USECOLS.get(dataset)
-    return pd.read_csv(
-        csv_path,
-        sep=sep,
-        encoding="utf-8-sig",
-        usecols=lambda col: col.strip().upper() in usecols if usecols else True,
-        chunksize=CHUNK_SIZE,
-        low_memory=False,
-        on_bad_lines="skip",
-    )
-
-
-def _convert_money(series: pd.Series) -> pd.Series:
-    text = series.astype(str).str.strip()
-    sample = text.dropna().head(100)
-    has_comma = sample.str.contains(",", regex=False).any()
-    has_dot = sample.str.contains(".", regex=False).any()
-    multiple_dots = sample.str.count(r"\.").max() > 1 if not sample.empty else False
-    if has_comma and has_dot:
-        text = text.str.replace(".", "", regex=False).str.replace(",", ".", regex=False)
-    elif has_comma:
-        text = text.str.replace(",", ".", regex=False)
-    elif multiple_dots:
-        text = text.str.replace(".", "", regex=False)
-    return pd.to_numeric(text, errors="coerce")
-
-
-def _validate_chunk(dataset: str, df: pd.DataFrame) -> None:
-    missing = REQUIRED_COLUMNS.get(dataset, set()) - set(df.columns)
-    if missing:
-        raise ValueError(f"{dataset}: colunas obrigatórias ausentes: {sorted(missing)}")
-    invalid_money = 0
-    for col in MONETARY_COLUMNS & set(df.columns):
-        original = df[col].astype(str).str.strip()
-        converted = _convert_money(df[col])
-        invalid_money += int((converted.isna() & original.ne("") & original.ne("nan")).sum())
-    logger.info("[%s] chunk validado | linhas=%s | valores monetários inválidos=%s | memória=%.2f MB",
-                dataset, f"{len(df):,}", f"{invalid_money:,}", _estimate_memory_mb(df))
-
-
-def download_raw_data() -> dict[str, Path]:
-    """Baixa novamente todos os ZIPs do GOV e sempre sobrescreve arquivos antigos."""
-    _ensure_dirs()
-    downloaded: dict[str, Path] = {}
-    for dataset, url in URLS.items():
-        started = time.perf_counter()
-        zip_path = RAW_DIR / f"siconv_{dataset}.csv.zip"
-        tmp_path = zip_path.with_suffix(zip_path.suffix + ".tmp")
-        zip_path.unlink(missing_ok=True)
-        logger.info("[%s] download iniciado", dataset)
+def _get_com_retry(endpoint: str, params: dict) -> dict:
+    ultimo_erro: Exception | None = None
+    for tentativa in range(1, MAX_TENTATIVAS + 1):
         try:
-            with requests.get(url, headers=HEADERS, timeout=600, stream=True) as response:
-                response.raise_for_status()
-                with tmp_path.open("wb") as handle:
-                    for chunk in response.iter_content(chunk_size=1024 * 1024):
-                        if chunk:
-                            handle.write(chunk)
-            tmp_path.replace(zip_path)
-            size_mb = zip_path.stat().st_size / (1024 * 1024)
-            logger.info("[%s] download finalizado | tamanho=%.2f MB | tempo=%.2fs",
-                        dataset, size_mb, time.perf_counter() - started)
-            downloaded[dataset] = zip_path
-        except Exception:
-            tmp_path.unlink(missing_ok=True)
-            logger.exception("[%s] falha no download; dataset será ignorado nesta execução", dataset)
-    return downloaded
-
-
-def extract_raw_data(zip_files: dict[str, Path] | None = None) -> dict[str, Path]:
-    """Extrai os CSVs baixados, validando ZIPs corrompidos antes da leitura."""
-    _ensure_dirs()
-    extracted: dict[str, Path] = {}
-    zip_files = zip_files or {k: RAW_DIR / f"siconv_{k}.csv.zip" for k in URLS}
-    for dataset, zip_path in zip_files.items():
-        started = time.perf_counter()
-        out_path = EXTRACTED_DIR / f"siconv_{dataset}.csv"
-        out_path.unlink(missing_ok=True)
-        try:
-            with zipfile.ZipFile(zip_path) as archive:
-                if archive.testzip() is not None:
-                    raise zipfile.BadZipFile("arquivo ZIP corrompido")
-                members = [name for name in archive.namelist() if name.lower().endswith(".csv")]
-                if not members:
-                    raise ValueError("ZIP sem CSV")
-                with archive.open(members[0]) as source, out_path.open("wb") as target:
-                    shutil.copyfileobj(source, target)
-            logger.info("[%s] extração finalizada | tamanho=%.2f MB | tempo=%.2fs",
-                        dataset, out_path.stat().st_size / (1024 * 1024), time.perf_counter() - started)
-            extracted[dataset] = out_path
-        except Exception:
-            logger.exception("[%s] falha na extração; dataset será ignorado nesta execução", dataset)
-    return extracted
-
-
-def process_convenio() -> pd.DataFrame:
-    rows = 0
-    best_rows: dict[str, dict] = {}
-    for chunk_no, chunk in enumerate(_read_chunks("convenio"), start=1):
-        chunk = _normalize_columns(chunk)
-        _validate_chunk("convenio", chunk)
-        chunk["ano_assinatura"] = pd.to_datetime(chunk.get("dia_assin_conv"), dayfirst=True, errors="coerce").dt.year
-        for col in MONETARY_COLUMNS & set(chunk.columns):
-            chunk[col] = _convert_money(chunk[col]).fillna(0.0)
-        chunk["nr_convenio"] = chunk["nr_convenio"].astype(str).str.replace(r"\.0$", "", regex=True)
-        for record in chunk.to_dict("records"):
-            key = record["nr_convenio"]
-            current = best_rows.get(key)
-            if current is None or record.get("vl_saldo_conta", 0.0) > current.get("vl_saldo_conta", 0.0):
-                best_rows[key] = record
-        rows += len(chunk)
-        logger.info("[convenio] chunk=%s processado | acumulado=%s", chunk_no, f"{rows:,}")
-    df = pd.DataFrame(best_rows.values()) if best_rows else pd.DataFrame()
-    logger.info("[convenio] linhas processadas=%s | anos disponíveis=%s", f"{rows:,}",
-                sorted(df["ano_assinatura"].dropna().astype(int).unique().tolist()) if "ano_assinatura" in df else [])
-    return df
-
-
-def process_proposta() -> pd.DataFrame:
-    rows = 0
-    parts: list[pd.DataFrame] = []
-    for chunk_no, chunk in enumerate(_read_chunks("proposta"), start=1):
-        chunk = _normalize_columns(chunk)
-        _validate_chunk("proposta", chunk)
-        chunk = chunk[chunk["uf_proponente"].astype(str).str.upper().eq("TO")].copy()
-        rows += len(chunk)
-        parts.append(chunk)
-        logger.info("[proposta] chunk=%s processado | linhas TO acumuladas=%s", chunk_no, f"{rows:,}")
-    df = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame()
-    logger.info("[proposta] linhas processadas=%s | anos disponíveis=%s", f"{rows:,}",
-                sorted(pd.to_numeric(df.get("ano_prop"), errors="coerce").dropna().astype(int).unique().tolist()) if not df.empty else [])
-    return df
-
-
-def process_emenda() -> pd.DataFrame:
-    rows = 0
-    aggregates: dict[str, dict] = {}
-    for chunk_no, chunk in enumerate(_read_chunks("emenda"), start=1):
-        chunk = _normalize_columns(chunk)
-        _validate_chunk("emenda", chunk)
-        for col in MONETARY_COLUMNS & set(chunk.columns):
-            chunk[col] = _convert_money(chunk[col]).fillna(0.0)
-        for record in chunk.to_dict("records"):
-            key = record["id_proposta"]
-            agg = aggregates.setdefault(
-                key,
-                {
-                    "id_proposta": key,
-                    "nr_emenda": set(),
-                    "nome_parlamentar": set(),
-                    "tipo_parlamentar": set(),
-                    "valor_repasse_emenda": 0.0,
-                },
+            response = requests.get(
+                f"{BASE_URL}/{endpoint}", params=params, headers=HEADERS, timeout=TIMEOUT_SEGUNDOS
             )
-            for field in ("nr_emenda", "nome_parlamentar", "tipo_parlamentar"):
-                value = record.get(field)
-                if pd.notna(value):
-                    agg[field].add(str(value))
-            agg["valor_repasse_emenda"] += float(record.get("valor_repasse_emenda", 0.0) or 0.0)
-        rows += len(chunk)
-        logger.info("[emenda] chunk=%s processado | acumulado=%s", chunk_no, f"{rows:,}")
-    result = pd.DataFrame(
-        {
-            **agg,
-            "nr_emenda": " | ".join(sorted(agg["nr_emenda"])),
-            "nome_parlamentar": " | ".join(sorted(agg["nome_parlamentar"])),
-            "tipo_parlamentar": " | ".join(sorted(agg["tipo_parlamentar"])),
-        }
-        for agg in aggregates.values()
-    )
-    logger.info("[emenda] linhas processadas=%s | propostas agregadas=%s", f"{rows:,}", f"{len(result):,}")
-    return result
+            response.raise_for_status()
+            return response.json()
+        except (requests.RequestException, ValueError) as erro:
+            ultimo_erro = erro
+            logger.warning("[%s] tentativa %s/%s falhou: %s", endpoint, tentativa, MAX_TENTATIVAS, erro)
+            if tentativa < MAX_TENTATIVAS:
+                time.sleep(ESPERA_RETRY_SEGUNDOS)
+    raise RuntimeError(f"[{endpoint}] falha após {MAX_TENTATIVAS} tentativas: {ultimo_erro}")
 
 
-def process_pagamento() -> pd.DataFrame:
-    rows = 0
-    totals: dict[str, float] = {}
-    for chunk_no, chunk in enumerate(_read_chunks("pagamento"), start=1):
-        chunk = _normalize_columns(chunk)
-        _validate_chunk("pagamento", chunk)
-        chunk["nr_convenio"] = chunk["nr_convenio"].astype(str).str.replace(r"\.0$", "", regex=True)
-        chunk["vl_pago"] = _convert_money(chunk["vl_pago"]).fillna(0.0)
-        grouped = chunk.groupby("nr_convenio")["vl_pago"].sum()
-        for key, value in grouped.items():
-            totals[key] = totals.get(key, 0.0) + float(value)
-        rows += len(chunk)
-        logger.info("[pagamento] chunk=%s processado | acumulado=%s", chunk_no, f"{rows:,}")
-    if not totals:
-        return pd.DataFrame(columns=["nr_convenio", "vl_pago"])
-    df = pd.DataFrame({"nr_convenio": list(totals), "vl_pago": list(totals.values())})
-    logger.info("[pagamento] linhas processadas=%s | convênios agregados=%s", f"{rows:,}", f"{len(df):,}")
+def fetch_all(endpoint: str, params: dict) -> list[dict]:
+    """Percorre todas as páginas de um endpoint paginado da API."""
+    registros: list[dict] = []
+    pagina = 1
+    while True:
+        corpo = _get_com_retry(endpoint, {**params, "pagina": pagina, "tamanho_da_pagina": PAGE_SIZE})
+        dados = corpo.get("data") or []
+        registros.extend(dados)
+        total_paginas = corpo.get("total_pages") or 0
+        if pagina % 20 == 0 or pagina >= total_paginas:
+            logger.info("[%s] página %s/%s | acumulado=%s", endpoint, pagina, total_paginas, f"{len(registros):,}")
+        if not dados or pagina >= total_paginas:
+            break
+        pagina += 1
+    return registros
+
+
+def _to_float(serie: pd.Series) -> pd.Series:
+    return pd.to_numeric(serie.astype("string").str.strip(), errors="coerce")
+
+
+def _propostas_to() -> pd.DataFrame:
+    dados = fetch_all("propostas", {"uf_proponente": "TO"})
+    df = pd.DataFrame(dados)
+    if df.empty:
+        raise RuntimeError("API não retornou propostas de Tocantins.")
+    df = df.drop_duplicates(subset="id_proposta", keep="last")
+    logger.info("[propostas] TO únicas=%s", f"{len(df):,}")
     return df
 
 
-def _consolidar_situacao(df: pd.DataFrame) -> pd.DataFrame:
-    """Preenche `situacao` e marca a fase de cada registro.
-
-    A base final é uma junção de propostas com convênios: só uma fração das
-    propostas do Tocantins chega a virar convênio. Como `situacao` vinha apenas
-    de `SIT_CONVENIO`, todo registro que parou na fase de proposta ficava sem
-    situação — eram 17.622 de 23.562 linhas, 74,8% da base.
-
-    Aqui `situacao` passa a cair para `sit_proposta` quando não há situação de
-    convênio, e a coluna `fase` registra de qual vocabulário veio o valor. Sem
-    esse marcador as duas escalas se misturariam num campo só ("Em execução",
-    de convênio, ao lado de "Proposta/Plano de Trabalho Cadastrados"), e não
-    haveria como distinguir um convênio assinado de uma proposta que nunca saiu
-    do papel.
-    """
-    def _texto(coluna: str) -> pd.Series:
-        if coluna not in df.columns:
-            return pd.Series(pd.NA, index=df.index, dtype="string")
-        serie = df[coluna].astype("string").str.strip()
-        return serie.replace({"": pd.NA, "nan": pd.NA, "None": pd.NA})
-
-    situacao_conv = _texto("situacao")
-    situacao_prop = _texto("sit_proposta")
-
-    # A fase vem do número do convênio, não da situação: existem linhas com
-    # convênio assinado que o SICONV devolve sem SIT_CONVENIO preenchido.
-    df["fase"] = pd.Series("Proposta", index=df.index).where(_texto("nr_convenio").isna(), "Convênio")
-
-    df["situacao"] = situacao_conv.fillna(situacao_prop).fillna("Não informado")
-
-    if "sit_proposta" in df.columns:
-        df = df.drop(columns=["sit_proposta"])
-
-    convenios = int(df["fase"].eq("Convênio").sum())
-    logger.info(
-        "[situacao] fase consolidada | convênios=%s | propostas=%s | sem situação=%s",
-        f"{convenios:,}",
-        f"{len(df) - convenios:,}",
-        f"{int(df['situacao'].eq('Não informado').sum()):,}",
+def _metas_com_convenio() -> pd.DataFrame:
+    """Uma linha por proposta, com o número e a data de assinatura do convênio (quando houver)."""
+    dados = fetch_all("meta-crono-fisico", {"uf_meta": "TO"})
+    metas = pd.DataFrame(dados, columns=["id_proposta", "nr_convenio", "data_assin_conv"])
+    if metas.empty:
+        logger.warning("[metas] API não retornou metas de Tocantins; nenhuma proposta terá convênio.")
+        return pd.DataFrame(columns=["id_proposta", "nr_convenio", "data_assin_conv"])
+    metas["nr_convenio"] = metas["nr_convenio"].astype("string").str.strip().replace({"": pd.NA})
+    metas = metas[metas["nr_convenio"].notna()]
+    # `first` ignora nulos: fica com o primeiro número de convênio não vazio de cada proposta.
+    agregado = metas.groupby("id_proposta", as_index=False).agg(
+        nr_convenio=("nr_convenio", "first"),
+        data_assin_conv=("data_assin_conv", "min"),
     )
-    return df
+    logger.info("[metas] propostas com número de convênio=%s", f"{len(agregado):,}")
+    return agregado
 
 
-def generate_outputs() -> pd.DataFrame:
-    """Gera o parquet final; datasets auxiliares podem falhar sem derrubar a execução inteira."""
+def build_output() -> pd.DataFrame:
     started = time.perf_counter()
-    results: dict[str, pd.DataFrame] = {}
-    for name, processor in {
-        "proposta": process_proposta,
-        "convenio": process_convenio,
-        "emenda": process_emenda,
-        "pagamento": process_pagamento,
-    }.items():
-        try:
-            results[name] = processor()
-        except Exception:
-            logger.exception("[%s] falhou no processamento; seguindo com os demais datasets", name)
-            results[name] = pd.DataFrame()
+    propostas = _propostas_to()
+    convenios = _metas_com_convenio()
 
-    proposta = results["proposta"]
-    if proposta.empty:
-        raise RuntimeError("Não foi possível gerar a base final sem propostas válidas.")
+    df = propostas.merge(convenios, on="id_proposta", how="left")
 
-    final_df = proposta.copy()
-    convenio = results["convenio"]
-    if not convenio.empty:
-        final_df = final_df.merge(convenio, on="id_proposta", how="left", suffixes=("", "_conv"))
-    else:
-        logger.warning("[convenio] ausente; saída será gerada com colunas financeiras padrão")
+    df["fase"] = "Proposta"
+    df.loc[df["nr_convenio"].notna(), "fase"] = "Convênio"
 
-    emenda = results["emenda"]
-    if not emenda.empty:
-        final_df = final_df.merge(emenda, on="id_proposta", how="left")
+    # O painel oficial (dd-publico.serpro.gov.br) agrupa a situação pelo grupo da proposta
+    # (Aprovadas / Rejeitadas / Cadastradas / Em Análise / Em Complementação), não pelo detalhe.
+    situacao = df["sit_proposta_grupo"].astype("string").str.strip()
+    df["situacao"] = situacao.replace({"": pd.NA}).fillna("Não informado")
 
-    pagamento = results["pagamento"]
-    if not pagamento.empty and "nr_convenio" in final_df.columns:
-        final_df = final_df.merge(pagamento, on="nr_convenio", how="left")
+    df["dt_assinatura"] = pd.to_datetime(df["data_assin_conv"], errors="coerce")
+    df["ano_assinatura"] = df["dt_assinatura"].dt.year.astype("Int64")
+    df["ano_proposta"] = pd.to_numeric(df["ano_prop"], errors="coerce").astype("Int64")
 
-    final_df = final_df.rename(columns=OUTPUT_RENAME)
-    final_df = _consolidar_situacao(final_df)
-    for required, default in {
-        "valor_pago": 0.0,
-        "valor_saldo_conta": 0.0,
-        "situacao": "Não informado",
-        "municipio_beneficiario": "Não informado",
-        "orgao_concedente": "Não informado",
-        "valor_global": 0.0,
-        "valor_repasse": 0.0,
-        "natureza_juridica": "Não informado",
-    }.items():
-        if required not in final_df.columns:
-            final_df[required] = default
+    df = df.rename(
+        columns={
+            "munic_proponente": "municipio_beneficiario",
+            "nm_proponente": "proponente",
+            "desc_orgao_sup": "orgao_superior",
+            "desc_orgao": "orgao_concedente",
+            **CAMPOS_MONETARIOS_PROPOSTA,
+        }
+    )
+    for coluna in CAMPOS_MONETARIOS_PROPOSTA.values():
+        df[coluna] = _to_float(df[coluna]).fillna(0.0)
 
-    money_cols = [col for col in final_df.columns if col.startswith("valor_")]
-    for col in money_cols:
-        final_df[col] = pd.to_numeric(final_df[col], errors="coerce").fillna(0.0)
-    if "ano_proposta" in final_df.columns:
-        final_df["ano_proposta"] = pd.to_numeric(final_df["ano_proposta"], errors="coerce").astype("Int64")
-    if "ano_assinatura" in final_df.columns:
-        final_df["ano_assinatura"] = pd.to_numeric(final_df["ano_assinatura"], errors="coerce").astype("Int64")
+    for coluna, padrao in COLUNAS_SEM_FONTE_NA_API.items():
+        df[coluna] = padrao
 
-    final_df.to_parquet(OUTPUT_PATH, index=False, compression="snappy")
-    logger.info("[output] parquet salvo | caminho=%s | linhas=%s | colunas=%s | memória estimada=%.2f MB | tempo=%.2fs",
-                OUTPUT_PATH, f"{len(final_df):,}", len(final_df.columns), _estimate_memory_mb(final_df),
-                time.perf_counter() - started)
-    return final_df
+    for coluna in ("municipio_beneficiario", "proponente", "orgao_superior", "orgao_concedente",
+                   "natureza_juridica", "modalidade"):
+        df[coluna] = df[coluna].astype("string").fillna("Não informado")
+
+    df = df.drop(columns=[c for c in ("sit_proposta", "ano_prop", "data_assin_conv") if c in df])
+    df["sit_proposta_grupo"] = df["sit_proposta_grupo"].astype("string").fillna("Não informado")
+
+    convenios_n = int(df["fase"].eq("Convênio").sum())
+    logger.info(
+        "[output] registros=%s | convênios=%s | propostas=%s | colunas sem fonte na API=%s",
+        f"{len(df):,}", f"{convenios_n:,}", f"{len(df) - convenios_n:,}", len(COLUNAS_SEM_FONTE_NA_API),
+    )
+
+    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+    df.to_parquet(OUTPUT_PATH, index=False, compression="snappy")
+    logger.info("[output] parquet salvo | caminho=%s | tempo=%.2fs", OUTPUT_PATH, time.perf_counter() - started)
+    return df
 
 
 def run_etl() -> pd.DataFrame:
-    _ensure_dirs()
-    for dataset in URLS:
-        (RAW_DIR / f"siconv_{dataset}.csv.zip").unlink(missing_ok=True)
-        (EXTRACTED_DIR / f"siconv_{dataset}.csv").unlink(missing_ok=True)
-    downloaded = download_raw_data()
-    extract_raw_data(downloaded)
-    result = generate_outputs()
-    gc.collect()
-    return result
+    return build_output()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,59 @@
+name: Atualizar Discricionárias e Legais
+
+on:
+  schedule:
+    - cron: "17 6 * * *"  # diário, 03:17 em Brasília
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: atualizar-dados
+  cancel-in-progress: false
+
+jobs:
+  atualizar-discricionarias:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Executar ETL discricionárias (API Transferegov)
+        run: python backend/coletor_discricionarias.py
+
+      - name: Coletar convênios do Portal da Transparência (incremental)
+        # Sem o secret, o script sai com código 0 sem fazer requisições.
+        # Exige carga histórica prévia (dataset/portal_convenios_to.json), feita localmente.
+        env:
+          PORTAL_TRANSPARENCIA_KEY: ${{ secrets.PORTAL_TRANSPARENCIA_KEY }}
+        run: python backend/coletor_portal_convenios.py --modo incremental
+
+      - name: Sincronizar dados para public/data/
+        run: python scripts/sync_public_data.py
+
+      - name: Commitar dados atualizados
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data_discricionarias/processados/ public/data/
+          if [ -f dataset/portal_convenios_to.json ]; then git add dataset/portal_convenios_to.json; fi
+          DATA_ATUALIZACAO="$(TZ=America/Araguaina date '+%d/%m/%Y %H:%M')"
+          if git diff --cached --quiet; then
+            echo "Nenhuma mudança nos dados. Registrando execução da rotina."
+            git commit --allow-empty -m "🤖 [AUTO] Discricionárias: rotina executada em ${DATA_ATUALIZACAO}"
+          else
+            git commit -m "🤖 [AUTO] Discricionárias atualizadas em ${DATA_ATUALIZACAO}"
+          fi
+          git pull --rebase
+          git push
