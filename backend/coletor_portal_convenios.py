@@ -4,14 +4,16 @@ Motivo: a API do Transferegov não expõe situação de convênio nem valor libe
 Esses campos estão em `/api-de-dados/convenios`, que exige chave (header
 `chave-api-dados`), lida da variável de ambiente PORTAL_TRANSPARENCIA_KEY.
 
-Regras da API:
-- Filtros mínimos: página e período de no máximo 1 dia. A coleta percorre dia a dia.
+Regras da API (confirmadas com a chave em 03/11/2026):
+- Filtro só por UF (uf=TO) é aceito, sem data. Pagina com 15 itens por página.
+- Filtro por período aceita até 1 mês (dataInicial/dataFinal pela dataReferencia do convênio).
+- Tocantins tinha 11.519 convênios (768 páginas) nessa data.
 
 Modos:
-- backfill: carga histórica desde 2008. É resumível: o progresso fica salvo em
-  dataset/portal_convenios_to.json, então uma interrupção não recomeça do zero.
-- incremental (padrão): reconsulta os últimos DIAS_INCREMENTAIS dias e atualiza
-  os registros pelo id. Não mexe no progresso da carga histórica.
+- backfill: lista todos os convênios de TO páginas 1..N. É resumível: o progresso
+  (última página) fica salvo em dataset/portal_convenios_to.json.
+- incremental (padrão): reconsulta os últimos DIAS_INCREMENTAIS dias pelo período
+  e atualiza os registros pelo id. Exige backfill concluído.
 
 Sem a chave, o módulo termina com código 0 sem fazer requisições, para que o
 workflow não falhe.
@@ -39,7 +41,7 @@ CHAVE_ENV = "PORTAL_TRANSPARENCIA_KEY"
 UF = "TO"
 DATA_INICIAL_HISTORICO = date(2008, 1, 1)
 DIAS_INCREMENTAIS = 30
-SALVAR_A_CADA_DIAS = 30
+SALVAR_A_CADA_PAGINAS = 50
 MAX_TENTATIVAS = 4
 ESPERA_BASE_SEGUNDOS = 3
 TIMEOUT_SEGUNDOS = 60
@@ -89,7 +91,10 @@ def _achatar(convenio: dict) -> dict:
     tipo = convenio.get("tipoInstrumento") or {}
     return {
         "id_portal": convenio.get("id"),
-        "nr_convenio_portal": dim.get("numero"),
+        # `codigo` é o número do SICONV, que bate com nr_convenio do Transferegov.
+        # `numero` é texto livre ("CV 832/02"), usado só como referência.
+        "nr_convenio_portal": dim.get("codigo"),
+        "numero_portal": dim.get("numero"),
         "situacao_portal": convenio.get("situacao"),
         "data_inicio_vigencia": convenio.get("dataInicioVigencia"),
         "data_final_vigencia": convenio.get("dataFinalVigencia"),
@@ -109,7 +114,7 @@ def _achatar(convenio: dict) -> dict:
 def _carregar_store() -> dict:
     if STORE_PATH.exists():
         return json.loads(STORE_PATH.read_text(encoding="utf-8"))
-    return {"ultimo_dia_backfill": None, "convenios": {}}
+    return {"backfill_completo": False, "ultima_pagina_backfill": 0, "convenios": {}}
 
 
 def _salvar_store(store: dict) -> None:
@@ -119,30 +124,45 @@ def _salvar_store(store: dict) -> None:
     tmp.replace(STORE_PATH)  # troca atômica: uma interrupção não corrompe o progresso salvo
 
 
-def _coletar_dias(chave: str, inicio: date, fim: date, store: dict, atualizar_progresso: bool) -> None:
-    dia = inicio
-    dias = 0
-    while dia <= fim:
-        fmt = dia.strftime("%d/%m/%Y")
-        pagina = 1
-        while True:
-            dados = _get({"dataInicial": fmt, "dataFinal": fmt, "uf": UF, "pagina": pagina}, chave)
-            if not dados:
-                break
-            for item in dados:
-                if item.get("id") is not None:
-                    store["convenios"][str(item["id"])] = _achatar(item)
-            pagina += 1
-        dias += 1
-        if atualizar_progresso:
-            store["ultimo_dia_backfill"] = dia.isoformat()
-        if dias % SALVAR_A_CADA_DIAS == 0:
-            _salvar_store(store)
-            logger.info("[portal] até %s | convênios TO=%s", fmt, f"{len(store['convenios']):,}")
-        dia += timedelta(days=1)
+def _paginar(params: dict, chave: str, pagina_inicial: int, store: dict, ao_pagina=None) -> int:
+    """Percorre as páginas até a primeira vazia. Retorna a última página lida."""
+    pagina = pagina_inicial
+    while True:
+        dados = _get({**params, "pagina": pagina}, chave)
+        if not dados:
+            return pagina - 1
+        for item in dados:
+            if item.get("id") is not None:
+                store["convenios"][str(item["id"])] = _achatar(item)
+        if ao_pagina and pagina % SALVAR_A_CADA_PAGINAS == 0:
+            ao_pagina(pagina)
+        pagina += 1
+
+
+def _backfill(chave: str, store: dict) -> None:
+    """Lista todos os convênios de TO (filtro só por UF; a API aceita sem data). Retomável."""
+    def checkpoint(pagina: int) -> None:
+        store["ultima_pagina_backfill"] = pagina
+        _salvar_store(store)
+        logger.info("[portal] backfill página %s | convênios TO=%s", pagina, f"{len(store['convenios']):,}")
+
+    inicio = store.get("ultima_pagina_backfill", 0) + 1
+    ultima = _paginar({"uf": UF}, chave, inicio, store, ao_pagina=checkpoint)
+    store["ultima_pagina_backfill"] = ultima
+    store["backfill_completo"] = True
     _salvar_store(store)
-    logger.info("[portal] janela %s→%s concluída | dias=%s | convênios TO=%s",
-                inicio, fim, f"{dias:,}", f"{len(store['convenios']):,}")
+    logger.info("[portal] backfill concluído | páginas=%s | convênios TO=%s", ultima, f"{len(store['convenios']):,}")
+
+
+def _incremental(chave: str, store: dict) -> None:
+    """Reconsulta convênios atualizados nos últimos DIAS_INCREMENTAIS dias (limite da API: até 1 mês)."""
+    hoje = date.today()
+    inicio = hoje - timedelta(days=DIAS_INCREMENTAIS - 1)
+    params = {"uf": UF, "dataInicial": inicio.strftime("%d/%m/%Y"), "dataFinal": hoje.strftime("%d/%m/%Y")}
+    ultima = _paginar(params, chave, 1, store)
+    _salvar_store(store)
+    logger.info("[portal] incremental %s→%s | páginas=%s | convênios TO=%s",
+                inicio, hoje, ultima, f"{len(store['convenios']):,}")
 
 
 def executar(modo: str) -> int:
@@ -152,22 +172,18 @@ def executar(modo: str) -> int:
         return 0
 
     store = _carregar_store()
-    hoje = date.today()
     if modo == "backfill":
-        ultimo = store.get("ultimo_dia_backfill")
-        inicio = date.fromisoformat(ultimo) + timedelta(days=1) if ultimo else DATA_INICIAL_HISTORICO
-        if inicio > hoje:
-            logger.info("[portal] carga histórica já está completa até %s", ultimo)
+        if store.get("backfill_completo"):
+            logger.info("[portal] carga histórica já concluída; use --modo incremental.")
         else:
-            _coletar_dias(chave, inicio, hoje, store, atualizar_progresso=True)
+            _backfill(chave, store)
     else:
-        ultimo = store.get("ultimo_dia_backfill")
-        if not ultimo or date.fromisoformat(ultimo) < hoje - timedelta(days=1):
+        if not store.get("backfill_completo"):
             # Sem a carga histórica, o parquet ficaria só com os últimos dias. Falha explícita.
-            logger.error("[portal] carga histórica incompleta (último dia=%s). "
-                         "Rode 'python backend/coletor_portal_convenios.py --modo backfill' antes.", ultimo)
+            logger.error("[portal] carga histórica incompleta. "
+                         "Rode 'python backend/coletor_portal_convenios.py --modo backfill' antes.")
             return 1
-        _coletar_dias(chave, hoje - timedelta(days=DIAS_INCREMENTAIS - 1), hoje, store, atualizar_progresso=False)
+        _incremental(chave, store)
 
     df = pd.DataFrame(list(store["convenios"].values()))
     if df.empty:

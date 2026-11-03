@@ -108,6 +108,7 @@ export const DATASETS: DatasetConfig[] = [
       'proponente',
       'orgao_concedente',
       'situacao',
+      'situacao_convenio',
       'valor_global',
       'valor_repasse',
       'valor_pago',

@@ -39,6 +39,10 @@ jobs:
           PORTAL_TRANSPARENCIA_KEY: ${{ secrets.PORTAL_TRANSPARENCIA_KEY }}
         run: python backend/coletor_portal_convenios.py --modo incremental
 
+      - name: Integrar convênios do Portal à base de discricionárias
+        # Sem o arquivo do Portal, não faz nada. Usa o último arquivo commitado mesmo sem a chave.
+        run: python backend/integrar_portal.py
+
       - name: Comparar com a execução anterior (resumo no run)
         # Compara com a versão commitada em HEAD. Só informativo: não falha o job.
         run: |

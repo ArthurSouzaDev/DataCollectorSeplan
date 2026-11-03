@@ -69,8 +69,9 @@ export function AjudaPage() {
         <h2>Como ler os indicadores</h2>
         <ul>
           <li>
-            <strong>Discricionárias:</strong> o valor global é repasse + contrapartida. Desembolso, pago, saldo em conta
-            e valores devolvidos aparecem zerados porque a API atual não os fornece.
+            <strong>Discricionárias:</strong> o valor global é repasse + contrapartida. O valor liberado vem do Portal da
+            Transparência para os convênios encontrados. Pago, saldo em conta e valores devolvidos aparecem zerados,
+            porque o Portal não traz esses dados.
           </li>
           <li>
             <strong>Percentuais de aprovadas e de assinatura:</strong> o denominador exclui as propostas ainda
@@ -93,8 +94,8 @@ export function AjudaPage() {
         <h2>Dúvidas comuns</h2>
         <ul>
           <li>
-            <strong>Por que "Em execução" não aparece?</strong> É uma situação de convênio, que a fonte atual de
-            discricionárias não traz. Ela volta com a integração do Portal da Transparência.
+            <strong>Onde fica "Em execução"?</strong> Na coluna <code>situacao_convenio</code>, vinda do Portal. O filtro
+            de situações e o donut usam o grupo da proposta, como no painel da SERPRO.
           </li>
           <li>
             <strong>Por que o total não bate com o painel da SERPRO?</strong> A base usa o número de convênio das metas

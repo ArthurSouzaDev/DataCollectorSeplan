@@ -44,9 +44,14 @@ e como usar os filtros.
 - **Valores:** `valor_global` e `valor_repasse` são os valores **da proposta**, somados para todas as
   propostas de TO.
 
-> **Limitação atual:** a API do Transferegov não traz desembolso, valor pago, saldo em conta nem valores
-> devolvidos. Essas colunas aparecem zeradas. A integração com o Portal da Transparência (CGU), que
-> traz valor liberado e situação de convênio, está em preparação e depende de chave de acesso.
+- **Situação do convênio (`situacao_convenio`):** vem do Portal da Transparência (CGU), por número de convênio.
+  Ex.: *EM EXECUÇÃO*, *CONCLUÍDO*, *PRESTAÇÃO DE CONTAS APROVADA*. Propostas sem convênio aparecem como
+  *Não se aplica (proposta)*. Convênios que não foram encontrados no Portal aparecem como
+  *Sem correspondência no Portal*.
+- **Valor liberado (`valor_desembolsado`):** valor liberado do convênio, pelo Portal da Transparência.
+
+> **Limitação atual:** o Portal não traz valor pago, saldo em conta nem valores devolvidos. Essas colunas
+> continuam zeradas. Dos convênios de Tocantins, cerca de 78% foram encontrados no Portal.
 
 ### 1.4 Histórico de atualizações
 
@@ -126,12 +131,13 @@ Os filtros ficam no topo de cada painel. Todos os KPIs, gráficos e a tabela rea
 ### Discricionárias e legais
 - **Registros:** total de propostas filtradas. Quando há fase, o subtítulo mostra quantos são convênios e quantos são propostas.
 - **Valor global:** repasse + contrapartida.
-- **Valor liberado:** soma de desembolsado, contrapartida ingressada e rendimento. **Hoje zerado** (ver limitação).
+- **Valor liberado:** soma do valor liberado dos convênios (Portal), mais ingresso de contrapartida e rendimento.
 - **Contrapartida:** soma da contrapartida.
-- **Saldo em conta:** saldo positivo em conta. **Hoje zerado.**
-- **Valores devolvidos:** saldo devolvido ao tesouro e pelo convenente. **Hoje zerado.**
-- **Valor pago:** soma de valor pago. **Hoje zerado.**
-- **Funil de execução:** repasse → desembolsado → pago, com percentual sobre o repasse. **Hoje sem dados** nessa base.
+- **Saldo em conta:** saldo positivo em conta. **Zerado:** o Portal não traz esse dado.
+- **Valores devolvidos:** saldo devolvido ao tesouro e pelo convenente. **Zerado.**
+- **Valor pago:** soma de valor pago. **Zerado.**
+- **Funil de execução:** repasse → desembolsado → pago, com percentual sobre o repasse. A etapa de desembolsado
+  tem dados; a de pago fica zerada.
 
 > Percentuais de "aprovadas" e de "assinatura de instrumentos" usam como base as propostas que já
 > saíram da fase de cadastro. Propostas *Cadastradas* não entram no denominador.
@@ -153,13 +159,14 @@ porque não há versão anterior para comparar.
 
 ## 6. Perguntas frequentes
 
-**Por que os valores de desembolso e pagamento estão zerados?**
-A API pública usada hoje não fornece essas informações. A integração com o Portal da Transparência
-está em preparação.
+**Por que o valor pago e o saldo em conta estão zerados?**
+O Portal da Transparência não traz esses dados, e a API do Transferegov também não. O valor liberado
+(desembolso) vem do Portal e aparece preenchido para os convênios encontrados.
 
-**Por que não encontro a situação "Em execução"?**
-Ela é uma situação de convênio. A base de discricionárias agora mostra o grupo da proposta, que não inclui
-essa situação. Ela volta quando o Portal da Transparência for integrado.
+**Onde fica a situação "Em execução"?**
+Ela é uma situação de convênio e está na coluna `situacao_convenio`, vinda do Portal. O filtro *Situações* e o
+donut usam o grupo da proposta (o mesmo do painel da SERPRO), então "Em execução" não aparece lá. Veja a coluna
+na tabela da planilha.
 
 **Por que o total de convênios não bate com o painel oficial da SERPRO?**
 A base usa o número de convênio informado nas metas de planos de trabalho. Convênios que não aparecem
