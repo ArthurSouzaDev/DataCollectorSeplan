@@ -16,6 +16,10 @@ Commits seguem [Conventional Commits](https://www.conventionalcommits.org/pt-br/
   convênios com execução abaixo de 50%, ambas recolhíveis.
 - Discricionárias: ranking por município e gráfico de situação dos convênios por ano de assinatura.
 - Ficha do registro, aberta ao clicar em qualquer linha da planilha de todas as bases.
+- Especiais: ranking por beneficiário, situação por ano da emenda e participação por parlamentar.
+- Fundo a fundo: ranking por município, situação por ano e participação por fundo repassador.
+- Filtro por clique nos gráficos complementares, com resumo dos filtros ativos.
+- Legendas clicáveis nos rankings, nas séries por ano e nas roscas. Com mais de 4 itens, recolhem.
 
 ### Alterado
 - Situação das propostas passa a usar `sit_proposta_grupo`, o mesmo agrupamento do painel da SERPRO.

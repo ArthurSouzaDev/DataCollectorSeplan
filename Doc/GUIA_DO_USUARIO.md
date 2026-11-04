@@ -182,6 +182,32 @@ Esta seção vale para a base de **Discricionárias e legais**, exceto a ficha, 
 
 ---
 
+## 4.2 Gráficos de especiais e fundo a fundo
+
+Os três gráficos abaixo aparecem nas bases de **Especiais** e **Fundo a Fundo**, logo depois dos
+gráficos de evolução e situação. Respondem aos filtros do topo do painel.
+
+| Gráfico | Especiais | Fundo a fundo |
+|---|---|---|
+| **Ranking** (10 maiores) | Beneficiário, por valor total | Município, por total repassado |
+| **Situação por ano** (empilhado) | Por ano da emenda, com a situação do plano | Por ano de início do plano, com a situação |
+| **Participação** (rosca) | Parlamentar, pela quantidade de planos | Fundo repassador, pela quantidade de planos |
+
+- Na série por ano, as 6 situações mais frequentes aparecem separadas; as demais ficam em "Outros".
+- A participação é calculada pela **quantidade** de planos, não pelo valor. Para ver valores, use o ranking.
+
+### Filtrar pelos gráficos
+- **Ranking:** clique numa barra ou num item da legenda para filtrar. Clique de novo para remover.
+- **Participação:** clique numa fatia ou num item da legenda.
+- **Situação por ano:** clique numa faixa ou num item da legenda para filtrar pela situação. "Outros" não filtra.
+- O resumo "Filtros ativos", logo acima da tabela, mostra quantos valores estão selecionados em cada gráfico.
+
+### Legendas
+- Legendas com até 4 itens ficam abertas.
+- Legendas com mais itens começam recolhidas. Clique em **Legenda** para abrir e filtrar pelos itens.
+
+---
+
 ## 5. Histórico de atualizações
 
 A tela *Histórico* mostra cada execução com:
