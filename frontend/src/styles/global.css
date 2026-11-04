@@ -1366,6 +1366,191 @@ tbody tr:last-child td { border-bottom: none; }
   font-size: 0.85em;
 }
 
+/* Dado sem fonte: cinza e tracejado, para não parecer um valor real. */
+.metric-unavailable {
+  border-style: dashed;
+  opacity: 0.8;
+}
+
+.metric-unavailable strong {
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+/* Listas recolhíveis: ocupam uma linha até serem abertas. */
+.collapsible {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-muted);
+}
+
+.collapsible > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  list-style: none;
+}
+
+.collapsible > summary::-webkit-details-marker {
+  display: none;
+}
+
+.collapsible > summary::before {
+  content: "▸";
+  color: var(--muted);
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.collapsible[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.collapsible-count {
+  margin-left: auto;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.collapsible > .table-wrap,
+.collapsible > .chart-empty {
+  margin: 0 14px 14px;
+}
+
+/* Linhas da planilha que abrem a ficha */
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover td,
+.clickable-row:focus-visible td {
+  background: var(--surface-muted);
+}
+
+/* Ficha completa do registro */
+/* Camada transparente: clicar fora da ficha fecha, sem escurecer a tela. */
+.ficha-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: transparent;
+}
+
+/* Cartão posicionado junto à linha clicada (top/bottom/left definidos no componente). */
+.ficha-card {
+  position: fixed;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.ficha-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ficha-kicker {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ficha-header h2 {
+  margin: 2px 0 0;
+  font-size: 1.15rem;
+  word-break: break-all;
+}
+
+.ficha-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.ficha-status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.ficha-close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-muted);
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ficha-cartoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.ficha-cartao {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-muted);
+}
+
+.ficha-cartao span {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.ficha-cartao strong {
+  font-size: 1rem;
+}
+
+.ficha-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px 18px;
+  margin: 0;
+}
+
+.ficha-campo dt {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.ficha-campo dd {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
 /* ══════════════════════════════════════════════════════════
    Scrollbars (WebKit)
 ══════════════════════════════════════════════════════════ */

@@ -19,6 +19,11 @@ export type DatasetConfig = {
   tableColumns: string[];
   /** Decomposição do valor em partes (custeio × investimento, tipo de repasse…). */
   composition?: CompositionConfig;
+  /**
+   * Situação de convênio, separada da situação da proposta. Quando existe, ganha um
+   * filtro e um donut próprios, calculados só sobre os convênios (fase = Convênio).
+   */
+  convenioStatusColumn?: string;
 };
 
 export type CompositionSeries = { key: string; label: string };
@@ -100,6 +105,7 @@ export const DATASETS: DatasetConfig[] = [
     groupColumn: 'orgao_concedente',
     yearColumn: 'ano_assinatura',
     statusColumn: 'situacao',
+    convenioStatusColumn: 'situacao_convenio',
     tableColumns: [
       'nr_convenio',
       'fase',
@@ -391,6 +397,7 @@ export function filterRows(
     statuses?: string[];
     groups?: string[];
     natures?: string[];
+    convenioStatuses?: string[];
     onlyFormalized?: boolean;
     search?: string;
   },
@@ -401,10 +408,12 @@ export function filterRows(
   const statusSet = new Set(filters.statuses ?? []);
   const groupSet = new Set(filters.groups ?? []);
   const natureSet = new Set(filters.natures ?? []);
+  const convenioSet = new Set(filters.convenioStatuses ?? []);
 
   return rows.filter((row) => {
     if (yearSet.size > 0 && !yearSet.has(cleanLabel(row[config.yearColumn]))) return false;
     if (statusSet.size > 0 && !statusSet.has(cleanLabel(row[config.statusColumn]))) return false;
+    if (convenioSet.size > 0 && !convenioSet.has(cleanLabel(row[config.convenioStatusColumn ?? '']))) return false;
     if (groupSet.size > 0 && !groupSet.has(cleanLabel(row[config.groupColumn]))) return false;
     if (natureSet.size > 0 && !natureSet.has(cleanLabel(row.natureza_juridica))) return false;
     if (filters.onlyFormalized && !isFormalized(row, config)) return false;

@@ -22,7 +22,20 @@ export type KpiItem = {
   tone?: KpiTone;
   /** Texto auxiliar abaixo do valor (ex.: percentual de execução). */
   hint?: string;
+  /** A fonte atual não traz este dado: o cartão mostra "Indisponível", nunca zero. */
+  indisponivel?: boolean;
 };
+
+/**
+ * Colunas que a fonte atual (Transferegov + Portal da Transparência) não fornece.
+ * Aparecem como "Indisponível" na tabela e nos indicadores, em vez de zero.
+ */
+export const COLUNAS_INDISPONIVEIS = new Set([
+  'valor_pago',
+  'valor_saldo_conta',
+  'valor_saldo_tesouro',
+  'vl_saldo_reman_convenente',
+]);
 
 export function sumColumn(rows: TransferRecord[], column: string) {
   let total = 0;
@@ -102,15 +115,15 @@ function discricionariasKpis(rows: TransferRecord[]): KpiItem[] {
       hint: percentOf(valorLiberado, valorGlobal, 'do valor global'),
     },
     { key: 'contrapartida', label: 'Contrapartida', amount: contrapartida, kind: 'currency' },
-    { key: 'saldo', label: 'Saldo em conta', amount: saldoConta, kind: 'currency', tone: 'warm' },
-    { key: 'devolvidos', label: 'Valores devolvidos', amount: devolvidos, kind: 'currency', tone: 'danger' },
+    { key: 'saldo', label: 'Saldo em conta', amount: saldoConta, kind: 'currency', tone: 'warm', indisponivel: true },
+    { key: 'devolvidos', label: 'Valores devolvidos', amount: devolvidos, kind: 'currency', tone: 'danger', indisponivel: true },
     {
       key: 'pago',
       label: 'Valor pago',
       amount: valorPago,
       kind: 'currency',
       tone: 'success',
-      hint: percentOf(valorPago, valorRepasse, 'do repasse'),
+      indisponivel: true,
     },
   ];
 }

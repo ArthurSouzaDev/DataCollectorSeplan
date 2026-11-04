@@ -20,11 +20,21 @@ import {
   type TransferRecord,
 } from '../services/data/transferData';
 import {
+  COLUNAS_INDISPONIVEIS,
   computeExecution,
   computeKpis,
   supportsExecutionPanel,
   type KpiItem,
 } from '../services/data/datasetKpis';
+import {
+  execucaoBaixa,
+  resumoVigencia,
+  serieSituacaoPorAno,
+  vigenciasProximas,
+  type ConvenioVigencia,
+} from '../services/data/convenioInsights';
+import { SituacaoPorAnoChart } from '../components/charts/SituacaoPorAnoChart';
+import { FichaRegistro, type Ancora } from '../components/charts/FichaRegistro';
 import { CategoryDonut } from '../components/charts/CategoryDonut';
 import { CompositionChart } from '../components/charts/CompositionChart';
 import { ExecutionPanel } from '../components/charts/ExecutionPanel';
@@ -56,11 +66,18 @@ function DatasetView({ config }: { config: DatasetConfig }) {
   const [statuses, setStatuses] = useState<string[]>([]);
   const [groups, setGroups] = useState<string[]>([]);
   const [natures, setNatures] = useState<string[]>([]);
+  const [convenioStatuses, setConvenioStatuses] = useState<string[]>([]);
   const [onlyFormalized, setOnlyFormalized] = useState(false);
   const [search, setSearch] = useState('');
   const [sortColumn, setSortColumn] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
+  const [registroAberto, setRegistroAberto] = useState<{ row: TransferRecord; ancora: Ancora } | null>(null);
+
+  function abrirFicha(row: TransferRecord, linha: HTMLElement) {
+    const rect = linha.getBoundingClientRect();
+    setRegistroAberto({ row, ancora: { x: rect.left, y: rect.bottom, topo: rect.top } });
+  }
 
   const currentState = dataById[config.id] ?? initialDataState;
 
@@ -79,6 +96,7 @@ function DatasetView({ config }: { config: DatasetConfig }) {
     setStatuses([]);
     setGroups([]);
     setNatures([]);
+    setConvenioStatuses([]);
     setOnlyFormalized(false);
     setSearch('');
     setSortColumn('');
@@ -86,8 +104,13 @@ function DatasetView({ config }: { config: DatasetConfig }) {
   }, [config.id]);
 
   const filteredRows = useMemo(
-    () => filterRows(currentState.rows, { years, statuses, groups, natures, onlyFormalized, search }, config),
-    [config, currentState.rows, groups, natures, onlyFormalized, search, statuses, years],
+    () =>
+      filterRows(
+        currentState.rows,
+        { years, statuses, groups, natures, convenioStatuses, onlyFormalized, search },
+        config,
+      ),
+    [config, convenioStatuses, currentState.rows, groups, natures, onlyFormalized, search, statuses, years],
   );
 
   const orderedRows = useMemo(() => {
@@ -130,6 +153,28 @@ function DatasetView({ config }: { config: DatasetConfig }) {
     () => (supportsExecutionPanel(config) ? computeExecution(filteredRows) : null),
     [config, filteredRows],
   );
+  // Situação do convênio: calculada só sobre os convênios, para o percentual não ser diluído pelas propostas.
+  const convenioShare = useMemo(() => {
+    if (!config.convenioStatusColumn) return null;
+    const convenios = filteredRows.filter((row) => String(row.fase ?? '').trim() === 'Convênio');
+    return aggregateShare(convenios, config.convenioStatusColumn, config.valueColumn);
+  }, [config, filteredRows]);
+
+  // Indicadores de convênios: só existem quando a base tem situação de convênio (discricionárias).
+  const insightsConvenio = useMemo(() => {
+    if (!config.convenioStatusColumn) return null;
+    const proximas = vigenciasProximas(filteredRows, new Date());
+    return {
+      janelas: resumoVigencia(proximas),
+      proximas,
+      baixa: execucaoBaixa(proximas),
+      serie: serieSituacaoPorAno(filteredRows),
+    };
+  }, [config, filteredRows]);
+  const topMunicipios = useMemo(
+    () => (insightsConvenio ? aggregateBy(filteredRows, 'municipio_beneficiario', config.valueColumn, 10) : []),
+    [config, filteredRows, insightsConvenio],
+  );
 
   // Cross-filtering: clicar numa barra do ranking aplica (ou remove) o filtro
   // do agrupamento, e todo o painel — KPIs, funil e tabela — reage junto.
@@ -151,6 +196,12 @@ function DatasetView({ config }: { config: DatasetConfig }) {
     );
   }
 
+  function toggleConvenioStatusFilter(label: string) {
+    setConvenioStatuses((current) =>
+      current.includes(label) ? current.filter((item) => item !== label) : [...current, label],
+    );
+  }
+
   const availableColumns = config.tableColumns.filter((column) =>
     currentState.rows.some((row) => Object.prototype.hasOwnProperty.call(row, column)),
   );
@@ -168,6 +219,18 @@ function DatasetView({ config }: { config: DatasetConfig }) {
         <span className="breadcrumb-sep" aria-hidden="true">›</span>
         <span className="breadcrumb-current">{config.shortTitle}</span>
       </nav>
+
+      {registroAberto ? (
+        <FichaRegistro
+          row={registroAberto.row}
+          titulo={String(
+            registroAberto.row.codigo_plano ?? registroAberto.row.nr_convenio ?? registroAberto.row.id_proposta ?? '',
+          )}
+          situacaoColumn={config.statusColumn}
+          ancora={registroAberto.ancora}
+          onClose={() => setRegistroAberto(null)}
+        />
+      ) : null}
 
       <div className="detail-header">
         <div>
@@ -196,6 +259,14 @@ function DatasetView({ config }: { config: DatasetConfig }) {
               value={statuses}
               onChange={setStatuses}
             />
+            {config.convenioStatusColumn ? (
+              <MultiSelect
+                label="Situacao do convenio"
+                options={uniqueOptions(currentState.rows, config.convenioStatusColumn)}
+                value={convenioStatuses}
+                onChange={setConvenioStatuses}
+              />
+            ) : null}
             <MultiSelect
               label={config.groupColumn.replaceAll('_', ' ')}
               options={uniqueOptions(currentState.rows, config.groupColumn)}
@@ -305,6 +376,89 @@ function DatasetView({ config }: { config: DatasetConfig }) {
             </section>
           </div>
 
+          {convenioShare && config.convenioStatusColumn ? (
+            <section className="panel">
+              <div className="panel-heading">
+                <h2>Situação dos convênios</h2>
+                {convenioStatuses.length ? (
+                  <button className="link-button" type="button" onClick={() => setConvenioStatuses([])}>
+                    Limpar seleção
+                  </button>
+                ) : (
+                  <span className="panel-hint">Somente convênios · clique numa fatia para filtrar</span>
+                )}
+              </div>
+              <CategoryDonut
+                slices={convenioShare.slices}
+                total={convenioShare.total}
+                totalLabel="convênios"
+                selected={convenioStatuses}
+                onSelect={toggleConvenioStatusFilter}
+              />
+            </section>
+          ) : null}
+
+          {insightsConvenio ? (
+            <section className="panel">
+              <div className="panel-heading">
+                <h2>Vigência dos convênios</h2>
+                <span className="panel-hint">Em curso, sem concluídos, anulados ou arquivados</span>
+              </div>
+              <div className="kpi-grid kpi-grid-3">
+                {insightsConvenio.janelas.map((janela) => (
+                  <div key={janela.dias} className="metric-card tone-warm">
+                    <span>Próximos {janela.dias} dias</span>
+                    <strong>{formatNumber(janela.quantidade)} convênios</strong>
+                    <em className="metric-hint">{formatCurrency(janela.repasse)} em repasse</em>
+                  </div>
+                ))}
+              </div>
+
+              <details className="collapsible">
+                <summary>
+                  Vencendo primeiro <span className="collapsible-count">{formatNumber(insightsConvenio.proximas.length)}</span>
+                </summary>
+                {insightsConvenio.proximas.length ? (
+                  <TabelaVigencia itens={insightsConvenio.proximas.slice(0, 15)} />
+                ) : (
+                  <p className="chart-empty">Nenhum convênio em curso com vigência nos próximos 180 dias.</p>
+                )}
+              </details>
+
+              <details className="collapsible">
+                <summary>
+                  Execução abaixo de 50% com vigência próxima do fim{' '}
+                  <span className="collapsible-count">{formatNumber(insightsConvenio.baixa.length)}</span>
+                </summary>
+                {insightsConvenio.baixa.length ? (
+                  <TabelaVigencia itens={insightsConvenio.baixa.slice(0, 15)} />
+                ) : (
+                  <p className="chart-empty">Nenhum convênio nesse caso para os filtros aplicados.</p>
+                )}
+              </details>
+            </section>
+          ) : null}
+
+          {insightsConvenio ? (
+            <section className="panel">
+              <div className="panel-heading">
+                <h2>Ranking por município</h2>
+                <span className="panel-hint">Valor de repasse · 10 maiores</span>
+              </div>
+              <RankingBarChart rows={topMunicipios} valueLabel={config.valueLabel} />
+            </section>
+          ) : null}
+
+          {insightsConvenio ? (
+            <section className="panel">
+              <div className="panel-heading">
+                <h2>Situação dos convênios por ano</h2>
+                <span className="panel-hint">Ano de assinatura · quantidade de convênios</span>
+              </div>
+              <SituacaoPorAnoChart rows={insightsConvenio.serie.rows} series={insightsConvenio.serie.series} />
+            </section>
+          ) : null}
+
           {composition && config.composition ? (
             <section className="panel">
               <div className="panel-heading">
@@ -329,6 +483,7 @@ function DatasetView({ config }: { config: DatasetConfig }) {
                   setStatuses([]);
                   setGroups([]);
                   setNatures([]);
+                  setConvenioStatuses([]);
                   setOnlyFormalized(false);
                   setSearch('');
                   setSelectedColumns([]);
@@ -358,6 +513,11 @@ function DatasetView({ config }: { config: DatasetConfig }) {
                 <span>{statuses.length ? `Situacoes: ${statuses.length}` : 'Situacoes: todas'}</span>
                 <span>{groups.length ? `${config.groupColumn.replaceAll('_', ' ')}: ${groups.length}` : 'Agrupamento: todos'}</span>
                 <span>{natures.length ? `Natureza juridica: ${natures.length}` : 'Natureza juridica: todas'}</span>
+                {config.convenioStatusColumn ? (
+                  <span>
+                    {convenioStatuses.length ? `Situacao do convenio: ${convenioStatuses.length}` : 'Situacao do convenio: todas'}
+                  </span>
+                ) : null}
                 <span>{onlyFormalized ? 'Somente formalizados: sim' : 'Somente formalizados: nao'}</span>
               </div>
             </div>
@@ -385,7 +545,15 @@ function DatasetView({ config }: { config: DatasetConfig }) {
                 </thead>
                 <tbody>
                   {orderedRows.slice(0, 150).map((row, rowIndex) => (
-                    <tr key={`${config.id}-${rowIndex}`}>
+                    <tr
+                      key={`${config.id}-${rowIndex}`}
+                      className="clickable-row"
+                      tabIndex={0}
+                      onClick={(evento) => abrirFicha(row, evento.currentTarget)}
+                      onKeyDown={(evento) => {
+                        if (evento.key === 'Enter') abrirFicha(row, evento.currentTarget);
+                      }}
+                    >
                       {visibleColumns.map((column) => (
                         <td key={column}>{formatCell(row[column], column)}</td>
                       ))}
@@ -406,6 +574,16 @@ function DatasetView({ config }: { config: DatasetConfig }) {
  * mostra a forma abreviada e mantém o valor exato no title (hover).
  */
 function KpiCard({ kpi, dense }: { kpi: KpiItem; dense: boolean }) {
+  if (kpi.indisponivel) {
+    return (
+      <div className="metric-card metric-unavailable">
+        <span>{kpi.label}</span>
+        <strong>Indisponível</strong>
+        <em className="metric-hint">A fonte atual não fornece este dado.</em>
+      </div>
+    );
+  }
+
   const exact = kpi.kind === 'count' ? formatNumber(kpi.amount) : formatCurrency(kpi.amount);
   const shown = kpi.kind === 'currency' && dense ? formatCurrencyShort(kpi.amount) : exact;
 
@@ -419,6 +597,9 @@ function KpiCard({ kpi, dense }: { kpi: KpiItem; dense: boolean }) {
 }
 
 function formatCell(value: unknown, column: string) {
+  if (COLUNAS_INDISPONIVEIS.has(column)) {
+    return 'Indisponível';
+  }
   if (column.startsWith('valor_') || column === 'saldo_disponivel') {
     return formatCurrency(toNumber(value));
   }
@@ -532,6 +713,41 @@ function MultiSelect({
           </div>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function TabelaVigencia({ itens }: { itens: ConvenioVigencia[] }) {
+  return (
+    <div className="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Convênio</th>
+            <th>Proponente</th>
+            <th>Município</th>
+            <th>Fim da vigência</th>
+            <th>Dias restantes</th>
+            <th>Repasse</th>
+            <th>Liberado</th>
+            <th>Execução</th>
+          </tr>
+        </thead>
+        <tbody>
+          {itens.map((item) => (
+            <tr key={`${item.row.nr_convenio}-${item.fim.getTime()}`}>
+              <td>{String(item.row.nr_convenio ?? '')}</td>
+              <td>{String(item.row.proponente ?? '')}</td>
+              <td>{String(item.row.municipio_beneficiario ?? '')}</td>
+              <td>{item.fim.toLocaleDateString('pt-BR')}</td>
+              <td>{formatNumber(item.dias)}</td>
+              <td>{formatCurrency(item.repasse)}</td>
+              <td>{formatCurrency(item.liberado)}</td>
+              <td>{item.execucao === null ? '—' : `${(item.execucao * 100).toFixed(1).replace('.', ',')}%`}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

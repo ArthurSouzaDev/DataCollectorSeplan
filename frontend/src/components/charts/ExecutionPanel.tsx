@@ -15,7 +15,8 @@ type ExecutionPanelProps = {
  * Equivale à seção "💹 Execução Financeira" do dashboard Streamlit.
  */
 export function ExecutionPanel({ execution }: ExecutionPanelProps) {
-  const data = execution.stages.map((stage) => ({
+  // A etapa "pago" não tem fonte na base atual: mostrar o funil com ela seria um zero enganoso.
+  const data = execution.stages.filter((stage) => stage.key !== 'pago').map((stage) => ({
     label: stage.label,
     value: stage.value,
     percentLabel: formatPercent(stage.percentOfInitial),
@@ -86,8 +87,8 @@ export function ExecutionPanel({ execution }: ExecutionPanelProps) {
             value={formatPercent(execution.percentDisbursed)}
             tone="success"
           />
-          <ExecutionCard label="Pago / repasse" value={formatPercent(execution.percentPaid)} tone="warm" />
-          <ExecutionCard label="Saldo total em conta" value={formatCurrency(execution.saldoConta)} tone="accent" />
+          <ExecutionCard label="Pago / repasse" value="Indisponível" tone="warm" />
+          <ExecutionCard label="Saldo total em conta" value="Indisponível" tone="accent" />
         </div>
       </div>
     </section>

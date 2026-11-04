@@ -70,8 +70,8 @@ export function AjudaPage() {
         <ul>
           <li>
             <strong>Discricionárias:</strong> o valor global é repasse + contrapartida. O valor liberado vem do Portal da
-            Transparência para os convênios encontrados. Pago, saldo em conta e valores devolvidos aparecem zerados,
-            porque o Portal não traz esses dados.
+            Transparência para os convênios encontrados. Pago, saldo em conta e valores devolvidos aparecem como
+            "Indisponível", porque nenhuma fonte atual traz esses dados.
           </li>
           <li>
             <strong>Percentuais de aprovadas e de assinatura:</strong> o denominador exclui as propostas ainda
@@ -96,6 +96,10 @@ export function AjudaPage() {
           <li>
             <strong>Onde fica "Em execução"?</strong> Na coluna <code>situacao_convenio</code>, vinda do Portal. O filtro
             de situações e o donut usam o grupo da proposta, como no painel da SERPRO.
+          </li>
+          <li>
+            <strong>Por que valor pago, saldo e devolvidos estão "Indisponível"?</strong> Nenhuma fonte atual traz
+            esses dados. Mostrar zero seria enganoso, então o painel não mostra um valor.
           </li>
           <li>
             <strong>Por que o total não bate com o painel da SERPRO?</strong> A base usa o número de convênio das metas
