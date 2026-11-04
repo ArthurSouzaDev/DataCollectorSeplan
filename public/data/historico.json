@@ -1,5 +1,5 @@
 {
- "atualizado_em": "2026-11-04T11:23-03:00",
+ "atualizado_em": "2026-11-04T11:42-03:00",
  "entradas": [
   {
    "dataset": "fundo-a-fundo",
@@ -494,6 +494,91 @@
     {
      "situacao": "Em Complementação pelo Estado/Município",
      "antes": 617,
+     "depois": 616
+    },
+    {
+     "situacao": "Não informado",
+     "antes": 5,
+     "depois": 5
+    }
+   ],
+   "situacoes_novas": []
+  },
+  {
+   "dataset": "discricionarias-legais",
+   "executado_em": "2026-11-04T11:42-03:00",
+   "sem_base_anterior": false,
+   "registros": {
+    "antes": 23729,
+    "depois": 23729
+   },
+   "novos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "removidos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "colunas_novas": [],
+   "colunas_removidas": [],
+   "campos_alterados": [],
+   "totais": [
+    {
+     "campo": "valor_global",
+     "antes": 32147772023.6,
+     "depois": 32147772023.6
+    },
+    {
+     "campo": "valor_repasse",
+     "antes": 31111334575.1,
+     "depois": 31111334575.1
+    },
+    {
+     "campo": "valor_contrapartida",
+     "antes": 1036437448.5,
+     "depois": 1036437448.5
+    },
+    {
+     "campo": "vl_contrapartida_finan_prop",
+     "antes": 1004349256.9300001,
+     "depois": 1004349256.9300001
+    },
+    {
+     "campo": "vl_contrapartida_bens_serv_prop",
+     "antes": 32088191.569999997,
+     "depois": 32088191.569999997
+    },
+    {
+     "campo": "valor_desembolsado",
+     "antes": 2277228116.92,
+     "depois": 2277228116.92
+    }
+   ],
+   "situacoes": [
+    {
+     "situacao": "Em Análise pelo Órgão Concedente",
+     "antes": 10616,
+     "depois": 10616
+    },
+    {
+     "situacao": "Aprovadas",
+     "antes": 6230,
+     "depois": 6230
+    },
+    {
+     "situacao": "Rejeitadas",
+     "antes": 4409,
+     "depois": 4409
+    },
+    {
+     "situacao": "Cadastradas",
+     "antes": 1853,
+     "depois": 1853
+    },
+    {
+     "situacao": "Em Complementação pelo Estado/Município",
+     "antes": 616,
      "depois": 616
     },
     {
