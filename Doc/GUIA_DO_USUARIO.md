@@ -50,8 +50,8 @@ e como usar os filtros.
   *Sem correspondência no Portal*.
 - **Valor liberado (`valor_desembolsado`):** valor liberado do convênio, pelo Portal da Transparência.
 
-> **Limitação atual:** o Portal não traz valor pago, saldo em conta nem valores devolvidos. Essas colunas
-> continuam zeradas. Dos convênios de Tocantins, cerca de 78% foram encontrados no Portal.
+> **Limitação atual:** o Portal não traz valor pago, saldo em conta nem valores devolvidos. Esses campos aparecem
+> como **Indisponível**, nunca como zero. Dos convênios de Tocantins, cerca de 78% foram encontrados no Portal.
 
 ### 1.4 Histórico de atualizações
 
@@ -80,7 +80,8 @@ Os filtros ficam no topo de cada painel. Todos os KPIs, gráficos e a tabela rea
 | Filtro | O que faz | Coluna usada |
 |---|---|---|
 | **Anos** | Mostra só os anos selecionados | ano da base (ver nota abaixo) |
-| **Situações** | Mostra só as situações escolhidas | `situacao` |
+| **Situações** | Mostra só as situações escolhidas (grupo da proposta) | `situacao` |
+| **Situação do convênio** (só discricionárias) | Mostra só os convênios com a situação escolhida, como *EM EXECUÇÃO* | `situacao_convenio` |
 | **Agrupamento** (rótulo varia por base) | Filtra por órgão/parlamentar/órgão repassador | ver tabela abaixo |
 | **Natureza jurídica** | Filtra pela natureza do proponente/beneficiário | `natureza_juridica` |
 | **Somente convênios formalizados** | Mantém só registros com convênio ativo (não cancelado) | `fase` (discricionárias); situação nas demais |
@@ -133,14 +134,51 @@ Os filtros ficam no topo de cada painel. Todos os KPIs, gráficos e a tabela rea
 - **Valor global:** repasse + contrapartida.
 - **Valor liberado:** soma do valor liberado dos convênios (Portal), mais ingresso de contrapartida e rendimento.
 - **Contrapartida:** soma da contrapartida.
-- **Saldo em conta:** saldo positivo em conta. **Zerado:** o Portal não traz esse dado.
-- **Valores devolvidos:** saldo devolvido ao tesouro e pelo convenente. **Zerado.**
-- **Valor pago:** soma de valor pago. **Zerado.**
-- **Funil de execução:** repasse → desembolsado → pago, com percentual sobre o repasse. A etapa de desembolsado
-  tem dados; a de pago fica zerada.
+- **Saldo em conta:** **Indisponível.** Nenhuma fonte atual traz esse dado.
+- **Valores devolvidos:** **Indisponível.** Mesmo motivo.
+- **Valor pago:** **Indisponível.** Mesmo motivo.
+- **Funil de execução:** mostra repasse → desembolsado, com percentual sobre o repasse. A etapa de pago e o
+  saldo em conta aparecem como **Indisponível**, sem o funil fingir que o dado existe.
 
 > Percentuais de "aprovadas" e de "assinatura de instrumentos" usam como base as propostas que já
 > saíram da fase de cadastro. Propostas *Cadastradas* não entram no denominador.
+
+---
+
+## 4.1 Indicadores de convênios e ficha do registro
+
+Esta seção vale para a base de **Discricionárias e legais**, exceto a ficha, que vale para todas as bases.
+
+### Filtro e donut "Situação dos convênios"
+- **Filtro "Situacao do convenio":** filtra pela situação do convênio no Portal (ex.: *EM EXECUÇÃO*).
+  Não mexe no grupo da proposta.
+- **Donut:** calculado só sobre os convênios (propostas não entram). Clicar numa fatia aplica o filtro.
+
+### Vigência dos convênios
+- **Cartões de 30, 90 e 180 dias:** quantidade de convênios cuja vigência termina nesse prazo e o repasse somado.
+- Consideram só convênios em curso. Ficam de fora os concluídos, anulados, rescindidos, cancelados,
+  arquivados e excluídos.
+- **Vencendo primeiro** (recolhível): os 15 convênios com vigência mais próxima do fim, em até 180 dias.
+
+### Execução abaixo de 50%
+- **Execução abaixo de 50% com vigência próxima do fim** (recolhível): convênios com vigência em até 180 dias
+  e valor liberado menor que 50% do repasse.
+- Execução = valor liberado ÷ valor de repasse. Convênios sem repasse não entram.
+
+### Ranking por município
+- Os 10 municípios com maior valor de repasse. Mostra o total de todas as propostas filtradas.
+
+### Situação dos convênios por ano
+- Barras empilhadas por **ano de assinatura**, com a quantidade de convênios em cada situação.
+- As 6 situações mais frequentes aparecem separadas; as demais ficam em "Outros".
+
+### Ficha do registro
+- **Como abrir:** clique em qualquer linha da planilha (ou selecione a linha e aperte Enter).
+- **Onde aparece:** junto à linha clicada. Se a linha estiver na metade de baixo da tela, a ficha abre acima dela.
+- **O que mostra:** número do registro, situação, cartões de valor (quando existirem) e os demais campos que a
+  base já tem. Campo vazio aparece como "Não informado".
+- **O que não mostra:** dados bancários de beneficiários e contatos de proponentes.
+- **Como fechar:** botão ×, tecla Esc ou clique fora da ficha.
 
 ---
 
@@ -159,9 +197,15 @@ porque não há versão anterior para comparar.
 
 ## 6. Perguntas frequentes
 
-**Por que o valor pago e o saldo em conta estão zerados?**
-O Portal da Transparência não traz esses dados, e a API do Transferegov também não. O valor liberado
-(desembolso) vem do Portal e aparece preenchido para os convênios encontrados.
+**Por que valor pago, saldo em conta e valores devolvidos aparecem como "Indisponível"?**
+Nenhuma fonte atual traz esses dados. A API do Transferegov não os tem, e o Portal da Transparência também não.
+Mostrar zero seria enganoso, então o painel mostra "Indisponível". O valor liberado (desembolso) vem do Portal e
+aparece preenchido para os convênios encontrados.
+
+**Existe outra fonte para esses dados?**
+Não encontramos, nas APIs de convênios e despesas que consultamos, um vínculo que permita associar pagamentos
+ou saldo bancário a cada convênio. Pagamentos existem por favorecido (CNPJ), mas não por convênio. Se essa fonte
+for encontrada, o painel passa a mostrar os valores.
 
 **Onde fica a situação "Em execução"?**
 Ela é uma situação de convênio e está na coluna `situacao_convenio`, vinda do Portal. O filtro *Situações* e o
