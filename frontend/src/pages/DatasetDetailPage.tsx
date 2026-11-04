@@ -460,7 +460,12 @@ function DatasetView({ config }: { config: DatasetConfig }) {
                 <h2>Ranking por município</h2>
                 <span className="panel-hint">Valor de repasse · 10 maiores</span>
               </div>
-              <RankingBarChart rows={topMunicipios} valueLabel={config.valueLabel} />
+              <RankingBarChart
+                rows={topMunicipios}
+                valueLabel={config.valueLabel}
+                selected={filtrosGrafico.municipio_beneficiario ?? []}
+                onSelect={(valor) => alternarFiltroGrafico('municipio_beneficiario', valor)}
+              />
             </section>
           ) : null}
 
@@ -470,7 +475,11 @@ function DatasetView({ config }: { config: DatasetConfig }) {
                 <h2>Situação dos convênios por ano</h2>
                 <span className="panel-hint">Ano de assinatura · quantidade de convênios</span>
               </div>
-              <SituacaoPorAnoChart rows={insightsConvenio.serie.rows} series={insightsConvenio.serie.series} />
+              <SituacaoPorAnoChart
+                rows={insightsConvenio.serie.rows}
+                series={insightsConvenio.serie.series}
+                onSelect={toggleConvenioStatusFilter}
+              />
             </section>
           ) : null}
 
