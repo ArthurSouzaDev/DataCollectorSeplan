@@ -1,4 +1,5 @@
 import { toNumber, type CompositionRow, type CompositionSeries, type TransferRecord } from './transferData';
+import { serieEmpilhadaPorAno } from './seriePorAno';
 
 /**
  * Indicadores de convênios (somente discricionárias).
@@ -109,32 +110,8 @@ export function serieSituacaoPorAno(
   rows: TransferRecord[],
   topN = 6,
 ): { rows: CompositionRow[]; series: CompositionSeries[] } {
-  const base = rows.filter((row) => {
-    const ano = String(row.ano_assinatura ?? '').trim();
-    const situacao = String(row.situacao_convenio ?? '').trim();
-    return ehConvenio(row) && /^\d{4}$/.test(ano) && situacao && !situacao.startsWith('Não se aplica');
+  return serieEmpilhadaPorAno(rows, 'ano_assinatura', 'situacao_convenio', {
+    topN,
+    aceitar: ehConvenio,
   });
-
-  const contagem = new Map<string, number>();
-  for (const row of base) {
-    const situacao = String(row.situacao_convenio).trim();
-    contagem.set(situacao, (contagem.get(situacao) ?? 0) + 1);
-  }
-  const principais = [...contagem.entries()].sort((a, b) => b[1] - a[1]).slice(0, topN).map(([s]) => s);
-  const chaveDe = (situacao: string) => (principais.includes(situacao) ? `s_${principais.indexOf(situacao)}` : 's_outros');
-
-  const series: CompositionSeries[] = principais.map((situacao, index) => ({ key: `s_${index}`, label: situacao }));
-  if (contagem.size > principais.length) series.push({ key: 's_outros', label: 'Outros' });
-
-  const porAno = new Map<string, CompositionRow>();
-  for (const row of base) {
-    const ano = String(row.ano_assinatura).trim();
-    const linha = porAno.get(ano) ?? ({ label: ano, total: 0, ...Object.fromEntries(series.map((s) => [s.key, 0])) } as CompositionRow);
-    const chave = chaveDe(String(row.situacao_convenio).trim());
-    linha[chave] = (linha[chave] as number) + 1;
-    linha.total += 1;
-    porAno.set(ano, linha);
-  }
-
-  return { rows: [...porAno.values()].sort((a, b) => a.label.localeCompare(b.label)), series };
 }

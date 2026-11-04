@@ -398,6 +398,8 @@ export function filterRows(
     groups?: string[];
     natures?: string[];
     convenioStatuses?: string[];
+    /** Filtros por coluna vindos dos gráficos (ex.: { beneficiario: ['X'] }). */
+    extras?: Record<string, string[]>;
     onlyFormalized?: boolean;
     search?: string;
   },
@@ -416,6 +418,11 @@ export function filterRows(
     if (convenioSet.size > 0 && !convenioSet.has(cleanLabel(row[config.convenioStatusColumn ?? '']))) return false;
     if (groupSet.size > 0 && !groupSet.has(cleanLabel(row[config.groupColumn]))) return false;
     if (natureSet.size > 0 && !natureSet.has(cleanLabel(row.natureza_juridica))) return false;
+    if (filters.extras) {
+      for (const [coluna, valores] of Object.entries(filters.extras)) {
+        if (valores.length > 0 && !valores.includes(cleanLabel(row[coluna]))) return false;
+      }
+    }
     if (filters.onlyFormalized && !isFormalized(row, config)) return false;
     if (term) {
       const haystack = config.tableColumns.map((column) => cleanLabel(row[column])).join(' ').toLowerCase();

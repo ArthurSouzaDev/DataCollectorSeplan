@@ -1426,6 +1426,43 @@ tbody tr:last-child td { border-bottom: none; }
   margin: 0 14px 14px;
 }
 
+/* Legenda dos gráficos: recolhida por padrão, para não ocupar espaço. */
+.legenda-recolhivel {
+  margin-top: 10px;
+}
+
+.legenda-recolhivel > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  list-style: none;
+}
+
+.legenda-recolhivel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.legenda-recolhivel > summary::before {
+  content: "▸";
+  color: var(--muted);
+}
+
+.legenda-recolhivel[open] > summary::before {
+  content: "▾";
+}
+
+.legenda-recolhivel > .donut-legend {
+  margin-top: 10px;
+}
+
 /* Linhas da planilha que abrem a ficha */
 .clickable-row {
   cursor: pointer;

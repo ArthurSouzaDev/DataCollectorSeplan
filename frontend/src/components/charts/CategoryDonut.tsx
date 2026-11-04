@@ -3,6 +3,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { formatNumber, type ShareRow } from '../../services/data/transferData';
 import { formatPercent } from '../../services/data/datasetKpis';
 import { chartColors, seriesColor, SURFACE_GAP } from './chartTheme';
+import { LegendaRecolhivel } from './LegendaRecolhivel';
 
 type CategoryDonutProps = {
   slices: ShareRow[];
@@ -74,6 +75,7 @@ export function CategoryDonut({
         </div>
       </div>
 
+      <LegendaRecolhivel quantidade={slices.length}>
       <ul className="donut-legend">
         {slices.map((slice, index) => {
           const dimmed = hasSelection && !selectedSet.has(slice.label);
@@ -100,6 +102,7 @@ export function CategoryDonut({
           );
         })}
       </ul>
+      </LegendaRecolhivel>
     </div>
   );
 }

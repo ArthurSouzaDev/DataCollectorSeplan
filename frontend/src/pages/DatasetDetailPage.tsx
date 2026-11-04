@@ -35,6 +35,7 @@ import {
 } from '../services/data/convenioInsights';
 import { SituacaoPorAnoChart } from '../components/charts/SituacaoPorAnoChart';
 import { FichaRegistro, type Ancora } from '../components/charts/FichaRegistro';
+import { destaquesDe } from '../services/data/destaques';
 import { CategoryDonut } from '../components/charts/CategoryDonut';
 import { CompositionChart } from '../components/charts/CompositionChart';
 import { ExecutionPanel } from '../components/charts/ExecutionPanel';
@@ -73,6 +74,16 @@ function DatasetView({ config }: { config: DatasetConfig }) {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
   const [registroAberto, setRegistroAberto] = useState<{ row: TransferRecord; ancora: Ancora } | null>(null);
+  // Filtros vindos dos cliques nos gráficos (ranking e participação), por coluna.
+  const [filtrosGrafico, setFiltrosGrafico] = useState<Record<string, string[]>>({});
+
+  function alternarFiltroGrafico(coluna: string, valor: string) {
+    setFiltrosGrafico((atual) => {
+      const valores = atual[coluna] ?? [];
+      const proximos = valores.includes(valor) ? valores.filter((item) => item !== valor) : [...valores, valor];
+      return { ...atual, [coluna]: proximos };
+    });
+  }
 
   function abrirFicha(row: TransferRecord, linha: HTMLElement) {
     const rect = linha.getBoundingClientRect();
@@ -97,6 +108,7 @@ function DatasetView({ config }: { config: DatasetConfig }) {
     setGroups([]);
     setNatures([]);
     setConvenioStatuses([]);
+    setFiltrosGrafico({});
     setOnlyFormalized(false);
     setSearch('');
     setSortColumn('');
@@ -107,10 +119,10 @@ function DatasetView({ config }: { config: DatasetConfig }) {
     () =>
       filterRows(
         currentState.rows,
-        { years, statuses, groups, natures, convenioStatuses, onlyFormalized, search },
+        { years, statuses, groups, natures, convenioStatuses, extras: filtrosGrafico, onlyFormalized, search },
         config,
       ),
-    [config, convenioStatuses, currentState.rows, groups, natures, onlyFormalized, search, statuses, years],
+    [config, convenioStatuses, currentState.rows, filtrosGrafico, groups, natures, onlyFormalized, search, statuses, years],
   );
 
   const orderedRows = useMemo(() => {
@@ -159,6 +171,9 @@ function DatasetView({ config }: { config: DatasetConfig }) {
     const convenios = filteredRows.filter((row) => String(row.fase ?? '').trim() === 'Convênio');
     return aggregateShare(convenios, config.convenioStatusColumn, config.valueColumn);
   }, [config, filteredRows]);
+
+  // Gráficos complementares de especiais e fundo a fundo (null nas demais bases).
+  const destaques = useMemo(() => destaquesDe(config.id, filteredRows), [config.id, filteredRows]);
 
   // Indicadores de convênios: só existem quando a base tem situação de convênio (discricionárias).
   const insightsConvenio = useMemo(() => {
@@ -459,6 +474,49 @@ function DatasetView({ config }: { config: DatasetConfig }) {
             </section>
           ) : null}
 
+          {destaques ? (
+            <>
+              <section className="panel">
+                <div className="panel-heading">
+                  <h2>{destaques.ranking.titulo}</h2>
+                  <span className="panel-hint">{destaques.ranking.dica}</span>
+                </div>
+                <RankingBarChart
+                  rows={destaques.ranking.linhas}
+                  valueLabel={config.valueLabel}
+                  selected={filtrosGrafico[destaques.ranking.coluna] ?? []}
+                  onSelect={(valor) => alternarFiltroGrafico(destaques.ranking.coluna, valor)}
+                />
+              </section>
+
+              <section className="panel">
+                <div className="panel-heading">
+                  <h2>{destaques.serie.titulo}</h2>
+                  <span className="panel-hint">{destaques.serie.dica}</span>
+                </div>
+                <SituacaoPorAnoChart
+                  rows={destaques.serie.rows}
+                  series={destaques.serie.series}
+                  onSelect={toggleStatusFilter}
+                />
+              </section>
+
+              <section className="panel">
+                <div className="panel-heading">
+                  <h2>{destaques.participacao.titulo}</h2>
+                  <span className="panel-hint">{destaques.participacao.dica}</span>
+                </div>
+                <CategoryDonut
+                  slices={destaques.participacao.slices}
+                  total={destaques.participacao.total}
+                  totalLabel={config.countLabel.toLowerCase()}
+                  selected={filtrosGrafico[destaques.participacao.coluna] ?? []}
+                  onSelect={(valor) => alternarFiltroGrafico(destaques.participacao.coluna, valor)}
+                />
+              </section>
+            </>
+          ) : null}
+
           {composition && config.composition ? (
             <section className="panel">
               <div className="panel-heading">
@@ -484,6 +542,7 @@ function DatasetView({ config }: { config: DatasetConfig }) {
                   setGroups([]);
                   setNatures([]);
                   setConvenioStatuses([]);
+                  setFiltrosGrafico({});
                   setOnlyFormalized(false);
                   setSearch('');
                   setSelectedColumns([]);
@@ -518,6 +577,13 @@ function DatasetView({ config }: { config: DatasetConfig }) {
                     {convenioStatuses.length ? `Situacao do convenio: ${convenioStatuses.length}` : 'Situacao do convenio: todas'}
                   </span>
                 ) : null}
+                {Object.entries(filtrosGrafico)
+                  .filter(([, valores]) => valores.length > 0)
+                  .map(([coluna, valores]) => (
+                    <span key={coluna}>
+                      {coluna.replaceAll('_', ' ')}: {valores.length}
+                    </span>
+                  ))}
                 <span>{onlyFormalized ? 'Somente formalizados: sim' : 'Somente formalizados: nao'}</span>
               </div>
             </div>

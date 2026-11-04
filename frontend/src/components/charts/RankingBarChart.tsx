@@ -1,7 +1,8 @@
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-import type { AggregateRow } from '../../services/data/transferData';
+import { formatCurrency, type AggregateRow } from '../../services/data/transferData';
 import { ChartTooltip } from './ChartTooltip';
+import { LegendaRecolhivel } from './LegendaRecolhivel';
 import { axisProps, chartColors, formatCompactCurrency, MAX_BAR_SIZE, truncateLabel } from './chartTheme';
 
 type RankingBarChartProps = {
@@ -67,6 +68,33 @@ export function RankingBarChart({
           </Bar>
         </BarChart>
       </ResponsiveContainer>
+
+      {/* Legenda clicável: barras finas são difíceis de clicar, e a legenda cobre todas. */}
+      <LegendaRecolhivel quantidade={rows.length}>
+      <ul className="donut-legend ranking-legend">
+        {rows.map((row) => {
+          const selecionado = selectedSet.has(row.label);
+          const apagado = hasSelection && !selecionado;
+          return (
+            <li key={row.label} className={apagado ? 'dimmed' : undefined}>
+              <button
+                type="button"
+                onClick={interactive ? () => onSelect?.(row.label) : undefined}
+                disabled={!interactive}
+                title={row.label}
+              >
+                <i
+                  aria-hidden="true"
+                  style={{ background: selecionado ? chartColors.accentStrong : chartColors.accent }}
+                />
+                <span>{row.label}</span>
+                <b>{formatCurrency(row.value)}</b>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      </LegendaRecolhivel>
     </div>
   );
 }
