@@ -1,5 +1,5 @@
 {
- "atualizado_em": "2026-11-07T10:15-03:00",
+ "atualizado_em": "2026-11-07T14:45-03:00",
  "entradas": [
   {
    "dataset": "fundo-a-fundo",
@@ -1908,6 +1908,171 @@
      "situacao": "Não informado",
      "antes": 5,
      "depois": 5
+    }
+   ],
+   "situacoes_novas": []
+  },
+  {
+   "dataset": "fundo-a-fundo",
+   "executado_em": "2026-11-07T14:45-03:00",
+   "sem_base_anterior": false,
+   "registros": {
+    "antes": 609,
+    "depois": 609
+   },
+   "novos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "removidos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "colunas_novas": [],
+   "colunas_removidas": [],
+   "campos_alterados": [],
+   "totais": [
+    {
+     "campo": "valor_emenda",
+     "antes": 1356244.0,
+     "depois": 1356244.0
+    },
+    {
+     "campo": "valor_especifico",
+     "antes": 505112743.71000004,
+     "depois": 505112743.71000004
+    },
+    {
+     "campo": "valor_voluntario",
+     "antes": 382019.99,
+     "depois": 382019.99
+    },
+    {
+     "campo": "valor_total_repasse",
+     "antes": 506851007.70000005,
+     "depois": 506851007.70000005
+    },
+    {
+     "campo": "valor_total_plano",
+     "antes": 549634853.0,
+     "depois": 549634853.0
+    }
+   ],
+   "situacoes": [
+    {
+     "situacao": "AUTORIZADO",
+     "antes": 566,
+     "depois": 566
+    },
+    {
+     "situacao": "EM_ELABORACAO",
+     "antes": 24,
+     "depois": 24
+    },
+    {
+     "situacao": "REJEITADO",
+     "antes": 5,
+     "depois": 5
+    },
+    {
+     "situacao": "EM_COMPLEMENTACAO",
+     "antes": 4,
+     "depois": 4
+    },
+    {
+     "situacao": "EM_REPLANEJAMENTO",
+     "antes": 3,
+     "depois": 3
+    },
+    {
+     "situacao": "ENVIADO_ANALISE",
+     "antes": 2,
+     "depois": 2
+    },
+    {
+     "situacao": "ANALISE_CONCLUIDA",
+     "antes": 2,
+     "depois": 2
+    },
+    {
+     "situacao": "ENVIADO_ANALISE_CONSELHO",
+     "antes": 1,
+     "depois": 1
+    },
+    {
+     "situacao": "ADITIVACAO_SOLICITADA",
+     "antes": 1,
+     "depois": 1
+    },
+    {
+     "situacao": "REPLANEJAMENTO_ENVIADO_PARA_ANALISE",
+     "antes": 1,
+     "depois": 1
+    }
+   ],
+   "situacoes_novas": []
+  },
+  {
+   "dataset": "especiais",
+   "executado_em": "2026-11-07T14:45-03:00",
+   "sem_base_anterior": false,
+   "registros": {
+    "antes": 1959,
+    "depois": 1959
+   },
+   "novos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "removidos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "colunas_novas": [],
+   "colunas_removidas": [],
+   "campos_alterados": [
+    {
+     "campo": "situacao",
+     "registros": 2
+    }
+   ],
+   "totais": [
+    {
+     "campo": "valor_custeio",
+     "antes": 140273414.83,
+     "depois": 140273414.83
+    },
+    {
+     "campo": "valor_investimento",
+     "antes": 888047643.6899999,
+     "depois": 888047643.6899999
+    }
+   ],
+   "situacoes": [
+    {
+     "situacao": "CIENTE",
+     "antes": 1775,
+     "depois": 1775
+    },
+    {
+     "situacao": "IMPEDIDO",
+     "antes": 134,
+     "depois": 136
+    },
+    {
+     "situacao": "Plano de Trabalho em Elaboração/Aguardando Envio para Análise",
+     "antes": 33,
+     "depois": 32
+    },
+    {
+     "situacao": "Impedido por Rejeição do Plano de Trabalho",
+     "antes": 16,
+     "depois": 16
+    },
+    {
+     "situacao": "AGUARDANDO_CIENCIA",
+     "antes": 1,
+     "depois": 0
     }
    ],
    "situacoes_novas": []
