@@ -451,3 +451,37 @@ export function calcularIndicadores(dados: DadosModulo): IndicadoresModulo {
     ultimaAtualizacao: dados.data_atualizacao?.[0]?.data_ultima_atualizacao as string | undefined,
   };
 }
+
+export type FiltroPlanilha = { coluna: string; rotulo: string };
+
+/**
+ * Filtros de múltipla escolha da planilha, por conjunto de dados.
+ * Mesmo padrão do painel de especiais: cada filtro mostra as opções presentes nos dados.
+ */
+export const FILTROS_PLANILHA: Partial<Record<NomeDataset, FiltroPlanilha[]>> = {
+  planos_acao: [
+    { coluna: 'ano_plano_acao', rotulo: 'Ano' },
+    { coluna: 'situacao_plano_acao', rotulo: 'Situação' },
+    { coluna: 'nome_beneficiario', rotulo: 'Beneficiário' },
+    { coluna: 'categoria_despesa_plano_acao', rotulo: 'Categoria de despesa' },
+    { coluna: 'nome_parlamentar_emenda_plano_acao', rotulo: 'Parlamentar' },
+  ],
+  empenhos: [
+    { coluna: 'ano_emissao', rotulo: 'Ano de emissão' },
+    { coluna: 'descricao_situacao_empenho', rotulo: 'Situação' },
+  ],
+  documentos_habeis: [{ coluna: 'descricao_situacao_dh', rotulo: 'Situação' }],
+  ordens_pagamento: [{ coluna: 'descricao_situacao_op', rotulo: 'Situação' }],
+  gestao_financeira_lancamentos: [
+    { coluna: 'ano_lancamento', rotulo: 'Ano' },
+    { coluna: 'tipo_operacao_gestao_financeira', rotulo: 'Tipo de operação' },
+  ],
+  gestao_financeira_subtransacoes: [
+    { coluna: 'situacao_pagamento_subtransacao_gestao_financeira', rotulo: 'Situação do pagamento' },
+  ],
+  planos_trabalho: [{ coluna: 'situacao_plano_trabalho', rotulo: 'Situação' }],
+  planos_trabalho_analises: [{ coluna: 'situacao_parecer_analise_pt', rotulo: 'Situação do parecer' }],
+  relatorios_gestao_novos: [{ coluna: 'situacao_relatorio_gestao_novo', rotulo: 'Situação' }],
+  devolucao: [{ coluna: 'situacao_devolucao', rotulo: 'Situação' }],
+  executores: [{ coluna: 'nome_executor', rotulo: 'Executor' }],
+};

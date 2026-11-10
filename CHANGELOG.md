@@ -13,6 +13,8 @@ Commits seguem [Conventional Commits](https://www.conventionalcommits.org/pt-br/
   (planos de ação, execução orçamentária, gestão financeira, executores e metas, planos de trabalho e
   análises, relatórios de gestão), todos a partir dos CSVs da coleta.
 - Gráficos: prop `formato` (`moeda` ou `numero`) nos rankings e na evolução por ano, para medidas de contagem.
+- Transferências especiais: planilha no fim de `/transf-especiais`, com escolha do conjunto de dados, filtros de
+  múltipla escolha, busca, colunas visíveis e download do CSV filtrado. Mesmo formato do painel de especiais.
 - Integração dos convênios do Portal da Transparência (CGU) às discricionárias: situação de execução
   (`situacao_convenio`) e valor liberado (`valor_desembolsado`), pela junção com o número SICONV.
 - Histórico de atualizações (`/historico`), com comparação entre execuções e retenção de 90 dias.
