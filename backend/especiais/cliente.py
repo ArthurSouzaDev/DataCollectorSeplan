@@ -7,9 +7,10 @@ import time
 
 import requests
 
-BASE_URL = os.getenv(
-    "API_ESPECIAIS_BASE_URL",
-    "https://api-publica.transferegov.gestao.gov.br/especiais",
+# Variável vazia (ex.: secret não definido) também cai no padrão.
+BASE_URL = (
+    os.getenv("API_ESPECIAIS_BASE_URL")
+    or "https://api-publica.transferegov.gestao.gov.br/especiais"
 ).rstrip("/")
 
 TAMANHO_PAGINA = 200          # máximo aceito pela API (valor maior retorna HTTP 422)

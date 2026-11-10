@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import shutil
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -86,6 +87,13 @@ def executar(saida: Path, workers: int, limite_beneficiarios: int | None) -> int
     total_erros = 0
     inicio_geral = time.time()
 
+    # Grava tudo numa pasta de staging. A saída oficial só é substituída se a coleta
+    # inteira terminar sem erro, para nunca publicar um conjunto parcial.
+    staging = saida.with_name(saida.name + "_novo")
+    if staging.exists():
+        shutil.rmtree(staging)
+    staging.mkdir(parents=True)
+
     for endpoint in ENDPOINTS:
         inicio = time.time()
         registros, erros = coletar_endpoint(endpoint, resultados, workers)
@@ -97,7 +105,7 @@ def executar(saida: Path, workers: int, limite_beneficiarios: int | None) -> int
             df = df.head(limite_beneficiarios)  # limita a árvore inteira, para testes
 
         resultados[endpoint.nome] = df
-        _gravar_csv(df, saida / f"{endpoint.nome}.csv")
+        _gravar_csv(df, staging / f"{endpoint.nome}.csv")
 
         total_erros += len(erros)
         datasets_manifest[endpoint.nome] = {
@@ -119,12 +127,22 @@ def executar(saida: Path, workers: int, limite_beneficiarios: int | None) -> int
         "segundos_total": round(time.time() - inicio_geral, 1),
         "datasets": datasets_manifest,
     }
-    (saida / "_manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
+    (staging / "_manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    print(f"\nConcluído em {manifest['segundos_total']}s. Arquivos em: {saida}", flush=True)
     if total_erros:
-        print(f"ATENÇÃO: {total_erros} consulta(s) falharam. Veja _manifest.json.", file=sys.stderr)
+        # Mantém a saída anterior intacta e deixa o conjunto com falha para inspeção.
+        falha = saida.with_name(saida.name + "_falha")
+        if falha.exists():
+            shutil.rmtree(falha)
+        staging.rename(falha)
+        print(f"\nATENÇÃO: {total_erros} consulta(s) falharam. Saída anterior mantida.", file=sys.stderr)
+        print(f"Conjunto com falha: {falha} (veja _manifest.json)", file=sys.stderr)
         return 1
+
+    if saida.exists():
+        shutil.rmtree(saida)
+    staging.rename(saida)
+    print(f"\nConcluído em {manifest['segundos_total']}s. Arquivos em: {saida}", flush=True)
     return 0
 
 
