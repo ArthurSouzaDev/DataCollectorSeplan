@@ -6,6 +6,9 @@ Commits seguem [Conventional Commits](https://www.conventionalcommits.org/pt-br/
 ## [Não publicado]
 
 ### Adicionado
+- Transferências especiais: módulo `backend/especiais/` que consome os 24 endpoints da API pública
+  do Transferegov e grava um CSV por dataset em `dataset/transf_especiais/`, com `_manifest.json`.
+  A coleta parte dos beneficiários do TO e encadeia os demais endpoints pelos IDs.
 - Integração dos convênios do Portal da Transparência (CGU) às discricionárias: situação de execução
   (`situacao_convenio`) e valor liberado (`valor_desembolsado`), pela junção com o número SICONV.
 - Histórico de atualizações (`/historico`), com comparação entre execuções e retenção de 90 dias.
