@@ -2,19 +2,23 @@ import { formatCurrency, formatNumber } from '../../services/data/transferData';
 
 export type TooltipRow = { label: string; value: number; count?: number };
 
+/** 'moeda' formata em R$; 'numero' é para gráficos de contagem (ex.: quantidade de registros). */
+export type FormatoValor = 'moeda' | 'numero';
+
 type ChartTooltipProps = {
   active?: boolean;
   payload?: Array<{ payload?: TooltipRow; value?: number; name?: string; color?: string }>;
   label?: string | number;
   valueLabel?: string;
   hint?: string;
+  formato?: FormatoValor;
 };
 
 /**
  * Tooltip único para todos os gráficos: formata em R$ pt-BR e mostra a
  * contagem de registros quando o dado agregado a traz.
  */
-export function ChartTooltip({ active, payload, label, valueLabel = 'Valor', hint }: ChartTooltipProps) {
+export function ChartTooltip({ active, payload, label, valueLabel = 'Valor', hint, formato = 'moeda' }: ChartTooltipProps) {
   if (!active || !payload?.length) return null;
 
   const entry = payload[0];
@@ -26,7 +30,7 @@ export function ChartTooltip({ active, payload, label, valueLabel = 'Valor', hin
     <div className="chart-tooltip" role="tooltip">
       {title ? <strong>{title}</strong> : null}
       <span>
-        {valueLabel}: <b>{formatCurrency(value)}</b>
+        {valueLabel}: <b>{formato === 'numero' ? formatNumber(value) : formatCurrency(value)}</b>
       </span>
       {typeof row?.count === 'number' ? <span>Registros: {formatNumber(row.count)}</span> : null}
       {hint ? <em>{hint}</em> : null}

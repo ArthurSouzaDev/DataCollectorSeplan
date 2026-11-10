@@ -503,7 +503,7 @@ function normalizeRows(datasetId: DatasetId, rows: TransferRecord[]) {
   });
 }
 
-function parseCsv(text: string): TransferRecord[] {
+export function parseCsv(text: string): TransferRecord[] {
   const rows: string[][] = [];
   let field = '';
   let row: string[] = [];

@@ -11,12 +11,15 @@ import {
 } from 'recharts';
 
 import { formatCurrency, formatNumber, type AggregateRow } from '../../services/data/transferData';
+import type { FormatoValor } from './ChartTooltip';
 import { axisProps, chartColors, formatCompactAmount, MAX_BAR_SIZE } from './chartTheme';
 
 type YearEvolutionChartProps = {
   rows: AggregateRow[];
   valueLabel?: string;
   countLabel?: string;
+  /** 'numero' quando a medida principal é contagem, não valor monetário. */
+  formato?: FormatoValor;
 };
 
 /**
@@ -32,6 +35,7 @@ export function YearEvolutionChart({
   rows,
   valueLabel = 'Valor',
   countLabel = 'Registros',
+  formato = 'moeda',
 }: YearEvolutionChartProps) {
   if (!rows.length) {
     return <p className="chart-empty">Sem dados para os filtros aplicados.</p>;
@@ -50,10 +54,14 @@ export function YearEvolutionChart({
           <BarChart data={rows} margin={margin}>
             <CartesianGrid vertical={false} stroke={chartColors.border} strokeWidth={1} />
             <XAxis dataKey="label" {...axisProps} tick={false} height={2} />
-            <YAxis width={axisWidth} {...axisProps} tickFormatter={formatCompactAmount} />
+            <YAxis
+              width={axisWidth}
+              {...axisProps}
+              tickFormatter={formato === 'numero' ? (value: number) => formatNumber(value) : formatCompactAmount}
+            />
             <Tooltip
               cursor={{ fill: 'var(--surface-hover)', opacity: 0.5 }}
-              content={<YearTooltip valueLabel={valueLabel} countLabel={countLabel} />}
+              content={<YearTooltip valueLabel={valueLabel} countLabel={countLabel} formato={formato} />}
             />
             <Bar
               dataKey="value"
@@ -76,7 +84,7 @@ export function YearEvolutionChart({
             <YAxis width={axisWidth} {...axisProps} tickFormatter={(value: number) => formatNumber(value)} />
             <Tooltip
               cursor={{ stroke: chartColors.border, strokeWidth: 1 }}
-              content={<YearTooltip valueLabel={valueLabel} countLabel={countLabel} />}
+              content={<YearTooltip valueLabel={valueLabel} countLabel={countLabel} formato={formato} />}
             />
             <Line
               type="monotone"
@@ -104,12 +112,14 @@ function YearTooltip({
   label,
   valueLabel,
   countLabel,
+  formato,
 }: {
   active?: boolean;
   payload?: Array<{ payload?: AggregateRow }>;
   label?: string | number;
   valueLabel: string;
   countLabel: string;
+  formato: FormatoValor;
 }) {
   const row = payload?.[0]?.payload;
   if (!active || !row) return null;
@@ -118,7 +128,7 @@ function YearTooltip({
     <div className="chart-tooltip" role="tooltip">
       <strong>{label !== undefined ? String(label) : row.label}</strong>
       <span>
-        {valueLabel}: <b>{formatCurrency(row.value)}</b>
+        {valueLabel}: <b>{formato === 'numero' ? formatNumber(row.value) : formatCurrency(row.value)}</b>
       </span>
       <span>
         {countLabel}: <b>{formatNumber(row.count)}</b>
