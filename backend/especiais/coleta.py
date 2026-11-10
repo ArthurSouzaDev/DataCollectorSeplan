@@ -45,7 +45,12 @@ def coletar_endpoint(
 
     dep = endpoint.dependencia
     origem = resultados.get(dep.origem)
-    if origem is None or dep.coluna_origem not in origem.columns:
+    if origem is None:
+        return [], [f"dataset de origem '{dep.origem}' não foi coletado"]
+    if origem.empty:
+        # Origem sem registros não é falha: simplesmente não há o que consultar.
+        return [], []
+    if dep.coluna_origem not in origem.columns:
         return [], [f"dataset de origem '{dep.origem}' sem a coluna '{dep.coluna_origem}'"]
 
     valores = origem[dep.coluna_origem].dropna().unique().tolist()
