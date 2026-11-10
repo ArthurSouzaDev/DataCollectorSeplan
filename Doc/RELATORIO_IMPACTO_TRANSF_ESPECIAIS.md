@@ -166,3 +166,29 @@ quantas chamadas são feitas.
 4. Quando o painel for usar os dados novos, criar a sincronização para `public/data/` e a entrada
    correspondente no `manifest.json`.
 5. Acrescentar entrada em `CHANGELOG.md`, em "Adicionado", quando a funcionalidade estiver validada.
+
+---
+
+## 7. Atualização: workflow incluído e painel
+
+### Workflow (`atualizar_fundo_especiais.yml`)
+- Novo passo `python -m backend.especiais.coleta --workers 4`, logo após `backend/api.py`.
+- O passo tem `continue-on-error: true`: uma falha na coleta não impede a atualização do fundo a fundo e das emendas.
+- `dataset/transf_especiais/` entrou no `git add` do commit automático.
+- Tempo medido com 4 workers: ~33 min, dentro do limite de 90 min do job.
+
+### Coleta com staging
+- A coleta grava numa pasta `_novo` e só substitui `dataset/transf_especiais/` se terminar sem erro.
+- Com falha, a saída anterior fica intacta, e o conjunto com erro vai para `_falha/` para inspeção.
+- Assim, um conjunto parcial nunca é publicado.
+
+### Painel `/transf-especiais`
+- 6 grupos, 22 gráficos, lidos de `public/data/transf_especiais/`.
+- Indicadores: planos, valor dos planos, empenhado, documentos hábeis, lançamentos e saldo atual.
+- O sync (`scripts/sync_public_data.py`) copia a pasta inteira para `public/data/`.
+- Verificado no navegador (dev server): página sem erros de console; painel `/dashboard/especiais` sem regressão.
+
+### Observações de dados
+- Todos os 1.959 planos têm ao menos um empenho (2.048 empenhos no total), e a soma dos empenhos é igual à soma dos planos (R$ 1.028.321.058,52). Por isso "Valor dos planos" e "Empenhado" aparecem iguais no painel.
+- `relatorios_gestao_analise` veio vazio na coleta completa. O painel não tem gráfico para esse dataset.
+- Gráficos de rosca são por quantidade de registros, não por valor.

@@ -9,6 +9,10 @@ Commits seguem [Conventional Commits](https://www.conventionalcommits.org/pt-br/
 - Transferências especiais: módulo `backend/especiais/` que consome os 24 endpoints da API pública
   do Transferegov e grava um CSV por dataset em `dataset/transf_especiais/`, com `_manifest.json`.
   A coleta parte dos beneficiários do TO e encadeia os demais endpoints pelos IDs.
+- Transferências especiais: página `/transf-especiais` com indicadores gerais e 22 gráficos em 6 grupos
+  (planos de ação, execução orçamentária, gestão financeira, executores e metas, planos de trabalho e
+  análises, relatórios de gestão), todos a partir dos CSVs da coleta.
+- Gráficos: prop `formato` (`moeda` ou `numero`) nos rankings e na evolução por ano, para medidas de contagem.
 - Integração dos convênios do Portal da Transparência (CGU) às discricionárias: situação de execução
   (`situacao_convenio`) e valor liberado (`valor_desembolsado`), pela junção com o número SICONV.
 - Histórico de atualizações (`/historico`), com comparação entre execuções e retenção de 90 dias.
@@ -27,6 +31,8 @@ Commits seguem [Conventional Commits](https://www.conventionalcommits.org/pt-br/
 ### Alterado
 - Situação das propostas passa a usar `sit_proposta_grupo`, o mesmo agrupamento do painel da SERPRO.
 - Workflows separados: fundo a fundo e especiais a cada 12 horas; discricionárias diariamente.
+- Workflow de fundo a fundo e especiais executa também a coleta completa de transferências especiais.
+  Se a coleta tiver falha, a saída anterior é mantida e o restante da rotina segue.
 - Valor pago, saldo em conta e valores devolvidos aparecem como "Indisponível", em vez de zero.
 
 ### Removido
