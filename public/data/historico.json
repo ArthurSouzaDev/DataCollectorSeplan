@@ -1,5 +1,5 @@
 {
- "atualizado_em": "2026-11-11T03:11-03:00",
+ "atualizado_em": "2026-11-11T11:38-03:00",
  "entradas": [
   {
    "dataset": "fundo-a-fundo",
@@ -3488,6 +3488,91 @@
      "situacao": "Impedido por Rejeição do Plano de Trabalho",
      "antes": 16,
      "depois": 16
+    }
+   ],
+   "situacoes_novas": []
+  },
+  {
+   "dataset": "discricionarias-legais",
+   "executado_em": "2026-11-11T11:38-03:00",
+   "sem_base_anterior": false,
+   "registros": {
+    "antes": 23735,
+    "depois": 23735
+   },
+   "novos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "removidos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "colunas_novas": [],
+   "colunas_removidas": [],
+   "campos_alterados": [],
+   "totais": [
+    {
+     "campo": "valor_global",
+     "antes": 32160052564.54,
+     "depois": 32160052564.54
+    },
+    {
+     "campo": "valor_repasse",
+     "antes": 31123425385.39,
+     "depois": 31123425385.39
+    },
+    {
+     "campo": "valor_contrapartida",
+     "antes": 1036627179.1500001,
+     "depois": 1036627179.15
+    },
+    {
+     "campo": "vl_contrapartida_finan_prop",
+     "antes": 1004538987.5799999,
+     "depois": 1004538987.5799999
+    },
+    {
+     "campo": "vl_contrapartida_bens_serv_prop",
+     "antes": 32088191.569999997,
+     "depois": 32088191.569999997
+    },
+    {
+     "campo": "valor_desembolsado",
+     "antes": 2277228116.92,
+     "depois": 2277228116.92
+    }
+   ],
+   "situacoes": [
+    {
+     "situacao": "Em Análise pelo Órgão Concedente",
+     "antes": 10616,
+     "depois": 10616
+    },
+    {
+     "situacao": "Aprovadas",
+     "antes": 6231,
+     "depois": 6231
+    },
+    {
+     "situacao": "Rejeitadas",
+     "antes": 4417,
+     "depois": 4417
+    },
+    {
+     "situacao": "Cadastradas",
+     "antes": 1851,
+     "depois": 1851
+    },
+    {
+     "situacao": "Em Complementação pelo Estado/Município",
+     "antes": 615,
+     "depois": 615
+    },
+    {
+     "situacao": "Não informado",
+     "antes": 5,
+     "depois": 5
     }
    ],
    "situacoes_novas": []
