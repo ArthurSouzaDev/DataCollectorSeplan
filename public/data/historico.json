@@ -1,5 +1,5 @@
 {
- "atualizado_em": "2026-11-12T04:08-03:00",
+ "atualizado_em": "2026-11-12T12:26-03:00",
  "entradas": [
   {
    "dataset": "fundo-a-fundo",
@@ -3919,6 +3919,142 @@
      "situacao": "Impedido por Rejeição do Plano de Trabalho",
      "antes": 16,
      "depois": 16
+    }
+   ],
+   "situacoes_novas": []
+  },
+  {
+   "dataset": "discricionarias-legais",
+   "executado_em": "2026-11-12T12:26-03:00",
+   "sem_base_anterior": false,
+   "registros": {
+    "antes": 23735,
+    "depois": 23736
+   },
+   "novos": {
+    "total": 1,
+    "exemplos": [
+     "2257846"
+    ]
+   },
+   "removidos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "colunas_novas": [],
+   "colunas_removidas": [],
+   "campos_alterados": [
+    {
+     "campo": "situacao_projeto_basico",
+     "registros": 12
+    },
+    {
+     "campo": "dia_fim_vigencia_proposta",
+     "registros": 8
+    },
+    {
+     "campo": "data_event_celebracao",
+     "registros": 6
+    },
+    {
+     "campo": "sit_proposta_grupo",
+     "registros": 4
+    },
+    {
+     "campo": "situacao",
+     "registros": 4
+    },
+    {
+     "campo": "objeto_proposta",
+     "registros": 3
+    },
+    {
+     "campo": "data_analise_pb",
+     "registros": 3
+    },
+    {
+     "campo": "dia_inic_vigencia_proposta",
+     "registros": 2
+    },
+    {
+     "campo": "situacao_conta",
+     "registros": 2
+    },
+    {
+     "campo": "evento_celebracao",
+     "registros": 2
+    },
+    {
+     "campo": "situacao_spa",
+     "registros": 1
+    },
+    {
+     "campo": "tem_ordem_de_servico",
+     "registros": 1
+    }
+   ],
+   "totais": [
+    {
+     "campo": "valor_global",
+     "antes": 32160052564.54,
+     "depois": 32161692764.54
+    },
+    {
+     "campo": "valor_repasse",
+     "antes": 31123425385.39,
+     "depois": 31125060585.39
+    },
+    {
+     "campo": "valor_contrapartida",
+     "antes": 1036627179.15,
+     "depois": 1036632179.1500001
+    },
+    {
+     "campo": "vl_contrapartida_finan_prop",
+     "antes": 1004538987.5799999,
+     "depois": 1004543987.5799999
+    },
+    {
+     "campo": "vl_contrapartida_bens_serv_prop",
+     "antes": 32088191.569999997,
+     "depois": 32088191.569999997
+    },
+    {
+     "campo": "valor_desembolsado",
+     "antes": 2277228116.92,
+     "depois": 2277228116.92
+    }
+   ],
+   "situacoes": [
+    {
+     "situacao": "Em Análise pelo Órgão Concedente",
+     "antes": 10616,
+     "depois": 10615
+    },
+    {
+     "situacao": "Aprovadas",
+     "antes": 6231,
+     "depois": 6232
+    },
+    {
+     "situacao": "Rejeitadas",
+     "antes": 4417,
+     "depois": 4418
+    },
+    {
+     "situacao": "Cadastradas",
+     "antes": 1851,
+     "depois": 1851
+    },
+    {
+     "situacao": "Em Complementação pelo Estado/Município",
+     "antes": 615,
+     "depois": 615
+    },
+    {
+     "situacao": "Não informado",
+     "antes": 5,
+     "depois": 5
     }
    ],
    "situacoes_novas": []
