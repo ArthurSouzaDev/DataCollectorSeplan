@@ -1,5 +1,5 @@
 {
- "atualizado_em": "2026-11-16T03:23-03:00",
+ "atualizado_em": "2026-11-16T13:01-03:00",
  "entradas": [
   {
    "dataset": "fundo-a-fundo",
@@ -5748,6 +5748,91 @@
      "situacao": "Impedido por Rejeição do Plano de Trabalho",
      "antes": 17,
      "depois": 17
+    }
+   ],
+   "situacoes_novas": []
+  },
+  {
+   "dataset": "discricionarias-legais",
+   "executado_em": "2026-11-16T13:01-03:00",
+   "sem_base_anterior": false,
+   "registros": {
+    "antes": 23736,
+    "depois": 23736
+   },
+   "novos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "removidos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "colunas_novas": [],
+   "colunas_removidas": [],
+   "campos_alterados": [],
+   "totais": [
+    {
+     "campo": "valor_global",
+     "antes": 32163624917.42,
+     "depois": 32163624917.42
+    },
+    {
+     "campo": "valor_repasse",
+     "antes": 31126662333.87,
+     "depois": 31126662333.87
+    },
+    {
+     "campo": "valor_contrapartida",
+     "antes": 1036962583.55,
+     "depois": 1036962583.55
+    },
+    {
+     "campo": "vl_contrapartida_finan_prop",
+     "antes": 1004874391.98,
+     "depois": 1004874391.98
+    },
+    {
+     "campo": "vl_contrapartida_bens_serv_prop",
+     "antes": 32088191.569999997,
+     "depois": 32088191.569999997
+    },
+    {
+     "campo": "valor_desembolsado",
+     "antes": 2277228116.92,
+     "depois": 2277228116.92
+    }
+   ],
+   "situacoes": [
+    {
+     "situacao": "Em Análise pelo Órgão Concedente",
+     "antes": 10612,
+     "depois": 10612
+    },
+    {
+     "situacao": "Aprovadas",
+     "antes": 6234,
+     "depois": 6234
+    },
+    {
+     "situacao": "Rejeitadas",
+     "antes": 4420,
+     "depois": 4420
+    },
+    {
+     "situacao": "Cadastradas",
+     "antes": 1851,
+     "depois": 1851
+    },
+    {
+     "situacao": "Em Complementação pelo Estado/Município",
+     "antes": 613,
+     "depois": 613
+    },
+    {
+     "situacao": "Não informado",
+     "antes": 6,
+     "depois": 6
     }
    ],
    "situacoes_novas": []
