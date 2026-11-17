@@ -2272,3 +2272,12 @@ tbody tr:last-child td { border-bottom: none; }
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-light);
 }
+
+.filter-updating {
+  margin: 0.25rem 0 0.75rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  background: var(--accent-light);
+  color: var(--text);
+  font-size: 0.9rem;
+}

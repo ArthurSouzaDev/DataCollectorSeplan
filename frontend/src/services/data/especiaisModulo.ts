@@ -566,6 +566,9 @@ export function filtrarDados(dados: DadosModulo, filtros: FiltrosPorConjunto): D
     }
   }
 
+  // Fila de trabalho: só reprocessa as relações de um conjunto quando ele encolheu.
+  // Mesmo resultado de varrer todas as relações até estabilizar, mas sem refazer o trabalho.
+
   // Fase 1: para cima, a partir dos filtrados diretamente.
   const fila: NomeDataset[] = [...restritos];
   while (fila.length > 0) {
@@ -578,14 +581,14 @@ export function filtrarDados(dados: DadosModulo, filtros: FiltrosPorConjunto): D
     }
   }
 
-  // Fase 2: para baixo, até estabilizar.
-  let mudou = true;
-  while (mudou) {
-    mudou = false;
+  // Fase 2: para baixo, a partir de tudo que ficou restrito. Não sobe de volta.
+  const filaBaixo: NomeDataset[] = [...restritos];
+  while (filaBaixo.length > 0) {
+    const origem = filaBaixo.shift() as NomeDataset;
     for (const relacao of RELACOES) {
-      if (!restritos.has(relacao.pai)) continue;
-      if (restringir(atual, restritos, relacao.pai, relacao.colunaPai, relacao.filho, relacao.colunaFilho)) {
-        mudou = true;
+      if (relacao.pai !== origem) continue;
+      if (restringir(atual, restritos, origem, relacao.colunaPai, relacao.filho, relacao.colunaFilho)) {
+        filaBaixo.push(relacao.filho);
       }
     }
   }

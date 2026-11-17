@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { memo, useCallback, useDeferredValue, useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import { CategoryDonut } from '../components/charts/CategoryDonut';
 import { RankingBarChart } from '../components/charts/RankingBarChart';
@@ -35,6 +35,8 @@ import {
 const LINHAS_NA_TELA = 150;
 /** Colunas visíveis por padrão, para a planilha não abrir com 40 colunas. */
 const COLUNAS_PADRAO = 12;
+const SEM_LINHAS: TransferRecord[] = [];
+const SEM_SELECAO: string[] = [];
 /** Fatia agregada pelo donut quando há muitas categorias: não é uma categoria real, não filtra. */
 const ROTULO_OUTROS = 'Outros';
 
@@ -79,9 +81,14 @@ export function TransfEspeciaisPage() {
   }, []);
 
   const dados = estado.dados;
-  // Gráficos e indicadores usam os dados já filtrados. A planilha filtra os dados completos
-  // (para as opções dos filtros continuarem visíveis).
-  const dadosFiltrados = useMemo(() => (dados ? filtrarDados(dados, filtros) : undefined), [dados, filtros]);
+  // O recálculo dos filtros é adiado: o clique aparece na hora (os checkboxes e o botão
+  // respondem) e os gráficos atualizam logo em seguida, com a mensagem "Atualizando".
+  const filtrosAdiados = useDeferredValue(filtros);
+  const atualizando = filtros !== filtrosAdiados;
+  const dadosFiltrados = useMemo(
+    () => (dados ? filtrarDados(dados, filtrosAdiados) : undefined),
+    [dados, filtrosAdiados],
+  );
   const indicadores = useMemo(
     () => (dadosFiltrados ? calcularIndicadores(dadosFiltrados) : undefined),
     [dadosFiltrados],
@@ -92,7 +99,8 @@ export function TransfEspeciaisPage() {
    * Como no painel de especiais, o filtro vale para todos os gráficos e para a planilha
    * desse conjunto. A planilha passa a mostrar esse conjunto.
    */
-  const filtrarPeloGrafico = (grafico: GraficoModulo, valor: string) => {
+  // Estável (só usa setters), para os gráficos memorizados não redesenharem à toa.
+  const filtrarPeloGrafico = useCallback((grafico: GraficoModulo, valor: string) => {
     setPlanilha((atual) =>
       atual.conjunto === grafico.dataset
         ? atual
@@ -104,9 +112,9 @@ export function TransfEspeciaisPage() {
       const proximos = atuais.includes(valor) ? atuais.filter((item) => item !== valor) : [...atuais, valor];
       return { ...atual, [grafico.dataset]: { ...doConjunto, [grafico.agrupar]: proximos } };
     });
-  };
+  }, []);
 
-  const selecionadosDo = (grafico: GraficoModulo) => filtros[grafico.dataset]?.[grafico.agrupar] ?? [];
+  const selecionadosDo = (grafico: GraficoModulo) => filtros[grafico.dataset]?.[grafico.agrupar] ?? SEM_SELECAO;
 
   return (
     <section className="page transf-especiais-page">
@@ -129,6 +137,12 @@ export function TransfEspeciaisPage() {
         <p className="panel-hint">Clique numa barra, fatia ou ano para filtrar a planilha no fim da página.</p>
       ) : null}
 
+      {atualizando ? (
+        <p className="filter-updating" role="status" aria-live="polite">
+          Atualizando gráficos e planilha...
+        </p>
+      ) : null}
+
       {dados
         ? GRUPOS_MODULO.map((grupo) => (
             <section className="transf-grupo" id={grupo.id} key={grupo.id}>
@@ -138,12 +152,12 @@ export function TransfEspeciaisPage() {
               <p className="panel-hint">{grupo.descricao}</p>
               <div className="dashboard-grid halves">
                 {grupo.graficos.map((grafico) => (
-                  <GraficoPanel
+                  <GraficoPanelMemo
                     key={grafico.id}
                     grafico={grafico}
-                    dados={dadosFiltrados ?? dados}
+                    linhas={(dadosFiltrados ?? dados)[grafico.dataset] ?? SEM_LINHAS}
                     selecionados={selecionadosDo(grafico)}
-                    aoSelecionar={(valor) => filtrarPeloGrafico(grafico, valor)}
+                    aoSelecionar={filtrarPeloGrafico}
                   />
                 ))}
               </div>
@@ -189,22 +203,21 @@ function Indicadores({ indicadores }: { indicadores: IndicadoresModulo }) {
 
 function GraficoPanel({
   grafico,
-  dados,
+  linhas,
   selecionados,
   aoSelecionar,
 }: {
   grafico: GraficoModulo;
-  dados: DadosModulo;
+  linhas: TransferRecord[];
   selecionados: string[];
-  aoSelecionar: (valor: string) => void;
+  aoSelecionar: (grafico: GraficoModulo, valor: string) => void;
 }) {
-  const linhas = dados[grafico.dataset] ?? [];
   // Sem coluna para somar, o gráfico conta registros (a coluna sintética vale 1 em cada linha).
   const coluna = grafico.somar ?? COLUNA_REGISTRO;
   const formato = grafico.somar ? 'moeda' : 'numero';
   const valorLabel = grafico.somar ? 'Valor' : 'Registros';
   const clicar = (valor: string) => {
-    if (valor !== ROTULO_OUTROS) aoSelecionar(valor);
+    if (valor !== ROTULO_OUTROS) aoSelecionar(grafico, valor);
   };
 
   let conteudo: ReactNode;
@@ -253,6 +266,8 @@ function GraficoPanel({
   );
 }
 
+const GraficoPanelMemo = memo(GraficoPanel);
+
 /**
  * Planilha do módulo, no mesmo formato do painel de especiais: escolha do conjunto,
  * filtros de múltipla escolha, busca, colunas visíveis e download do CSV filtrado.
@@ -289,20 +304,32 @@ function PlanilhaModulo({
   const filtrosDoConjunto = FILTROS_PLANILHA[conjunto] ?? [];
 
   // As opções vêm dos dados completos, para não sumirem quando um filtro restringe a lista.
-  const opcoesDoFiltro = (coluna: string) =>
-    [...new Set(linhas.map((linha) => textoCelula(linha[coluna])))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  const opcoesPorFiltro = useMemo(
+    () =>
+      Object.fromEntries(
+        (FILTROS_PLANILHA[conjunto] ?? []).map((filtro) => [
+          filtro.coluna,
+          [...new Set(linhas.map((linha) => textoCelula(linha[filtro.coluna])))].sort((a, b) =>
+            a.localeCompare(b, 'pt-BR'),
+          ),
+        ]),
+      ) as Record<string, string[]>,
+    [linhas, conjunto],
+  );
+  // A busca é adiada para a digitação não travar em tabelas grandes.
+  const buscaAdiada = useDeferredValue(busca);
 
   const definirFiltros = (novos: Record<string, string[]>) =>
     onFiltros((atual) => ({ ...atual, [conjunto]: novos }));
 
   const filtradas = useMemo(() => {
-    const termo = busca.trim().toLowerCase();
+    const termo = buscaAdiada.trim().toLowerCase();
     const porFiltro = dadosFiltrados[conjunto] ?? [];
     if (!termo) return porFiltro;
     return porFiltro.filter((linha) =>
       colunasDisponiveis.some((coluna) => String(linha[coluna] ?? '').toLowerCase().includes(termo)),
     );
-  }, [dadosFiltrados, conjunto, busca, colunasDisponiveis]);
+  }, [dadosFiltrados, conjunto, buscaAdiada, colunasDisponiveis]);
 
   const baixarCsv = () => {
     const blob = new Blob([buildCsv(filtradas as TransferRecord[], colunasVisiveis)], {
@@ -363,7 +390,7 @@ function PlanilhaModulo({
           <MultiSelect
             key={`${conjunto}-${filtro.coluna}`}
             label={filtro.rotulo}
-            options={opcoesDoFiltro(filtro.coluna)}
+            options={opcoesPorFiltro[filtro.coluna] ?? []}
             value={valoresFiltro[filtro.coluna] ?? []}
             onChange={(valores) => definirFiltros({ ...valoresFiltro, [filtro.coluna]: valores })}
           />
