@@ -34,6 +34,10 @@ export function AjudaPage() {
             do Transferegov. Atualiza a cada 12 horas.
           </li>
           <li>
+            <strong>Especiais completo:</strong> os 24 conjuntos de dados do módulo de especiais, do Tocantins. Fonte:
+            API do Transferegov. Atualiza diariamente.
+          </li>
+          <li>
             <strong>Discricionárias e legais:</strong> propostas e convênios do Tocantins. Fonte: API do Transferegov.
             Atualiza diariamente.
           </li>
@@ -61,6 +65,42 @@ export function AjudaPage() {
           <li>
             Na base de discricionárias, o filtro de Anos usa o ano de assinatura do convênio. Propostas sem convênio
             somem quando um ano é selecionado.
+          </li>
+        </ul>
+      </section>
+
+      <section className="panel help-section">
+        <h2>Módulo completo de transferências especiais</h2>
+        <p>
+          Acessado pelo menu em <Link to="/transf-especiais">Especiais completo</Link>. Reúne os 24 conjuntos de dados
+          da API de especiais do Tocantins, organizados em grupos: planos de ação, execução orçamentária, gestão
+          financeira, executores e metas, planos de trabalho e análises, e relatórios de gestão.
+        </p>
+        <ul>
+          <li>
+            <strong>Indicadores no topo:</strong> planos, valores, empenhado, documentos hábeis, lançamentos e saldo
+            atual das contas. O saldo usa o registro mais recente de cada conta.
+          </li>
+          <li>
+            <strong>Gráficos clicáveis:</strong> clique numa barra, fatia ou coluna por ano para filtrar a planilha.
+            Clique de novo no mesmo item para desfazer. A página não rola até a planilha.
+          </li>
+          <li>
+            <strong>Donuts</strong> mostram quantidade de registros, não valor. A fatia "Outros" agrupa as categorias
+            menores e não filtra.
+          </li>
+          <li>
+            <strong>Planilha no fim da página:</strong> escolha o conjunto de dados, use os filtros de múltipla escolha,
+            a busca e as colunas visíveis. A tabela mostra as primeiras 150 linhas. O <code>Baixar CSV</code> traz todos
+            os registros filtrados.
+          </li>
+          <li>
+            <strong>Os gráficos não são filtrados pela planilha.</strong> Só os cliques nos gráficos preenchem os
+            filtros da planilha.
+          </li>
+          <li>
+            <strong>Atualização:</strong> diária, às 03:30. A data da última coleta aparece no topo da página. Se um
+            conjunto não tiver registros, o gráfico ou a tabela mostram a mensagem "Sem dados".
           </li>
         </ul>
       </section>
