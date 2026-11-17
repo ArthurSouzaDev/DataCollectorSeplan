@@ -88,7 +88,6 @@ export function TransfEspeciaisPage() {
       const proximos = atuais.includes(valor) ? atuais.filter((item) => item !== valor) : [...atuais, valor];
       return { ...atual, filtros: { ...atual.filtros, [grafico.agrupar]: proximos } };
     });
-    document.getElementById('planilha')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const selecionadosDo = (grafico: GraficoModulo) =>
