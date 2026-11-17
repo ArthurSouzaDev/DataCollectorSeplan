@@ -48,6 +48,16 @@ function HelpIcon() {
   );
 }
 
+function HistoryIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 12a9 9 0 1 0 3-6.7" />
+      <polyline points="3 4 3 9 8 9" />
+      <polyline points="12 7 12 12 15 14" />
+    </svg>
+  );
+}
+
 export function AppLayout() {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') ?? 'light');
   const [navOpen, setNavOpen] = useState(false);
@@ -105,13 +115,6 @@ export function AppLayout() {
             >
               Especiais completo
             </NavLink>
-            <NavLink
-              to="/historico"
-              className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}
-              onClick={() => setNavOpen(false)}
-            >
-              Histórico
-            </NavLink>
           </nav>
 
           <div className="top-bar-actions">
@@ -126,6 +129,15 @@ export function AppLayout() {
             >
               {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
             </button>
+            <NavLink
+              className={({ isActive }) => `theme-toggle${isActive ? ' active' : ''}`}
+              to="/historico"
+              aria-label="Histórico"
+              title="Histórico"
+              onClick={() => setNavOpen(false)}
+            >
+              <HistoryIcon />
+            </NavLink>
             <button
               className="theme-toggle nav-toggle"
               type="button"
