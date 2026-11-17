@@ -485,3 +485,147 @@ export const FILTROS_PLANILHA: Partial<Record<NomeDataset, FiltroPlanilha[]>> = 
   devolucao: [{ coluna: 'situacao_devolucao', rotulo: 'Situação' }],
   executores: [{ coluna: 'nome_executor', rotulo: 'Executor' }],
 };
+
+/** Texto de uma célula como aparece na tela e no filtro (vazio vira "Não informado"). */
+export function textoCelula(valor: unknown) {
+  if (valor === undefined || valor === null || valor === '' || valor === 'nan') return 'Não informado';
+  return String(valor).trim();
+}
+
+/** Mantém só as linhas que batem com todos os filtros ativos (coluna -> valores escolhidos). */
+export function aplicarFiltros(linhas: TransferRecord[], filtros: Record<string, string[]> | undefined) {
+  const ativos = Object.entries(filtros ?? {}).filter(([, valores]) => valores.length > 0);
+  if (!ativos.length) return linhas;
+  return linhas.filter((linha) => ativos.every(([coluna, valores]) => valores.includes(textoCelula(linha[coluna]))));
+}
+
+export type FiltrosPorConjunto = Partial<Record<NomeDataset, Record<string, string[]>>>;
+
+/**
+ * Relações entre conjuntos por chave (pai -> filho). Validadas nos CSVs: todo filho
+ * tem pai correspondente. Ex.: cada empenho pertence a um plano de ação.
+ *
+ * Não usamos colunas de mesmo nome: "situação" de plano e "situação" de empenho são
+ * coisas diferentes. A ligação é sempre pela chave.
+ *
+ * Excluídas por não ligarem dados (cobertura medida):
+ * - planos_trabalho_analises -> planos_trabalho_analise_historico (0%)
+ * - gestao_financeira_lancamentos -> gestao_financeira_subtransacoes (0,7%)
+ */
+export const RELACOES: Array<{
+  pai: NomeDataset;
+  colunaPai: string;
+  filho: NomeDataset;
+  colunaFilho: string;
+}> = [
+  { pai: 'planos_acao', colunaPai: 'id_plano_acao', filho: 'empenhos', colunaFilho: 'id_plano_acao' },
+  { pai: 'planos_acao', colunaPai: 'id_plano_acao', filho: 'executores', colunaFilho: 'id_plano_acao' },
+  { pai: 'planos_acao', colunaPai: 'id_plano_acao', filho: 'devolucao', colunaFilho: 'id_plano_acao' },
+  { pai: 'planos_acao', colunaPai: 'id_plano_acao', filho: 'planos_trabalho', colunaFilho: 'id_plano_acao' },
+  { pai: 'planos_acao', colunaPai: 'id_plano_acao', filho: 'relatorios_gestao', colunaFilho: 'id_plano_acao' },
+  { pai: 'planos_acao', colunaPai: 'id_plano_acao', filho: 'relatorios_gestao_novos', colunaFilho: 'id_plano_acao' },
+  { pai: 'planos_acao', colunaPai: 'id_plano_acao', filho: 'planos_acao_historico', colunaFilho: 'id_plano_acao' },
+  { pai: 'beneficiarios', colunaPai: 'id_beneficiario', filho: 'planos_acao', colunaFilho: 'id_beneficiario' },
+  { pai: 'planos_acao', colunaPai: 'id_agencia_conta', filho: 'saldo_conta', colunaFilho: 'id_agencia_conta' },
+  { pai: 'planos_acao', colunaPai: 'id_agencia_conta', filho: 'gestao_financeira_lancamentos', colunaFilho: 'id_agencia_conta' },
+  { pai: 'empenhos', colunaPai: 'id_empenho', filho: 'documentos_habeis', colunaFilho: 'id_empenho' },
+  { pai: 'documentos_habeis', colunaPai: 'id_dh', filho: 'ordens_pagamento', colunaFilho: 'id_dh' },
+  { pai: 'executores', colunaPai: 'id_executor', filho: 'meta', colunaFilho: 'id_executor' },
+  { pai: 'executores', colunaPai: 'id_executor', filho: 'finalidade', colunaFilho: 'id_executor' },
+  { pai: 'planos_trabalho', colunaPai: 'id_plano_trabalho', filho: 'planos_trabalho_analises', colunaFilho: 'id_plano_trabalho' },
+  { pai: 'planos_trabalho', colunaPai: 'id_plano_trabalho', filho: 'planos_trabalho_historico', colunaFilho: 'id_plano_trabalho' },
+  { pai: 'planos_trabalho', colunaPai: 'id_plano_trabalho', filho: 'orgaos_analises_pendentes', colunaFilho: 'id_plano_trabalho' },
+  { pai: 'relatorios_gestao_novos', colunaPai: 'id_relatorio_gestao_novo', filho: 'relatorios_gestao_documento_liquidacao', colunaFilho: 'id_relatorio_gestao_novo' },
+];
+
+/** Valor de chave como texto; vazio não é chave (não deve casar com outro vazio). */
+function chaveDe(valor: unknown): string | null {
+  if (valor === undefined || valor === null || valor === '' || valor === 'nan') return null;
+  return String(valor).trim();
+}
+
+/**
+ * Aplica os filtros e propaga pelas relações, em duas fases:
+ *
+ * 1. Para cima: a partir dos conjuntos filtrados diretamente, cada pai ligado por chave
+ *    mantém só os registros que têm filho no filtro. Ex.: "OB enviada" -> documentos -> empenhos -> planos.
+ * 2. Para baixo: a partir de tudo que ficou restrito, cada filho mantém só os registros
+ *    cujo pai sobrou. Ex.: planos CIENTE -> empenhos, executores, devolução, planos de trabalho.
+ *
+ * A fase 2 não sobe de volta. Sem essa regra, um conjunto pequeno (ex.: 5 devoluções)
+ * restringiria os planos a 5, zerando o restante.
+ */
+export function filtrarDados(dados: DadosModulo, filtros: FiltrosPorConjunto): DadosModulo {
+  const atual: DadosModulo = { ...dados };
+  const restritos = new Set<NomeDataset>();
+
+  for (const nome of NOMES_DATASETS) {
+    if (temFiltroAtivo(filtros[nome])) {
+      atual[nome] = aplicarFiltros(dados[nome] ?? [], filtros[nome]);
+      restritos.add(nome);
+    }
+  }
+
+  // Fila de trabalho: só reprocessa as relações de um conjunto quando ele encolheu.
+  // Mesmo resultado de varrer todas as relações até estabilizar, mas sem refazer o trabalho.
+
+  // Fase 1: para cima, a partir dos filtrados diretamente.
+  const fila: NomeDataset[] = [...restritos];
+  while (fila.length > 0) {
+    const origem = fila.shift() as NomeDataset;
+    for (const relacao of RELACOES) {
+      if (relacao.filho !== origem) continue;
+      if (restringir(atual, restritos, origem, relacao.colunaFilho, relacao.pai, relacao.colunaPai)) {
+        fila.push(relacao.pai);
+      }
+    }
+  }
+
+  // Fase 2: para baixo, a partir de tudo que ficou restrito. Não sobe de volta.
+  const filaBaixo: NomeDataset[] = [...restritos];
+  while (filaBaixo.length > 0) {
+    const origem = filaBaixo.shift() as NomeDataset;
+    for (const relacao of RELACOES) {
+      if (relacao.pai !== origem) continue;
+      if (restringir(atual, restritos, origem, relacao.colunaPai, relacao.filho, relacao.colunaFilho)) {
+        filaBaixo.push(relacao.filho);
+      }
+    }
+  }
+
+  return atual;
+}
+
+/**
+ * Mantém em `destino` só as linhas cuja chave aparece em `origem`. Marca `destino` como
+ * restrito. Devolve true quando `destino` ganhou restrição ou perdeu linhas.
+ */
+function restringir(
+  atual: DadosModulo,
+  restritos: Set<NomeDataset>,
+  origem: NomeDataset,
+  colunaOrigem: string,
+  destino: NomeDataset,
+  colunaDestino: string,
+): boolean {
+  const chaves = new Set(
+    (atual[origem] ?? []).map((linha) => chaveDe(linha[colunaOrigem])).filter((c): c is string => c !== null),
+  );
+  const linhas = atual[destino] ?? [];
+  const filtradas = linhas.filter((linha) => {
+    const chave = chaveDe(linha[colunaDestino]);
+    return chave !== null && chaves.has(chave);
+  });
+
+  const novo = !restritos.has(destino);
+  restritos.add(destino);
+  if (novo || filtradas.length !== linhas.length) {
+    atual[destino] = filtradas;
+    return true;
+  }
+  return false;
+}
+
+function temFiltroAtivo(filtro: Record<string, string[]> | undefined) {
+  return Object.values(filtro ?? {}).some((valores) => valores.length > 0);
+}
