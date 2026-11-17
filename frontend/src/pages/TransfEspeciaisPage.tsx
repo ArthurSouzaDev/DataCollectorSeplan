@@ -154,6 +154,7 @@ export function TransfEspeciaisPage() {
       {dados ? (
         <PlanilhaModulo
           dados={dados}
+          dadosFiltrados={dadosFiltrados ?? dados}
           filtros={filtros}
           onFiltros={setFiltros}
           estado={planilha}
@@ -259,12 +260,14 @@ function GraficoPanel({
  */
 function PlanilhaModulo({
   dados,
+  dadosFiltrados,
   filtros,
   onFiltros,
   estado,
   onChange,
 }: {
   dados: DadosModulo;
+  dadosFiltrados: DadosModulo;
   filtros: FiltrosPorConjunto;
   onFiltros: (atualizar: (atual: FiltrosPorConjunto) => FiltrosPorConjunto) => void;
   estado: EstadoPlanilha;
@@ -294,12 +297,12 @@ function PlanilhaModulo({
 
   const filtradas = useMemo(() => {
     const termo = busca.trim().toLowerCase();
-    const porFiltro = aplicarFiltros(linhas, valoresFiltro);
+    const porFiltro = dadosFiltrados[conjunto] ?? [];
     if (!termo) return porFiltro;
     return porFiltro.filter((linha) =>
       colunasDisponiveis.some((coluna) => String(linha[coluna] ?? '').toLowerCase().includes(termo)),
     );
-  }, [linhas, valoresFiltro, busca, colunasDisponiveis]);
+  }, [dadosFiltrados, conjunto, busca, colunasDisponiveis]);
 
   const baixarCsv = () => {
     const blob = new Blob([buildCsv(filtradas as TransferRecord[], colunasVisiveis)], {
