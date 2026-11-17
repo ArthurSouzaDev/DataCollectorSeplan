@@ -485,3 +485,32 @@ export const FILTROS_PLANILHA: Partial<Record<NomeDataset, FiltroPlanilha[]>> = 
   devolucao: [{ coluna: 'situacao_devolucao', rotulo: 'Situação' }],
   executores: [{ coluna: 'nome_executor', rotulo: 'Executor' }],
 };
+
+/** Texto de uma célula como aparece na tela e no filtro (vazio vira "Não informado"). */
+export function textoCelula(valor: unknown) {
+  if (valor === undefined || valor === null || valor === '' || valor === 'nan') return 'Não informado';
+  return String(valor).trim();
+}
+
+/** Mantém só as linhas que batem com todos os filtros ativos (coluna -> valores escolhidos). */
+export function aplicarFiltros(linhas: TransferRecord[], filtros: Record<string, string[]> | undefined) {
+  const ativos = Object.entries(filtros ?? {}).filter(([, valores]) => valores.length > 0);
+  if (!ativos.length) return linhas;
+  return linhas.filter((linha) => ativos.every(([coluna, valores]) => valores.includes(textoCelula(linha[coluna]))));
+}
+
+export type FiltrosPorConjunto = Partial<Record<NomeDataset, Record<string, string[]>>>;
+
+/**
+ * Aplica os filtros de cada conjunto nos dados. Um clique num gráfico filtra o conjunto
+ * inteiro: todos os gráficos e indicadores daquele conjunto usam o resultado.
+ */
+export function filtrarDados(dados: DadosModulo, filtros: FiltrosPorConjunto): DadosModulo {
+  const resultado: DadosModulo = { ...dados };
+  for (const nome of NOMES_DATASETS) {
+    if (filtros[nome]) {
+      resultado[nome] = aplicarFiltros(dados[nome] ?? [], filtros[nome]);
+    }
+  }
+  return resultado;
+}

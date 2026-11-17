@@ -8,9 +8,13 @@ import {
   calcularIndicadores,
   carregarModulo,
   COLUNA_REGISTRO,
+  aplicarFiltros,
   FILTROS_PLANILHA,
+  filtrarDados,
+  type FiltrosPorConjunto,
   GRUPOS_MODULO,
   NOMES_DATASETS,
+  textoCelula,
   type DadosModulo,
   type GraficoModulo,
   type IndicadoresModulo,
@@ -36,14 +40,12 @@ const ROTULO_OUTROS = 'Outros';
 
 type EstadoPlanilha = {
   conjunto: NomeDataset;
-  filtros: Record<string, string[]>;
   busca: string;
   colunas: string[];
 };
 
 const ESTADO_PLANILHA_INICIAL: EstadoPlanilha = {
   conjunto: 'planos_acao',
-  filtros: {},
   busca: '',
   colunas: [],
 };
@@ -58,7 +60,8 @@ type Estado = {
 /** Módulo completo de transferências especiais: indicadores, grupos, gráficos clicáveis e planilha. */
 export function TransfEspeciaisPage() {
   const [estado, setEstado] = useState<Estado>({ carregando: true });
-  // Estado da planilha fica aqui para os gráficos poderem preencher os filtros dela.
+  // Filtros por conjunto de dados: valem para os gráficos e a planilha daquele conjunto.
+  const [filtros, setFiltros] = useState<FiltrosPorConjunto>({});
   const [planilha, setPlanilha] = useState<EstadoPlanilha>(ESTADO_PLANILHA_INICIAL);
 
   useEffect(() => {
@@ -76,22 +79,34 @@ export function TransfEspeciaisPage() {
   }, []);
 
   const dados = estado.dados;
-  const indicadores = useMemo(() => (dados ? calcularIndicadores(dados) : undefined), [dados]);
+  // Gráficos e indicadores usam os dados já filtrados. A planilha filtra os dados completos
+  // (para as opções dos filtros continuarem visíveis).
+  const dadosFiltrados = useMemo(() => (dados ? filtrarDados(dados, filtros) : undefined), [dados, filtros]);
+  const indicadores = useMemo(
+    () => (dadosFiltrados ? calcularIndicadores(dadosFiltrados) : undefined),
+    [dadosFiltrados],
+  );
 
-  /** Clique num gráfico: liga o filtro daquela categoria na planilha (liga/desliga). */
+  /**
+   * Clique num gráfico: liga/desliga o filtro daquela categoria no conjunto do gráfico.
+   * Como no painel de especiais, o filtro vale para todos os gráficos e para a planilha
+   * desse conjunto. A planilha passa a mostrar esse conjunto.
+   */
   const filtrarPeloGrafico = (grafico: GraficoModulo, valor: string) => {
-    setPlanilha((atual) => {
-      if (atual.conjunto !== grafico.dataset) {
-        return { conjunto: grafico.dataset, filtros: { [grafico.agrupar]: [valor] }, busca: '', colunas: [] };
-      }
-      const atuais = atual.filtros[grafico.agrupar] ?? [];
+    setPlanilha((atual) =>
+      atual.conjunto === grafico.dataset
+        ? atual
+        : { conjunto: grafico.dataset, busca: '', colunas: [] },
+    );
+    setFiltros((atual) => {
+      const doConjunto = atual[grafico.dataset] ?? {};
+      const atuais = doConjunto[grafico.agrupar] ?? [];
       const proximos = atuais.includes(valor) ? atuais.filter((item) => item !== valor) : [...atuais, valor];
-      return { ...atual, filtros: { ...atual.filtros, [grafico.agrupar]: proximos } };
+      return { ...atual, [grafico.dataset]: { ...doConjunto, [grafico.agrupar]: proximos } };
     });
   };
 
-  const selecionadosDo = (grafico: GraficoModulo) =>
-    planilha.conjunto === grafico.dataset ? (planilha.filtros[grafico.agrupar] ?? []) : [];
+  const selecionadosDo = (grafico: GraficoModulo) => filtros[grafico.dataset]?.[grafico.agrupar] ?? [];
 
   return (
     <section className="page transf-especiais-page">
@@ -126,7 +141,7 @@ export function TransfEspeciaisPage() {
                   <GraficoPanel
                     key={grafico.id}
                     grafico={grafico}
-                    dados={dados}
+                    dados={dadosFiltrados ?? dados}
                     selecionados={selecionadosDo(grafico)}
                     aoSelecionar={(valor) => filtrarPeloGrafico(grafico, valor)}
                   />
@@ -139,6 +154,8 @@ export function TransfEspeciaisPage() {
       {dados ? (
         <PlanilhaModulo
           dados={dados}
+          filtros={filtros}
+          onFiltros={setFiltros}
           estado={planilha}
           onChange={(parcial) => setPlanilha((atual) => ({ ...atual, ...parcial }))}
         />
@@ -235,28 +252,28 @@ function GraficoPanel({
   );
 }
 
-function textoCelula(valor: unknown) {
-  if (valor === undefined || valor === null || valor === '' || valor === 'nan') return 'Não informado';
-  return String(valor).trim();
-}
-
 /**
  * Planilha do módulo, no mesmo formato do painel de especiais: escolha do conjunto,
  * filtros de múltipla escolha, busca, colunas visíveis e download do CSV filtrado.
- * O estado vem da página, porque os gráficos também preenchem os filtros.
+ * Os filtros são os mesmos que os gráficos usam: clicar num gráfico preenche estes campos.
  */
 function PlanilhaModulo({
   dados,
+  filtros,
+  onFiltros,
   estado,
   onChange,
 }: {
   dados: DadosModulo;
+  filtros: FiltrosPorConjunto;
+  onFiltros: (atualizar: (atual: FiltrosPorConjunto) => FiltrosPorConjunto) => void;
   estado: EstadoPlanilha;
   onChange: (parcial: Partial<EstadoPlanilha>) => void;
 }) {
-  const { conjunto, filtros, busca, colunas: colunasEscolhidas } = estado;
+  const { conjunto, busca, colunas: colunasEscolhidas } = estado;
 
   const linhas = dados[conjunto] ?? [];
+  const valoresFiltro = filtros[conjunto] ?? {};
   const colunasDisponiveis = useMemo(
     () => Object.keys(linhas[0] ?? {}).filter((coluna) => coluna !== COLUNA_REGISTRO),
     [linhas],
@@ -268,21 +285,21 @@ function PlanilhaModulo({
 
   const filtrosDoConjunto = FILTROS_PLANILHA[conjunto] ?? [];
 
+  // As opções vêm dos dados completos, para não sumirem quando um filtro restringe a lista.
   const opcoesDoFiltro = (coluna: string) =>
     [...new Set(linhas.map((linha) => textoCelula(linha[coluna])))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
+  const definirFiltros = (novos: Record<string, string[]>) =>
+    onFiltros((atual) => ({ ...atual, [conjunto]: novos }));
+
   const filtradas = useMemo(() => {
     const termo = busca.trim().toLowerCase();
-    return linhas.filter((linha) => {
-      for (const [coluna, valores] of Object.entries(filtros)) {
-        if (valores.length > 0 && !valores.includes(textoCelula(linha[coluna]))) return false;
-      }
-      if (termo && !colunasDisponiveis.some((coluna) => String(linha[coluna] ?? '').toLowerCase().includes(termo))) {
-        return false;
-      }
-      return true;
-    });
-  }, [linhas, filtros, busca, colunasDisponiveis]);
+    const porFiltro = aplicarFiltros(linhas, valoresFiltro);
+    if (!termo) return porFiltro;
+    return porFiltro.filter((linha) =>
+      colunasDisponiveis.some((coluna) => String(linha[coluna] ?? '').toLowerCase().includes(termo)),
+    );
+  }, [linhas, valoresFiltro, busca, colunasDisponiveis]);
 
   const baixarCsv = () => {
     const blob = new Blob([buildCsv(filtradas as TransferRecord[], colunasVisiveis)], {
@@ -298,7 +315,7 @@ function PlanilhaModulo({
     URL.revokeObjectURL(url);
   };
 
-  const filtrosAtivos = Object.entries(filtros).filter(([, valores]) => valores.length > 0);
+  const filtrosAtivos = Object.entries(valoresFiltro).filter(([, valores]) => valores.length > 0);
 
   return (
     <section className="panel spreadsheet-panel" id="planilha">
@@ -312,7 +329,10 @@ function PlanilhaModulo({
         <button
           className="secondary-button"
           type="button"
-          onClick={() => onChange({ filtros: {}, busca: '', colunas: [] })}
+          onClick={() => {
+            definirFiltros({});
+            onChange({ busca: '', colunas: [] });
+          }}
         >
           Limpar filtros
         </button>
@@ -326,9 +346,7 @@ function PlanilhaModulo({
           <span className="multi-select-label">Conjunto de dados</span>
           <select
             value={conjunto}
-            onChange={(evento) =>
-              onChange({ conjunto: evento.target.value as NomeDataset, filtros: {}, busca: '', colunas: [] })
-            }
+            onChange={(evento) => onChange({ conjunto: evento.target.value as NomeDataset, busca: '', colunas: [] })}
           >
             {NOMES_DATASETS.map((nome) => (
               <option key={nome} value={nome}>
@@ -343,8 +361,8 @@ function PlanilhaModulo({
             key={`${conjunto}-${filtro.coluna}`}
             label={filtro.rotulo}
             options={opcoesDoFiltro(filtro.coluna)}
-            value={filtros[filtro.coluna] ?? []}
-            onChange={(valores) => onChange({ filtros: { ...filtros, [filtro.coluna]: valores } })}
+            value={valoresFiltro[filtro.coluna] ?? []}
+            onChange={(valores) => definirFiltros({ ...valoresFiltro, [filtro.coluna]: valores })}
           />
         ))}
 
@@ -369,7 +387,8 @@ function PlanilhaModulo({
           <strong>Filtros ativos</strong>
           {filtrosAtivos.length === 0 && !busca ? <span>Nenhum filtro ativo</span> : null}
           {filtrosAtivos.map(([coluna, valores]) => {
-            const rotulo = filtrosDoConjunto.find((filtro) => filtro.coluna === coluna)?.rotulo ?? coluna.replaceAll('_', ' ');
+            const rotulo =
+              filtrosDoConjunto.find((filtro) => filtro.coluna === coluna)?.rotulo ?? coluna.replaceAll('_', ' ');
             return (
               <span key={coluna}>
                 {rotulo}: {valores.join(', ')}
@@ -406,7 +425,8 @@ function PlanilhaModulo({
           </div>
           {filtradas.length > LINHAS_NA_TELA ? (
             <p className="panel-hint">
-              Mostrando {formatNumber(LINHAS_NA_TELA)} de {formatNumber(filtradas.length)} linhas. O CSV traz o conjunto filtrado inteiro.
+              Mostrando {formatNumber(LINHAS_NA_TELA)} de {formatNumber(filtradas.length)} linhas. O CSV traz o conjunto
+              filtrado inteiro.
             </p>
           ) : null}
         </>
