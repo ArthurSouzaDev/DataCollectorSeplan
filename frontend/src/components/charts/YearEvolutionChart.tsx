@@ -1,6 +1,7 @@
 import {
   Bar,
   BarChart,
+  Cell,
   CartesianGrid,
   Line,
   LineChart,
@@ -20,6 +21,10 @@ type YearEvolutionChartProps = {
   countLabel?: string;
   /** 'numero' quando a medida principal é contagem, não valor monetário. */
   formato?: FormatoValor;
+  /** Anos selecionados no filtro: ficam destacados nas colunas. */
+  selected?: string[];
+  /** Clique numa coluna: usado para filtrar pelo ano. */
+  onSelect?: (label: string) => void;
 };
 
 /**
@@ -36,10 +41,16 @@ export function YearEvolutionChart({
   valueLabel = 'Valor',
   countLabel = 'Registros',
   formato = 'moeda',
+  selected = [],
+  onSelect,
 }: YearEvolutionChartProps) {
   if (!rows.length) {
     return <p className="chart-empty">Sem dados para os filtros aplicados.</p>;
   }
+
+  const selectedSet = new Set(selected);
+  const hasSelection = selectedSet.size > 0;
+  const interactive = typeof onSelect === 'function';
 
   // Margens idênticas nos dois gráficos: é o que mantém as colunas e os pontos
   // alinhados na mesma posição de X.
@@ -70,7 +81,17 @@ export function YearEvolutionChart({
               maxBarSize={MAX_BAR_SIZE}
               isAnimationActive
               animationDuration={650}
-            />
+              cursor={interactive ? 'pointer' : undefined}
+              onClick={interactive ? (entry: unknown) => onSelect?.((entry as AggregateRow).label) : undefined}
+            >
+              {rows.map((row) => (
+                <Cell
+                  key={row.label}
+                  fill={selectedSet.has(row.label) ? chartColors.accentStrong : chartColors.accent}
+                  fillOpacity={hasSelection && !selectedSet.has(row.label) ? 0.42 : 1}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -31,6 +31,22 @@ import {
 const LINHAS_NA_TELA = 150;
 /** Colunas visíveis por padrão, para a planilha não abrir com 40 colunas. */
 const COLUNAS_PADRAO = 12;
+/** Fatia agregada pelo donut quando há muitas categorias: não é uma categoria real, não filtra. */
+const ROTULO_OUTROS = 'Outros';
+
+type EstadoPlanilha = {
+  conjunto: NomeDataset;
+  filtros: Record<string, string[]>;
+  busca: string;
+  colunas: string[];
+};
+
+const ESTADO_PLANILHA_INICIAL: EstadoPlanilha = {
+  conjunto: 'planos_acao',
+  filtros: {},
+  busca: '',
+  colunas: [],
+};
 
 type Estado = {
   carregando: boolean;
@@ -39,9 +55,11 @@ type Estado = {
   geradoEm?: string;
 };
 
-/** Módulo completo de transferências especiais: indicadores, grupos e gráficos por dataset. */
+/** Módulo completo de transferências especiais: indicadores, grupos, gráficos clicáveis e planilha. */
 export function TransfEspeciaisPage() {
   const [estado, setEstado] = useState<Estado>({ carregando: true });
+  // Estado da planilha fica aqui para os gráficos poderem preencher os filtros dela.
+  const [planilha, setPlanilha] = useState<EstadoPlanilha>(ESTADO_PLANILHA_INICIAL);
 
   useEffect(() => {
     let ativo = true;
@@ -60,6 +78,22 @@ export function TransfEspeciaisPage() {
   const dados = estado.dados;
   const indicadores = useMemo(() => (dados ? calcularIndicadores(dados) : undefined), [dados]);
 
+  /** Clique num gráfico: liga o filtro daquela categoria na planilha (liga/desliga). */
+  const filtrarPeloGrafico = (grafico: GraficoModulo, valor: string) => {
+    setPlanilha((atual) => {
+      if (atual.conjunto !== grafico.dataset) {
+        return { conjunto: grafico.dataset, filtros: { [grafico.agrupar]: [valor] }, busca: '', colunas: [] };
+      }
+      const atuais = atual.filtros[grafico.agrupar] ?? [];
+      const proximos = atuais.includes(valor) ? atuais.filter((item) => item !== valor) : [...atuais, valor];
+      return { ...atual, filtros: { ...atual.filtros, [grafico.agrupar]: proximos } };
+    });
+    document.getElementById('planilha')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const selecionadosDo = (grafico: GraficoModulo) =>
+    planilha.conjunto === grafico.dataset ? (planilha.filtros[grafico.agrupar] ?? []) : [];
+
   return (
     <section className="page transf-especiais-page">
       <div className="home-hero">
@@ -77,6 +111,10 @@ export function TransfEspeciaisPage() {
 
       {indicadores ? <Indicadores indicadores={indicadores} /> : null}
 
+      {dados ? (
+        <p className="panel-hint">Clique numa barra, fatia ou ano para filtrar a planilha no fim da página.</p>
+      ) : null}
+
       {dados
         ? GRUPOS_MODULO.map((grupo) => (
             <section className="transf-grupo" id={grupo.id} key={grupo.id}>
@@ -86,14 +124,114 @@ export function TransfEspeciaisPage() {
               <p className="panel-hint">{grupo.descricao}</p>
               <div className="dashboard-grid halves">
                 {grupo.graficos.map((grafico) => (
-                  <GraficoPanel key={grafico.id} grafico={grafico} dados={dados} />
+                  <GraficoPanel
+                    key={grafico.id}
+                    grafico={grafico}
+                    dados={dados}
+                    selecionados={selecionadosDo(grafico)}
+                    aoSelecionar={(valor) => filtrarPeloGrafico(grafico, valor)}
+                  />
                 ))}
               </div>
             </section>
           ))
         : null}
 
-      {dados ? <PlanilhaModulo dados={dados} /> : null}
+      {dados ? (
+        <PlanilhaModulo
+          dados={dados}
+          estado={planilha}
+          onChange={(parcial) => setPlanilha((atual) => ({ ...atual, ...parcial }))}
+        />
+      ) : null}
+    </section>
+  );
+}
+
+function Indicadores({ indicadores }: { indicadores: IndicadoresModulo }) {
+  const itens: Array<{ rotulo: string; valor: string }> = [
+    { rotulo: 'Planos de ação', valor: formatNumber(indicadores.planos) },
+    { rotulo: 'Valor dos planos', valor: formatCurrency(indicadores.valorPlanos) },
+    { rotulo: 'Empenhado', valor: formatCurrency(indicadores.empenhado) },
+    { rotulo: 'Documentos hábeis', valor: formatCurrency(indicadores.valorDh) },
+    { rotulo: 'Lançamentos financeiros', valor: formatCurrency(indicadores.valorLancamentos) },
+    { rotulo: 'Saldo atual das contas', valor: formatCurrency(indicadores.saldoAtual) },
+  ];
+
+  return (
+    <div className="kpi-grid" aria-label="Indicadores gerais">
+      {itens.map((item) => (
+        <div className="metric-card" key={item.rotulo}>
+          <span>{item.rotulo}</span>
+          <strong>{item.valor}</strong>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function GraficoPanel({
+  grafico,
+  dados,
+  selecionados,
+  aoSelecionar,
+}: {
+  grafico: GraficoModulo;
+  dados: DadosModulo;
+  selecionados: string[];
+  aoSelecionar: (valor: string) => void;
+}) {
+  const linhas = dados[grafico.dataset] ?? [];
+  // Sem coluna para somar, o gráfico conta registros (a coluna sintética vale 1 em cada linha).
+  const coluna = grafico.somar ?? COLUNA_REGISTRO;
+  const formato = grafico.somar ? 'moeda' : 'numero';
+  const valorLabel = grafico.somar ? 'Valor' : 'Registros';
+  const clicar = (valor: string) => {
+    if (valor !== ROTULO_OUTROS) aoSelecionar(valor);
+  };
+
+  let conteudo: ReactNode;
+  if (grafico.tipo === 'barras') {
+    conteudo = (
+      <RankingBarChart
+        rows={aggregateBy(linhas, grafico.agrupar, coluna, grafico.limite ?? 10)}
+        valueLabel={valorLabel}
+        formato={formato}
+        selected={selecionados}
+        onSelect={clicar}
+      />
+    );
+  } else if (grafico.tipo === 'rosca') {
+    // A rosca distribui por contagem de registros, então o total é de registros.
+    const { slices, total } = aggregateShare(linhas, grafico.agrupar, coluna);
+    conteudo = (
+      <CategoryDonut
+        slices={slices}
+        total={total}
+        totalLabel="registros"
+        selected={selecionados}
+        onSelect={clicar}
+      />
+    );
+  } else {
+    conteudo = (
+      <YearEvolutionChart
+        rows={aggregateByYear(linhas, grafico.agrupar, coluna)}
+        valueLabel={valorLabel}
+        formato={formato}
+        selected={selecionados}
+        onSelect={clicar}
+      />
+    );
+  }
+
+  return (
+    <section className="panel">
+      <div className="panel-heading">
+        <h2>{grafico.titulo}</h2>
+        <span className="panel-hint">{grafico.dica}</span>
+      </div>
+      {conteudo}
     </section>
   );
 }
@@ -106,13 +244,18 @@ function textoCelula(valor: unknown) {
 /**
  * Planilha do módulo, no mesmo formato do painel de especiais: escolha do conjunto,
  * filtros de múltipla escolha, busca, colunas visíveis e download do CSV filtrado.
- * Os gráficos acima não são filtrados por esta planilha.
+ * O estado vem da página, porque os gráficos também preenchem os filtros.
  */
-function PlanilhaModulo({ dados }: { dados: DadosModulo }) {
-  const [conjunto, setConjunto] = useState<NomeDataset>('planos_acao');
-  const [filtros, setFiltros] = useState<Record<string, string[]>>({});
-  const [busca, setBusca] = useState('');
-  const [colunasEscolhidas, setColunasEscolhidas] = useState<string[]>([]);
+function PlanilhaModulo({
+  dados,
+  estado,
+  onChange,
+}: {
+  dados: DadosModulo;
+  estado: EstadoPlanilha;
+  onChange: (parcial: Partial<EstadoPlanilha>) => void;
+}) {
+  const { conjunto, filtros, busca, colunas: colunasEscolhidas } = estado;
 
   const linhas = dados[conjunto] ?? [];
   const colunasDisponiveis = useMemo(
@@ -142,19 +285,6 @@ function PlanilhaModulo({ dados }: { dados: DadosModulo }) {
     });
   }, [linhas, filtros, busca, colunasDisponiveis]);
 
-  const trocarConjunto = (novo: NomeDataset) => {
-    setConjunto(novo);
-    setFiltros({});
-    setBusca('');
-    setColunasEscolhidas([]);
-  };
-
-  const limparFiltros = () => {
-    setFiltros({});
-    setBusca('');
-    setColunasEscolhidas([]);
-  };
-
   const baixarCsv = () => {
     const blob = new Blob([buildCsv(filtradas as TransferRecord[], colunasVisiveis)], {
       type: 'text/csv;charset=utf-8',
@@ -180,7 +310,11 @@ function PlanilhaModulo({ dados }: { dados: DadosModulo }) {
             {formatNumber(filtradas.length)} registros filtrados de {formatNumber(linhas.length)}
           </p>
         </div>
-        <button className="secondary-button" type="button" onClick={limparFiltros}>
+        <button
+          className="secondary-button"
+          type="button"
+          onClick={() => onChange({ filtros: {}, busca: '', colunas: [] })}
+        >
           Limpar filtros
         </button>
         <button className="secondary-button" type="button" onClick={baixarCsv} disabled={!filtradas.length}>
@@ -189,9 +323,14 @@ function PlanilhaModulo({ dados }: { dados: DadosModulo }) {
       </div>
 
       <div className="spreadsheet-controls">
-        <label className="multi-select">
+        <label className="multi-select planilha-campo">
           <span className="multi-select-label">Conjunto de dados</span>
-          <select value={conjunto} onChange={(evento) => trocarConjunto(evento.target.value as NomeDataset)}>
+          <select
+            value={conjunto}
+            onChange={(evento) =>
+              onChange({ conjunto: evento.target.value as NomeDataset, filtros: {}, busca: '', colunas: [] })
+            }
+          >
             {NOMES_DATASETS.map((nome) => (
               <option key={nome} value={nome}>
                 {nome.replaceAll('_', ' ')}
@@ -206,30 +345,35 @@ function PlanilhaModulo({ dados }: { dados: DadosModulo }) {
             label={filtro.rotulo}
             options={opcoesDoFiltro(filtro.coluna)}
             value={filtros[filtro.coluna] ?? []}
-            onChange={(valores) => setFiltros((atuais) => ({ ...atuais, [filtro.coluna]: valores }))}
+            onChange={(valores) => onChange({ filtros: { ...filtros, [filtro.coluna]: valores } })}
           />
         ))}
 
-        <label className="multi-select">
+        <label className="multi-select planilha-campo">
           <span className="multi-select-label">Buscar na planilha</span>
-          <input type="search" value={busca} onChange={(evento) => setBusca(evento.target.value)} placeholder="Qualquer texto" />
+          <input
+            type="search"
+            value={busca}
+            onChange={(evento) => onChange({ busca: evento.target.value })}
+            placeholder="Qualquer texto"
+          />
         </label>
 
         <MultiSelect
           label="Colunas visíveis"
           options={colunasDisponiveis}
           value={colunasVisiveis}
-          onChange={setColunasEscolhidas}
+          onChange={(colunas) => onChange({ colunas })}
         />
 
         <div className="filter-summary">
           <strong>Filtros ativos</strong>
-          {filtrosDoConjunto.length === 0 && !busca ? <span>Nenhum filtro específico neste conjunto</span> : null}
+          {filtrosAtivos.length === 0 && !busca ? <span>Nenhum filtro ativo</span> : null}
           {filtrosAtivos.map(([coluna, valores]) => {
-            const rotulo = filtrosDoConjunto.find((filtro) => filtro.coluna === coluna)?.rotulo ?? coluna;
+            const rotulo = filtrosDoConjunto.find((filtro) => filtro.coluna === coluna)?.rotulo ?? coluna.replaceAll('_', ' ');
             return (
               <span key={coluna}>
-                {rotulo}: {valores.length}
+                {rotulo}: {valores.join(', ')}
               </span>
             );
           })}
@@ -268,69 +412,6 @@ function PlanilhaModulo({ dados }: { dados: DadosModulo }) {
           ) : null}
         </>
       )}
-    </section>
-  );
-}
-
-function Indicadores({ indicadores }: { indicadores: IndicadoresModulo }) {
-  const itens: Array<{ rotulo: string; valor: string }> = [
-    { rotulo: 'Planos de ação', valor: formatNumber(indicadores.planos) },
-    { rotulo: 'Valor dos planos', valor: formatCurrency(indicadores.valorPlanos) },
-    { rotulo: 'Empenhado', valor: formatCurrency(indicadores.empenhado) },
-    { rotulo: 'Documentos hábeis', valor: formatCurrency(indicadores.valorDh) },
-    { rotulo: 'Lançamentos financeiros', valor: formatCurrency(indicadores.valorLancamentos) },
-    { rotulo: 'Saldo atual das contas', valor: formatCurrency(indicadores.saldoAtual) },
-  ];
-
-  return (
-    <div className="kpi-grid" aria-label="Indicadores gerais">
-      {itens.map((item) => (
-        <div className="metric-card" key={item.rotulo}>
-          <span>{item.rotulo}</span>
-          <strong>{item.valor}</strong>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function GraficoPanel({ grafico, dados }: { grafico: GraficoModulo; dados: DadosModulo }) {
-  const linhas = dados[grafico.dataset] ?? [];
-  // Sem coluna para somar, o gráfico conta registros (a coluna sintética vale 1 em cada linha).
-  const coluna = grafico.somar ?? COLUNA_REGISTRO;
-  const formato = grafico.somar ? 'moeda' : 'numero';
-  const valorLabel = grafico.somar ? 'Valor' : 'Registros';
-
-  let conteudo: ReactNode;
-  if (grafico.tipo === 'barras') {
-    conteudo = (
-      <RankingBarChart
-        rows={aggregateBy(linhas, grafico.agrupar, coluna, grafico.limite ?? 10)}
-        valueLabel={valorLabel}
-        formato={formato}
-      />
-    );
-  } else if (grafico.tipo === 'rosca') {
-    // A rosca distribui por contagem de registros, então o total é de registros.
-    const { slices, total } = aggregateShare(linhas, grafico.agrupar, coluna);
-    conteudo = <CategoryDonut slices={slices} total={total} totalLabel="registros" />;
-  } else {
-    conteudo = (
-      <YearEvolutionChart
-        rows={aggregateByYear(linhas, grafico.agrupar, coluna)}
-        valueLabel={valorLabel}
-        formato={formato}
-      />
-    );
-  }
-
-  return (
-    <section className="panel">
-      <div className="panel-heading">
-        <h2>{grafico.titulo}</h2>
-        <span className="panel-hint">{grafico.dica}</span>
-      </div>
-      {conteudo}
     </section>
   );
 }

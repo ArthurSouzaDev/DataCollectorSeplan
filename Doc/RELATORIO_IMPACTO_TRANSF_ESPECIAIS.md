@@ -192,3 +192,9 @@ quantas chamadas são feitas.
 - Todos os 1.959 planos têm ao menos um empenho (2.048 empenhos no total), e a soma dos empenhos é igual à soma dos planos (R$ 1.028.321.058,52). Por isso "Valor dos planos" e "Empenhado" aparecem iguais no painel.
 - `relatorios_gestao_analise` veio vazio na coleta completa. O painel não tem gráfico para esse dataset.
 - Gráficos de rosca são por quantidade de registros, não por valor.
+
+### Atualização: workflow próprio, diário
+- A coleta saiu do workflow de fundo a fundo e especiais (que roda a cada 12 h) e foi para `.github/workflows/atualizar_transf_especiais.yml`, diário às 03:30 (Araguaína).
+- O motivo é reduzir a demora: a coleta leva ~25 min e não precisa rodar duas vezes por dia.
+- O novo workflow usa o mesmo grupo de concorrência (`atualizar-dados`) e só faz commit quando os dados mudam.
+- Ele copia `dataset/transf_especiais/` para `public/data/transf_especiais/` por conta própria. O `sync_public_data.py` não copia mais essa pasta.

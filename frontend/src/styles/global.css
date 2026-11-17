@@ -2243,3 +2243,32 @@ tbody tr:last-child td { border-bottom: none; }
   margin-top: 2px;
   border-top: 1px solid var(--border);
 }
+
+/* Campos da planilha do módulo de especiais: select e busca com o mesmo visual dos filtros. */
+.planilha-campo select,
+.planilha-campo input[type="search"] {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color-scheme: light dark;
+}
+
+.planilha-campo select:hover,
+.planilha-campo input[type="search"]:hover {
+  border-color: var(--accent);
+}
+
+.planilha-campo input[type="search"]:focus,
+.planilha-campo select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
