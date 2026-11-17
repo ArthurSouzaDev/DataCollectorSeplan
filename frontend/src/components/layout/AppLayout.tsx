@@ -99,6 +99,13 @@ export function AppLayout() {
               </NavLink>
             ))}
             <NavLink
+              to="/transf-especiais"
+              className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}
+              onClick={() => setNavOpen(false)}
+            >
+              Especiais completo
+            </NavLink>
+            <NavLink
               to="/historico"
               className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}
               onClick={() => setNavOpen(false)}

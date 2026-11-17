@@ -1,7 +1,7 @@
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-import { formatCurrency, type AggregateRow } from '../../services/data/transferData';
-import { ChartTooltip } from './ChartTooltip';
+import { formatCurrency, formatNumber, type AggregateRow } from '../../services/data/transferData';
+import { ChartTooltip, type FormatoValor } from './ChartTooltip';
 import { LegendaRecolhivel } from './LegendaRecolhivel';
 import { axisProps, chartColors, formatCompactCurrency, MAX_BAR_SIZE, truncateLabel } from './chartTheme';
 
@@ -13,6 +13,7 @@ type RankingBarChartProps = {
   /** Clique na barra: usado para aplicar/remover o filtro do agrupamento. */
   onSelect?: (label: string) => void;
   height?: number;
+  formato?: FormatoValor;
 };
 
 export function RankingBarChart({
@@ -21,7 +22,10 @@ export function RankingBarChart({
   selected = [],
   onSelect,
   height = 320,
+  formato = 'moeda',
 }: RankingBarChartProps) {
+  const formatarValor = (value: number) => (formato === 'numero' ? formatNumber(value) : formatCurrency(value));
+  const formatarEixo = formato === 'numero' ? (value: number) => formatNumber(value) : formatCompactCurrency;
   if (!rows.length) {
     return <p className="chart-empty">Sem dados para os filtros aplicados.</p>;
   }
@@ -37,7 +41,7 @@ export function RankingBarChart({
       <ResponsiveContainer width="100%" height={height}>
         <BarChart data={data} layout="vertical" margin={{ top: 4, right: 16, bottom: 4, left: 8 }}>
           <CartesianGrid horizontal={false} stroke={chartColors.border} strokeWidth={1} />
-          <XAxis type="number" {...axisProps} tickFormatter={formatCompactCurrency} />
+          <XAxis type="number" {...axisProps} tickFormatter={formatarEixo} />
           <YAxis
             type="category"
             dataKey="label"
@@ -47,7 +51,13 @@ export function RankingBarChart({
           />
           <Tooltip
             cursor={{ fill: 'var(--surface-hover)', opacity: 0.5 }}
-            content={<ChartTooltip valueLabel={valueLabel} hint={interactive ? 'Clique para filtrar' : undefined} />}
+            content={
+              <ChartTooltip
+                valueLabel={valueLabel}
+                formato={formato}
+                hint={interactive ? 'Clique para filtrar' : undefined}
+              />
+            }
           />
           <Bar
             dataKey="value"
@@ -88,7 +98,7 @@ export function RankingBarChart({
                   style={{ background: selecionado ? chartColors.accentStrong : chartColors.accent }}
                 />
                 <span>{row.label}</span>
-                <b>{formatCurrency(row.value)}</b>
+                <b>{formatarValor(row.value)}</b>
               </button>
             </li>
           );

@@ -12,6 +12,15 @@ PUBLIC_DATA.mkdir(parents=True, exist_ok=True)
 shutil.copy(ROOT / "dataset" / "emendas_to.csv",    PUBLIC_DATA / "especiais.csv")
 shutil.copy(ROOT / "dataset" / "fundo_a_fundo.csv", PUBLIC_DATA / "fundo-a-fundo.csv")
 
+# Módulo completo de transferências especiais (24 datasets, gerados por backend/especiais/coleta.py).
+# Substitui a pasta inteira para não deixar arquivos de uma coleta anterior.
+origem_transf = ROOT / "dataset" / "transf_especiais"
+if origem_transf.exists():
+    destino_transf = PUBLIC_DATA / "transf_especiais"
+    if destino_transf.exists():
+        shutil.rmtree(destino_transf)
+    shutil.copytree(origem_transf, destino_transf)
+
 df = pd.read_parquet(ROOT / "data_discricionarias" / "processados" / "discricionarias_to.parquet")
 df.to_csv(PUBLIC_DATA / "discricionarias-legais.csv", sep=";", index=False, encoding="utf-8-sig")
 

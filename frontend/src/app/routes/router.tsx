@@ -13,6 +13,11 @@ const DatasetDetailPage = lazy(() =>
   import('../../pages/DatasetDetailPage').then((module) => ({ default: module.DatasetDetailPage })),
 );
 
+// O módulo completo de especiais tem muitos gráficos: também fica em chunk separado.
+const TransfEspeciaisPage = lazy(() =>
+  import('../../pages/TransfEspeciaisPage').then((module) => ({ default: module.TransfEspeciaisPage })),
+);
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -27,6 +32,14 @@ export const router = createBrowserRouter([
         element: (
           <Suspense fallback={<div className="loading-panel">Carregando painel...</div>}>
             <DatasetDetailPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'transf-especiais',
+        element: (
+          <Suspense fallback={<div className="loading-panel">Carregando módulo...</div>}>
+            <TransfEspeciaisPage />
           </Suspense>
         ),
       },

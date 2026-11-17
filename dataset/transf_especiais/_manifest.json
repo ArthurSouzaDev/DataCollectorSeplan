@@ -1,0 +1,225 @@
+{
+  "gerado_em": "2026-11-10T12:23:54.427001-03:00",
+  "base_url": "https://api-publica.transferegov.gestao.gov.br/especiais",
+  "uf": "TO",
+  "limite_beneficiarios": null,
+  "segundos_total": 1466.7,
+  "datasets": {
+    "data_atualizacao": {
+      "descricao": "Data da última atualização da base",
+      "registros": 1,
+      "colunas": 1,
+      "arquivo": "data_atualizacao.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 0.2
+    },
+    "programas": {
+      "descricao": "Programas especiais",
+      "registros": 16,
+      "colunas": 24,
+      "arquivo": "programas.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 0.2
+    },
+    "beneficiarios": {
+      "descricao": "Beneficiários (entes) do Tocantins",
+      "registros": 140,
+      "colunas": 5,
+      "arquivo": "beneficiarios.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 0.4
+    },
+    "planos_acao": {
+      "descricao": "Planos de ação, por beneficiário",
+      "registros": 1959,
+      "colunas": 33,
+      "arquivo": "planos_acao.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 5.8
+    },
+    "planos_acao_historico": {
+      "descricao": "Histórico de situação dos planos de ação",
+      "registros": 4816,
+      "colunas": 6,
+      "arquivo": "planos_acao_historico.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 64.0
+    },
+    "executores": {
+      "descricao": "Executores dos planos de ação",
+      "registros": 1910,
+      "colunas": 17,
+      "arquivo": "executores.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 80.7
+    },
+    "meta": {
+      "descricao": "Metas dos executores",
+      "registros": 3750,
+      "colunas": 16,
+      "arquivo": "meta.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 57.5
+    },
+    "finalidade": {
+      "descricao": "Áreas de política pública (finalidade) dos executores",
+      "registros": 2465,
+      "colunas": 5,
+      "arquivo": "finalidade.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 59.0
+    },
+    "devolucao": {
+      "descricao": "Devoluções de recursos",
+      "registros": 5,
+      "colunas": 22,
+      "arquivo": "devolucao.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 58.0
+    },
+    "planos_trabalho": {
+      "descricao": "Planos de trabalho",
+      "registros": 1903,
+      "colunas": 14,
+      "arquivo": "planos_trabalho.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 67.8
+    },
+    "planos_trabalho_historico": {
+      "descricao": "Histórico de situação dos planos de trabalho",
+      "registros": 12988,
+      "colunas": 5,
+      "arquivo": "planos_trabalho_historico.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 60.5
+    },
+    "planos_trabalho_analises": {
+      "descricao": "Análises dos planos de trabalho",
+      "registros": 3008,
+      "colunas": 10,
+      "arquivo": "planos_trabalho_analises.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 55.1
+    },
+    "planos_trabalho_analise_historico": {
+      "descricao": "Histórico das análises dos planos de trabalho (base nacional)",
+      "registros": 44666,
+      "colunas": 7,
+      "arquivo": "planos_trabalho_analise_historico.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 396.3
+    },
+    "orgaos_analises_pendentes": {
+      "descricao": "Órgãos com análises pendentes nos planos de trabalho",
+      "registros": 30,
+      "colunas": 4,
+      "arquivo": "orgaos_analises_pendentes.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 63.7
+    },
+    "relatorios_gestao": {
+      "descricao": "Relatórios de gestão",
+      "registros": 75,
+      "colunas": 9,
+      "arquivo": "relatorios_gestao.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 59.3
+    },
+    "relatorios_gestao_novos": {
+      "descricao": "Relatórios de gestão (novo modelo)",
+      "registros": 531,
+      "colunas": 9,
+      "arquivo": "relatorios_gestao_novos.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 55.6
+    },
+    "relatorios_gestao_analise": {
+      "descricao": "Análises dos relatórios de gestão",
+      "registros": 0,
+      "colunas": 0,
+      "arquivo": "relatorios_gestao_analise.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 15.6
+    },
+    "relatorios_gestao_documento_liquidacao": {
+      "descricao": "Documentos de liquidação dos relatórios de gestão",
+      "registros": 1788,
+      "colunas": 9,
+      "arquivo": "relatorios_gestao_documento_liquidacao.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 17.2
+    },
+    "empenhos": {
+      "descricao": "Empenhos",
+      "registros": 2048,
+      "colunas": 24,
+      "arquivo": "empenhos.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 65.5
+    },
+    "documentos_habeis": {
+      "descricao": "Documentos hábeis (DH)",
+      "registros": 1911,
+      "colunas": 25,
+      "arquivo": "documentos_habeis.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 70.4
+    },
+    "ordens_pagamento": {
+      "descricao": "Ordens de pagamento e ordens bancárias",
+      "registros": 1840,
+      "colunas": 13,
+      "arquivo": "ordens_pagamento.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 63.3
+    },
+    "gestao_financeira_lancamentos": {
+      "descricao": "Lançamentos da gestão financeira (conta específica)",
+      "registros": 25729,
+      "colunas": 34,
+      "arquivo": "gestao_financeira_lancamentos.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 61.4
+    },
+    "gestao_financeira_subtransacoes": {
+      "descricao": "Subtransações dos lançamentos financeiros (base nacional)",
+      "registros": 14351,
+      "colunas": 14,
+      "arquivo": "gestao_financeira_subtransacoes.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 42.2
+    },
+    "saldo_conta": {
+      "descricao": "Saldos das contas da gestão financeira",
+      "registros": 1011,
+      "colunas": 5,
+      "arquivo": "saldo_conta.csv",
+      "erros": 0,
+      "exemplos_erro": [],
+      "segundos": 46.9
+    }
+  }
+}
