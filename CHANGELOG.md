@@ -13,6 +13,7 @@ Commits seguem [Conventional Commits](https://www.conventionalcommits.org/pt-br/
   (planos de ação, execução orçamentária, gestão financeira, executores e metas, planos de trabalho e
   análises, relatórios de gestão), todos a partir dos CSVs da coleta.
 - Gráficos: prop `formato` (`moeda` ou `numero`) nos rankings e na evolução por ano, para medidas de contagem.
+- Transferências especiais: gráficos clicáveis em `/transf-especiais` (barra, fatia ou ano filtra a planilha).
 - Transferências especiais: planilha no fim de `/transf-especiais`, com escolha do conjunto de dados, filtros de
   múltipla escolha, busca, colunas visíveis e download do CSV filtrado. Mesmo formato do painel de especiais.
 - Integração dos convênios do Portal da Transparência (CGU) às discricionárias: situação de execução
@@ -33,8 +34,8 @@ Commits seguem [Conventional Commits](https://www.conventionalcommits.org/pt-br/
 ### Alterado
 - Situação das propostas passa a usar `sit_proposta_grupo`, o mesmo agrupamento do painel da SERPRO.
 - Workflows separados: fundo a fundo e especiais a cada 12 horas; discricionárias diariamente.
-- Workflow de fundo a fundo e especiais executa também a coleta completa de transferências especiais.
-  Se a coleta tiver falha, a saída anterior é mantida e o restante da rotina segue.
+- Coleta de transferências especiais em workflow próprio (`atualizar_transf_especiais.yml`), diário às 03:30.
+  Só faz commit quando os dados mudam. O workflow de fundo a fundo e especiais não roda mais a coleta.
 - Valor pago, saldo em conta e valores devolvidos aparecem como "Indisponível", em vez de zero.
 
 ### Removido
