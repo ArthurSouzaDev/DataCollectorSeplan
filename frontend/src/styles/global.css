@@ -2273,13 +2273,37 @@ tbody tr:last-child td { border-bottom: none; }
   box-shadow: 0 0 0 3px var(--accent-light);
 }
 
-.filter-updating {
-  margin: 0.25rem 0 0.75rem;
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
-  background: var(--accent-light);
+/* Telinha de carregamento dos filtros: fica no centro da janela, acompanha a rolagem e não bloqueia cliques. */
+.filter-loading {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  pointer-events: none;
+  animation: fadeIn var(--dur) var(--ease) both;
+}
+
+.filter-loading::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 .page-action-bar {
