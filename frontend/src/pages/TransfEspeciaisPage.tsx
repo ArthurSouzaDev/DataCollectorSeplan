@@ -1,8 +1,10 @@
-import { memo, useCallback, useDeferredValue, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
 import { CategoryDonut } from '../components/charts/CategoryDonut';
 import { RankingBarChart } from '../components/charts/RankingBarChart';
 import { YearEvolutionChart } from '../components/charts/YearEvolutionChart';
+import { FichaRegistro, type Ancora } from '../components/charts/FichaRegistro';
 import { MultiSelect } from '../components/ui/MultiSelect';
 import {
   calcularIndicadores,
@@ -35,6 +37,8 @@ import {
 const LINHAS_NA_TELA = 150;
 /** Colunas visíveis por padrão, para a planilha não abrir com 40 colunas. */
 const COLUNAS_PADRAO = 12;
+/** Tempo mínimo em que a telinha de carregamento fica na tela após cada filtro. */
+const TEMPO_TELINHA_MS = 1500;
 const SEM_LINHAS: TransferRecord[] = [];
 const SEM_SELECAO: string[] = [];
 /** Fatia agregada pelo donut quando há muitas categorias: não é uma categoria real, não filtra. */
@@ -85,6 +89,19 @@ export function TransfEspeciaisPage() {
   // respondem) e os gráficos atualizam logo em seguida, com a mensagem "Atualizando".
   const filtrosAdiados = useDeferredValue(filtros);
   const atualizando = filtros !== filtrosAdiados;
+  // A telinha aparece a cada filtro e fica pelo menos TEMPO_TELINHA_MS, para o usuário perceber.
+  const [telinhaVisivel, setTelinhaVisivel] = useState(false);
+  const filtrosAnteriores = useRef(filtros);
+  const temporizador = useRef<number | undefined>(undefined);
+  useEffect(() => {
+    if (filtrosAnteriores.current === filtros) return;
+    filtrosAnteriores.current = filtros;
+    setTelinhaVisivel(true);
+    window.clearTimeout(temporizador.current);
+    temporizador.current = window.setTimeout(() => setTelinhaVisivel(false), TEMPO_TELINHA_MS);
+  }, [filtros]);
+  useEffect(() => () => window.clearTimeout(temporizador.current), []);
+  const mostrarTelinha = atualizando || telinhaVisivel;
   const dadosFiltrados = useMemo(
     () => (dados ? filtrarDados(dados, filtrosAdiados) : undefined),
     [dados, filtrosAdiados],
@@ -137,11 +154,15 @@ export function TransfEspeciaisPage() {
         <p className="panel-hint">Clique numa barra, fatia ou ano para filtrar a planilha no fim da página.</p>
       ) : null}
 
-      {atualizando ? (
-        <p className="filter-updating" role="status" aria-live="polite">
-          Atualizando gráficos e planilha...
-        </p>
-      ) : null}
+      {mostrarTelinha
+        ? // Portal no body: um ancestral com transform faria o "fixed" ficar no meio da página, não da tela.
+          createPortal(
+            <div className="filter-loading" role="status" aria-live="polite">
+              Atualizando gráficos e planilha...
+            </div>,
+            document.body,
+          )
+        : null}
 
       {dados
         ? GRUPOS_MODULO.map((grupo) => (
@@ -289,6 +310,7 @@ function PlanilhaModulo({
   onChange: (parcial: Partial<EstadoPlanilha>) => void;
 }) {
   const { conjunto, busca, colunas: colunasEscolhidas } = estado;
+  const [ficha, setFicha] = useState<{ row: TransferRecord; ancora: Ancora } | null>(null);
 
   const linhas = dados[conjunto] ?? [];
   const valoresFiltro = filtros[conjunto] ?? {};
@@ -330,6 +352,13 @@ function PlanilhaModulo({
       colunasDisponiveis.some((coluna) => String(linha[coluna] ?? '').toLowerCase().includes(termo)),
     );
   }, [dadosFiltrados, conjunto, buscaAdiada, colunasDisponiveis]);
+
+  function abrirFicha(linha: TransferRecord, elemento: HTMLElement) {
+    const rect = elemento.getBoundingClientRect();
+    // A coluna sintética de contagem não faz parte do registro original.
+    const registro = Object.fromEntries(Object.entries(linha).filter(([campo]) => campo !== COLUNA_REGISTRO)) as TransferRecord;
+    setFicha({ row: registro, ancora: { x: rect.left, y: rect.bottom, topo: rect.top } });
+  }
 
   const baixarCsv = () => {
     const blob = new Blob([buildCsv(filtradas as TransferRecord[], colunasVisiveis)], {
@@ -444,7 +473,15 @@ function PlanilhaModulo({
               </thead>
               <tbody>
                 {filtradas.slice(0, LINHAS_NA_TELA).map((linha, indice) => (
-                  <tr key={`${conjunto}-${indice}`}>
+                  <tr
+                    key={`${conjunto}-${indice}`}
+                    className="clickable-row"
+                    tabIndex={0}
+                    onClick={(evento) => abrirFicha(linha, evento.currentTarget)}
+                    onKeyDown={(evento) => {
+                      if (evento.key === 'Enter') abrirFicha(linha, evento.currentTarget);
+                    }}
+                  >
                     {colunasVisiveis.map((coluna) => (
                       <td key={coluna}>{textoCelula(linha[coluna])}</td>
                     ))}
@@ -453,6 +490,15 @@ function PlanilhaModulo({
               </tbody>
             </table>
           </div>
+          {ficha ? (
+            <FichaRegistro
+              row={ficha.row}
+              titulo={String(Object.values(ficha.row)[0] ?? '')}
+              situacaoColumn={colunasDisponiveis.find((coluna) => coluna.startsWith('situacao')) ?? ''}
+              ancora={ficha.ancora}
+              onClose={() => setFicha(null)}
+            />
+          ) : null}
           {filtradas.length > LINHAS_NA_TELA ? (
             <p className="panel-hint">
               Mostrando {formatNumber(LINHAS_NA_TELA)} de {formatNumber(filtradas.length)} linhas. O CSV traz o conjunto
