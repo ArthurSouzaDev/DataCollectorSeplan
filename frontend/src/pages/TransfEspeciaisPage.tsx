@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
 import { CategoryDonut } from '../components/charts/CategoryDonut';
@@ -153,11 +154,15 @@ export function TransfEspeciaisPage() {
         <p className="panel-hint">Clique numa barra, fatia ou ano para filtrar a planilha no fim da página.</p>
       ) : null}
 
-      {mostrarTelinha ? (
-        <div className="filter-loading" role="status" aria-live="polite">
-          Atualizando gráficos e planilha...
-        </div>
-      ) : null}
+      {mostrarTelinha
+        ? // Portal no body: um ancestral com transform faria o "fixed" ficar no meio da página, não da tela.
+          createPortal(
+            <div className="filter-loading" role="status" aria-live="polite">
+              Atualizando gráficos e planilha...
+            </div>,
+            document.body,
+          )
+        : null}
 
       {dados
         ? GRUPOS_MODULO.map((grupo) => (
