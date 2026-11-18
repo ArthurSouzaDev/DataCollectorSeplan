@@ -373,8 +373,23 @@ export async function carregarModulo(): Promise<ResultadoCarga> {
   ]);
 
   const dados = Object.fromEntries(linhas) as DadosModulo;
+  restringirSubtransacoesAoTocantins(dados);
   aplicarDerivacoes(dados);
   return { dados, geradoEm };
+}
+
+/**
+ * A consulta de subtransações da API é nacional (~14 mil registros, todos os estados). A única
+ * ligação com o Tocantins é o lançamento de origem: só ficam as subtransações cujo
+ * id_lancamento aparece nos lançamentos do módulo (que são das contas dos planos de TO).
+ */
+export function restringirSubtransacoesAoTocantins(dados: DadosModulo) {
+  const lancamentos = new Set(
+    (dados.gestao_financeira_lancamentos ?? []).map((linha) => String(linha.id_lancamento_gestao_financeira)),
+  );
+  dados.gestao_financeira_subtransacoes = (dados.gestao_financeira_subtransacoes ?? []).filter((linha) =>
+    lancamentos.has(String(linha.id_lancamento_gestao_financeira)),
+  );
 }
 
 /**
