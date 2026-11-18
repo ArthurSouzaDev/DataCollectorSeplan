@@ -248,6 +248,14 @@ function DatasetView({ config }: { config: DatasetConfig }) {
         />
       ) : null}
 
+      {config.id === 'especiais' ? (
+        <div className="page-action-bar">
+          <Link className="secondary-button" to="/transf-especiais">
+            Abrir Especiais completo
+          </Link>
+        </div>
+      ) : null}
+
       <div className="detail-header">
         <div>
           <h1>{config.title}</h1>

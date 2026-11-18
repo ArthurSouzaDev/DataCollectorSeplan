@@ -32,6 +32,8 @@ type Historico = { atualizado_em: string | null; entradas: EntradaHistorico[] };
 type Estado = { dados?: Historico; carregando: boolean; erro?: string };
 
 const TODAS = 'todas';
+// Bases que gravam no histórico e não estão em DATASETS (ex.: módulo completo, coleta diária).
+const BASES_EXTRAS = [{ id: 'transf-especiais-completo', titulo: 'Especiais completo' }];
 
 export function HistoricoPage() {
   const [estado, setEstado] = useState<Estado>({ carregando: true });
@@ -56,7 +58,13 @@ export function HistoricoPage() {
     return [...filtradas].sort((a, b) => b.executado_em.localeCompare(a.executado_em));
   }, [estado.dados, aba]);
 
-  const titulo = (id: string) => DATASETS.find((d) => d.id === id)?.shortTitle ?? id;
+  const titulo = (id: string) =>
+    BASES_EXTRAS.find((b) => b.id === id)?.titulo ?? DATASETS.find((d) => d.id === id)?.shortTitle ?? id;
+  const abas = [
+    TODAS,
+    ...DATASETS.map((d) => d.id),
+    ...BASES_EXTRAS.map((b) => b.id),
+  ];
 
   return (
     <section className="page detail-page">
@@ -83,7 +91,7 @@ export function HistoricoPage() {
       ) : (
         <section className="panel">
           <div className="history-tabs" role="tablist" aria-label="Base">
-            {[TODAS, ...DATASETS.map((d) => d.id)].map((id) => (
+            {abas.map((id) => (
               <button
                 key={id}
                 type="button"
