@@ -6156,6 +6156,29 @@
     }
    ],
    "situacoes_novas": []
+  },
+  {
+   "dataset": "transf-especiais-completo",
+   "executado_em": "2026-11-17T09:15-03:00",
+   "sem_base_anterior": true,
+   "registros": {
+    "antes": null,
+    "depois": 1959
+   },
+   "novos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "removidos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "colunas_novas": [],
+   "colunas_removidas": [],
+   "campos_alterados": [],
+   "totais": [],
+   "situacoes": [],
+   "situacoes_novas": []
   }
  ]
 }

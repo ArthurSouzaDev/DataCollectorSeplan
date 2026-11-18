@@ -2281,3 +2281,9 @@ tbody tr:last-child td { border-bottom: none; }
   color: var(--text);
   font-size: 0.9rem;
 }
+
+.page-action-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 0.75rem;
+}
