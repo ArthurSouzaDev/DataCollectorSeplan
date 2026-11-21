@@ -1,5 +1,5 @@
 {
- "atualizado_em": "2026-11-21T04:03-03:00",
+ "atualizado_em": "2026-11-21T12:16-03:00",
  "entradas": [
   {
    "dataset": "fundo-a-fundo",
@@ -7800,6 +7800,57 @@
      "depois": 14
     }
    ],
+   "situacoes_novas": []
+  },
+  {
+   "dataset": "transf-especiais-completo",
+   "executado_em": "2026-11-21T12:16-03:00",
+   "sem_base_anterior": false,
+   "registros": {
+    "antes": 1959,
+    "depois": 1959
+   },
+   "novos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "removidos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "colunas_novas": [],
+   "colunas_removidas": [],
+   "campos_alterados": [
+    {
+     "campo": "situacao_plano_acao",
+     "registros": 3
+    },
+    {
+     "campo": "data_aceite_plano_acao",
+     "registros": 3
+    },
+    {
+     "campo": "codigo_situacao_dado_bancario_plano_acao",
+     "registros": 3
+    },
+    {
+     "campo": "descricao_situacao_dado_bancario_plano_acao",
+     "registros": 3
+    }
+   ],
+   "totais": [
+    {
+     "campo": "valor_custeio_plano_acao",
+     "antes": 140273414.83,
+     "depois": 140273414.83
+    },
+    {
+     "campo": "valor_investimento_plano_acao",
+     "antes": 888047643.6899999,
+     "depois": 888047643.69
+    }
+   ],
+   "situacoes": [],
    "situacoes_novas": []
   }
  ]
