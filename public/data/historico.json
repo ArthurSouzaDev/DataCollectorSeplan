@@ -1,5 +1,5 @@
 {
- "atualizado_em": "2026-11-22T03:44-03:00",
+ "atualizado_em": "2026-11-22T12:16-03:00",
  "entradas": [
   {
    "dataset": "fundo-a-fundo",
@@ -8166,6 +8166,40 @@
      "depois": 11
     }
    ],
+   "situacoes_novas": []
+  },
+  {
+   "dataset": "transf-especiais-completo",
+   "executado_em": "2026-11-22T12:16-03:00",
+   "sem_base_anterior": false,
+   "registros": {
+    "antes": 1959,
+    "depois": 1959
+   },
+   "novos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "removidos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "colunas_novas": [],
+   "colunas_removidas": [],
+   "campos_alterados": [],
+   "totais": [
+    {
+     "campo": "valor_custeio_plano_acao",
+     "antes": 140273414.83,
+     "depois": 140273414.83
+    },
+    {
+     "campo": "valor_investimento_plano_acao",
+     "antes": 888047643.69,
+     "depois": 888047643.69
+    }
+   ],
+   "situacoes": [],
    "situacoes_novas": []
   }
  ]
