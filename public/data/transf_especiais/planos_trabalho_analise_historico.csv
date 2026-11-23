@@ -438,7 +438,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-04-29T10:21:00;Concluída;***.330.621-** - NATALI SOUSA GOMES;78678
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-20T17:25:00;Concluída;***.467.561-** - ADRIANA NEMER AFONSO;59641
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-18T12:13:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;42758
-308797;Ministério do Esporte;Solicitar Complementação;2025-02-10T00:00:00;Concluída;***.898.831-** - HELOISA ROBERTA RESENDE DOS SANTOS, ***.467.561-** - ADRIANA NEMER AFONSO;38961
+308797;Ministério do Esporte;Solicitar Complementação;2025-02-10T00:00:00;Concluída;***.467.561-** - ADRIANA NEMER AFONSO, ***.898.831-** - HELOISA ROBERTA RESENDE DOS SANTOS;38961
 308797;Ministério do Esporte;Solicitar Complementação;2025-01-31T16:20:00;Concluída;***.898.831-** - HELOISA ROBERTA RESENDE DOS SANTOS;20593
 308798;Ministério das Cidades;Não se aplica;2025-03-24T10:07:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;60289
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-17T18:19:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;57352
@@ -1507,7 +1507,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-02-05T15:36:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;32862
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-25T15:23:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;77791
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-04-24T11:06:00;Concluída;***.770.361-** - KEILA MACEDO CARDOSO BEVENUTTI;76909
-308800;Ministério da Fazenda;Solicitar Complementação;2025-01-24T23:13:00;Concluída;Sistema;1806
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-09T11:22:00;Concluída;***.708.566-** - ISABELA SBAMPATO BATISTA REIS DE PAULA;71228
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-18T14:58:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;42959
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-24T15:32:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;77116
@@ -1599,7 +1598,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-18T15:03:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;42975
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-03-17T16:59:00;Concluída;***.011.573-** - MARIO LIMA COSTA FILHO;57270
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-01-31T10:12:00;Concluída;***.779.502-** - THALES LOPES COUTINHO;18202
-308818;Ministério dos Transportes;Não se aplica;2025-02-07T17:48:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;35537
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-02-27T09:21:00;Concluída;***.174.204-** - LUIS ALBERTO DA SILVA;47602
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-01-31T12:49:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;14856
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-30T16:19:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;16775
@@ -1650,10 +1648,11 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308818;Ministério dos Transportes;Não se aplica;2025-02-07T17:47:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;35534
 54844;Departamento Nacional de Infraestrutura de Transportes;Não se aplica;2025-02-06T14:30:00;Concluída;***.407.841-** - ADRIANE BRAZ DAS NEVES OLIVEIRA;34999
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-05-16T10:13:00;Concluída;***.182.561-** - BRUNO PEREIRA BATISTA;84462
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-05-13T09:37:00;Concluída;***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA, ***.804.611-** - LUCIANA DE DEUS PINHEIRO FERNANDES;15422
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-05-13T09:37:00;Concluída;***.804.611-** - LUCIANA DE DEUS PINHEIRO FERNANDES, ***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA;15422
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-24T16:07:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;77136
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-31T14:42:00;Concluída;***.902.501-** - JOAO PAULO ARAKE MARTINS RODRIGUES;19882
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-30T17:05:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;16963
+308818;Ministério dos Transportes;Não se aplica;2025-02-07T17:48:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;35537
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-09T15:20:00;Concluída;***.708.566-** - ISABELA SBAMPATO BATISTA REIS DE PAULA;71475
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-24T13:38:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;60612
 308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T15:41:00;Concluída;***.709.411-** - JESSICA SILVA QUERINO;20325
@@ -1930,8 +1929,8 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T14:22:00;Concluída;***.804.611-** - LUCIANA DE DEUS PINHEIRO FERNANDES;19738
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-30T14:31:00;Concluída;***.991.771-** - SANDRA DE FATIMA SOARES;16373
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-30T09:09:00;Concluída;***.262.911-** - THIAGO DUTRA RIBEIRO;15203
-308800;Ministério da Fazenda;Solicitar Complementação;2025-01-24T23:14:00;Concluída;Sistema;2207
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-03-17T09:51:00;Concluída;***.023.715-** - LISANDRA TORRES SANTOS;56676
+308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-30T15:13:00;Concluída;***.787.633-** - SUANE DA SILVA GOMES;16505
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-31T16:31:00;Concluída;***.754.234-** - ROSIELE NEVES FELIX;20579
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-31T15:32:00;Concluída;***.790.121-** - RAILA SILVA SOUZA;20266
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-31T09:04:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;17813
@@ -1957,6 +1956,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-03-17T14:42:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA;57041
 308793;Ministério da Agricultura e Pecuária;Não se aplica;2025-01-31T13:24:00;Concluída;***.044.141-** - CARINA BEZERRA DA SILVA;19451
 267175;Ministério da Ciência, Tecnologia e Inovações;Solicitar Complementação;2025-01-30T16:14:00;Concluída;***.791.621-** - MARCELO CASSIO SILVERIO;16741
+308797;Ministério do Esporte;Não se aplica;2025-01-31T18:11:00;Concluída;***.969.941-** - FERNANDA AMARO MARTINS DA SILVA LIMA;21466
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-01-31T09:52:00;Concluída;***.694.231-** - DINIS ALVES DE OLIVEIRA;18083
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T09:47:00;Concluída;***.442.911-** - LARISSA MARTINS PIMENTA SANCHES;15282
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-02-17T16:52:00;Concluída;***.280.911-** - DENISE ANTONIA DA SILVA;42430
@@ -1981,7 +1981,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Não se aplica;2025-01-31T14:46:00;Concluída;***.044.141-** - CARINA BEZERRA DA SILVA;19919
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-03-12T16:52:00;Concluída;***.166.481-** - DIEGO DE ARAUJO CORREA;55259
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-06T09:49:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;34760
-308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-30T15:13:00;Concluída;***.787.633-** - SUANE DA SILVA GOMES;16505
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T10:37:00;Concluída;***.998.321-** - VICTOR MENDES MIRANDA;15443
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-01-29T16:57:00;Concluída;***.222.521-** - ANA CLARA BUENO LIMA;14861
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-27T08:25:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;64602
@@ -2002,7 +2001,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-31T13:43:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;19533
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-02T13:54:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;67141
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-26T18:24:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;64521
-308797;Ministério do Esporte;Não se aplica;2025-01-31T18:11:00;Concluída;***.969.941-** - FERNANDA AMARO MARTINS DA SILVA LIMA;21466
 308818;Ministério dos Transportes;Não se aplica;2025-02-07T18:10:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;35592
 54844;Departamento Nacional de Infraestrutura de Transportes;Não se aplica;2025-02-06T21:50:00;Concluída;***.407.841-** - ADRIANE BRAZ DAS NEVES OLIVEIRA;35031
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-31T10:18:00;Concluída;***.512.751-** - ANA MARIA RIBEIRO DIAS;18233
@@ -2022,6 +2020,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-07T22:15:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;70255
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-20T15:56:00;Concluída;***.790.121-** - RAILA SILVA SOUZA;44786
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-31T13:55:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;19596
+308800;Ministério da Fazenda;Solicitar Complementação;2025-01-24T23:12:00;Concluída;Sistema;1311
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-27T08:33:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;64609
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-25T11:10:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;62923
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-21T11:34:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;59885
@@ -2048,7 +2047,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 72084;Ministério do Turismo;Solicitar Complementação;2025-04-15T17:56:00;Concluída;***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA;74069
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-04-09T11:24:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;71231
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-25T11:08:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;62916
-308800;Ministério da Fazenda;Solicitar Complementação;2025-01-24T23:12:00;Concluída;Sistema;1091
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-11T09:08:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;50147
 308818;Ministério dos Transportes;Não se aplica;2025-02-07T18:18:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;35606
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T14:35:00;Concluída;***.790.121-** - RAILA SILVA SOUZA;32700
@@ -2065,7 +2063,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-27T11:56:00;Concluída;***.641.694-** - MARIA GORETE DO NASCIMENTO RODRIGUES;64939
 308818;Ministério dos Transportes;Não se aplica;2025-02-07T18:19:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;35609
 308798;Ministério das Cidades;Não se aplica;2025-04-24T17:05:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;77193
-308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-29T11:41:00;Concluída;***.262.911-** - THIAGO DUTRA RIBEIRO;14145
 308798;Ministério das Cidades;Não se aplica;2025-07-23T18:26:00;Concluída;***.163.221-** - ELVIO FELIX NASCIMENTO;106364
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-27T11:59:00;Concluída;***.641.694-** - MARIA GORETE DO NASCIMENTO RODRIGUES;64951
 308818;Ministério dos Transportes;Não se aplica;2025-02-07T18:20:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;35610
@@ -2108,6 +2105,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-30T17:41:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;17171
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T13:32:00;Concluída;***.804.611-** - LUCIANA DE DEUS PINHEIRO FERNANDES;19489
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-30T14:45:00;Concluída;***.991.771-** - SANDRA DE FATIMA SOARES;16418
+308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-29T11:41:00;Concluída;***.262.911-** - THIAGO DUTRA RIBEIRO;14145
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-08-08T16:05:00;Concluída;***.118.252-** - DYHEMES FERREIRA MARQUES;114419
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-07-29T16:32:00;Concluída;***.118.252-** - DYHEMES FERREIRA MARQUES;108586
 41066;Ministério da Defesa;Não se aplica;2025-06-26T14:57:00;Concluída;***.157.961-** - FERNANDO ALVES DA SILVA;95908
@@ -2203,6 +2201,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T18:31:00;Concluída;***.967.993-** - YURI SAMPAIO CAPELLATO LOGRADO;21597
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-01-31T09:54:00;Concluída;***.694.231-** - DINIS ALVES DE OLIVEIRA;18108
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T14:04:00;Concluída;***.442.911-** - LARISSA MARTINS PIMENTA SANCHES;16295
+308818;Ministério dos Transportes;Não se aplica;2025-02-10T11:14:00;Concluída;***.793.388-** - FABIO CESAR DE CARVALHO;36868
 72084;Ministério do Turismo;Solicitar Complementação;2025-06-10T19:37:00;Concluída;***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA;91877
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-05-12T07:22:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;82125
 72084;Ministério do Turismo;Solicitar Complementação;2025-05-07T15:34:00;Concluída;***.359.872-** - MARIZETE TEIXEIRA DE ALMEIDA;80869
@@ -2304,7 +2303,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T16:47:00;Concluída;***.734.373-** - CARLOS EDUARDO DA CRUZ;20753
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-30T11:00:00;Concluída;***.262.911-** - THIAGO DUTRA RIBEIRO;15577
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-01-30T10:24:00;Concluída;***.478.761-** - MATEUS ARAUJO DE OLIVEIRA;15385
-308818;Ministério dos Transportes;Não se aplica;2025-02-10T11:14:00;Concluída;***.793.388-** - FABIO CESAR DE CARVALHO;36868
 54844;Departamento Nacional de Infraestrutura de Transportes;Não se aplica;2025-02-06T22:03:00;Concluída;***.407.841-** - ADRIANE BRAZ DAS NEVES OLIVEIRA;35049
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-14T11:20:00;Concluída;***.426.851-** - FERNANDA FERREIRA ANANIAS;41251
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T11:15:00;Concluída;***.793.388-** - FABIO CESAR DE CARVALHO;36869
@@ -2334,7 +2332,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-17T13:38:00;Concluída;***.790.121-** - RAILA SILVA SOUZA;42217
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-31T11:08:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;18608
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-05-20T08:25:00;Concluída;***.892.431-** - BIANCA SILVA DE SOUSA;85257
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-05-05T15:29:00;Concluída;***.549.831-** - WARLEY FERREIRA DE SOUZA, ***.998.321-** - VICTOR MENDES MIRANDA, ***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA;21111
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-05-05T15:29:00;Concluída;***.998.321-** - VICTOR MENDES MIRANDA, ***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA, ***.549.831-** - WARLEY FERREIRA DE SOUZA;21111
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-02-13T15:07:00;Concluída;***.248.801-** - BEATRIZ SANTIAGO DE SOUZA;40622
 2045;Instituto do Patrimônio Histórico e Artístico Nacional;Não se aplica;2025-05-09T09:34:00;Concluída;***.000.891-** - ISAC JEFERSON FERREIRA DE SOUSA;81567
 308821;Ministério da Cultura;Solicitar Complementação;2025-05-07T13:16:00;Concluída;***.143.717-** - MERE CRISTINA DA SILVA BEZERRA;79656
@@ -2376,7 +2374,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-20T17:37:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;45094
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-31T09:22:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;17903
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-06-18T12:30:00;Concluída;***.602.281-** - JOAO DA MATA NUNES ROCHA;94163
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-05-13T11:28:00;Concluída;***.600.661-** - ZULEIMA VIANA DE OLIVEIRA ARAUJO, ***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA;56250
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-05-13T11:28:00;Concluída;***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA, ***.600.661-** - ZULEIMA VIANA DE OLIVEIRA ARAUJO;56250
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-04-03T17:30:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;68446
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-03-14T10:40:00;Concluída;***.248.801-** - BEATRIZ SANTIAGO DE SOUZA;56073
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T14:41:00;Concluída;***.804.611-** - LUCIANA DE DEUS PINHEIRO FERNANDES;19873
@@ -2390,7 +2388,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-17T17:18:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;57300
 308798;Ministério das Cidades;Não se aplica;2025-04-09T16:45:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;71591
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-24T09:15:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;60234
-41066;Ministério da Defesa;Solicitar Complementação;2025-04-03T15:43:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;68197
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-14T11:51:00;Concluída;***.426.851-** - FERNANDA FERREIRA ANANIAS;41296
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T11:49:00;Concluída;***.793.388-** - FABIO CESAR DE CARVALHO;36881
 41066;Ministério da Defesa;Não se aplica;2025-08-04T09:59:00;Concluída;***.157.961-** - FERNANDO ALVES DA SILVA;110180
@@ -2428,6 +2425,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-08-05T09:56:00;Concluída;***.566.703-** - MARIA JOCELINA RODRIGUES LIMA;110826
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-02-21T10:38:00;Concluída;***.118.252-** - DYHEMES FERREIRA MARQUES;45248
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-01-30T19:29:00;Concluída;***.118.252-** - DYHEMES FERREIRA MARQUES;17489
+41066;Ministério da Defesa;Solicitar Complementação;2025-04-03T15:43:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;68197
 41066;Ministério da Defesa;Solicitar Complementação;2025-03-14T09:22:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;55941
 41066;Ministério da Defesa;Não se aplica;2025-02-24T16:34:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;46360
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-01-31T22:11:00;Concluída;***.185.751-** - DIEGO FELIPE DE SOUSA MARIA;21933
@@ -2530,7 +2528,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-30T11:18:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;15644
 308798;Ministério das Cidades;Solicitar Complementação;2025-05-15T17:18:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;84338
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-05-12T13:27:00;Concluída;***.003.521-** - LIVIA LARISSA DIAS DE JESUS;82478
-308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-02-28T16:15:00;Concluída;***.317.221-** - VICTOR HUGO BARROS COSTA;48260
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-09T17:28:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;71628
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-24T09:41:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;60249
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T12:00:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;36899
@@ -2645,6 +2642,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-02-10T14:36:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;38171
 72084;Ministério do Turismo;Solicitar Complementação;2025-02-07T16:49:00;Concluída;***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA;35342
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-02-04T17:34:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;32283
+308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-02-28T16:15:00;Concluída;***.317.221-** - VICTOR HUGO BARROS COSTA;48260
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-07T09:23:00;Concluída;***.087.086-** - MARCOS DANIEL SOARES;35130
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T17:57:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;34683
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-31T12:40:00;Concluída;***.989.266-** - JOYCE DE SOUZA FALUBA;19312
@@ -2717,6 +2715,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-21T09:51:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;45184
 72084;Ministério do Turismo;Solicitar Complementação;2025-02-21T11:40:00;Concluída;***.399.361-** - MARIA FERNANDA MASCARENHAS DOS SANTOS MELIS;45347
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-02-04T17:35:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;32284
+308800;Ministério da Fazenda;Solicitar Complementação;2025-01-24T23:13:00;Concluída;Sistema;1628
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T12:20:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;36958
 54844;Departamento Nacional de Infraestrutura de Transportes;Não se aplica;2025-02-06T22:29:00;Concluída;***.407.841-** - ADRIANE BRAZ DAS NEVES OLIVEIRA;35071
 308798;Ministério das Cidades;Não se aplica;2025-06-04T15:04:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;89638
@@ -2752,7 +2751,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-31T09:33:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;17980
 308798;Ministério das Cidades;Solicitar Complementação;2025-05-11T12:32:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;82119
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-20T17:02:00;Concluída;***.790.121-** - RAILA SILVA SOUZA;45004
-308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-05T11:26:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA, ***.791.841-** - CLEITON MARCELINO PEREIRA;28342
+308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-05T11:26:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.750.061-** - VITORIA DE SOUSA PEREIRA;28342
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-31T16:46:00;Concluída;***.512.751-** - ANA MARIA RIBEIRO DIAS;20740
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T15:06:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;32780
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T13:19:00;Concluída;***.157.611-** - MARIANA MOREIRA RIBEIRO;16171
@@ -2779,10 +2778,11 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308821;Ministério da Cultura;Solicitar Complementação;2025-02-04T16:33:00;Concluída;***.709.411-** - JESSICA SILVA QUERINO;32263
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-14T14:56:00;Concluída;***.848.401-** - LIDIA DA SILVA OLIVEIRA;41512
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-02-13T11:18:00;Concluída;***.495.474-** - CATARINA CARDOSO DE MELO;40399
+308793;Ministério da Agricultura e Pecuária;Não se aplica;2025-01-31T15:50:00;Concluída;***.044.141-** - CARINA BEZERRA DA SILVA;20391
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-01-31T14:29:00;Concluída;***.791.481-** - EMMANUEL RODRIGUES GOMES FEITOSA;19774
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T11:58:00;Concluída;***.848.401-** - LIDIA DA SILVA OLIVEIRA;19075
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-05-23T15:10:00;Concluída;***.402.701-** - JANAINE SOUZA SARAIVA;86626
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-05-13T11:00:00;Concluída;***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA, ***.998.321-** - VICTOR MENDES MIRANDA;21217
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-05-13T11:00:00;Concluída;***.998.321-** - VICTOR MENDES MIRANDA, ***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA;21217
 308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2025-02-13T11:29:00;Concluída;***.495.474-** - CATARINA CARDOSO DE MELO;40411
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T11:42:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;32461
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-06-26T17:29:00;Concluída;***.293.821-** - CARLOS EDUARDO DO NASCIMENTO OLIVEIRA;96094
@@ -2812,7 +2812,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-25T16:46:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;77940
 308818;Ministério dos Transportes;Não se aplica;2025-03-18T17:08:00;Concluída;***.644.481-** - GUILHERME GONCALVES VARANDAS PINTO;58066
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-12T11:27:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;54876
-308793;Ministério da Agricultura e Pecuária;Não se aplica;2025-01-31T15:50:00;Concluída;***.044.141-** - CARINA BEZERRA DA SILVA;20391
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2025-01-31T11:27:00;Concluída;***.274.191-** - DOUGLLAS DA SILVA CRUZ REZENDE;18782
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-25T16:50:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;77945
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T14:10:00;Concluída;***.793.388-** - FABIO CESAR DE CARVALHO;38089
@@ -2829,7 +2828,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-02-17T16:20:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;42408
 308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T09:19:00;Concluída;***.616.301-** - RAFAEL DA SILVA MAXIMINIANO;17888
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T14:30:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;38145
-308798;Ministério das Cidades;Solicitar Complementação;2025-02-10T12:46:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ, ***.127.646-** - LUCIANA GILL BARBOSA;22336
+308798;Ministério das Cidades;Solicitar Complementação;2025-02-10T12:46:00;Concluída;***.127.646-** - LUCIANA GILL BARBOSA, ***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;22336
 308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T17:56:00;Concluída;***.703.278-** - ALEXANDRE FERNANDES ONO;21353
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-31T17:45:00;Concluída;***.641.694-** - MARIA GORETE DO NASCIMENTO RODRIGUES;21215
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-18T16:36:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;58001
@@ -2847,7 +2846,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308821;Ministério da Cultura;Solicitar Complementação;2025-01-30T19:43:00;Concluída;***.616.301-** - RAFAEL DA SILVA MAXIMINIANO;17499
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-06-13T10:34:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;92940
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-06-10T08:22:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;91448
-308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Solicitar Complementação;2025-01-31T15:46:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA, ***.385.881-** - DEBORAH HAYDEE RAMON E BARROS FERREIRA;16556
+308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Solicitar Complementação;2025-01-31T15:46:00;Concluída;***.385.881-** - DEBORAH HAYDEE RAMON E BARROS FERREIRA, ***.129.691-** - GILMAR PEREIRA DA SILVA;16556
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-18T17:43:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;58175
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-12T15:09:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;55047
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-12T15:13:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;55060
@@ -2897,7 +2896,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-05-26T16:06:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;87247
 308821;Ministério da Cultura;Solicitar Complementação;2025-05-22T17:10:00;Concluída;***.143.717-** - MERE CRISTINA DA SILVA BEZERRA;86283
 2045;Instituto do Patrimônio Histórico e Artístico Nacional;Não se aplica;2025-05-09T09:39:00;Concluída;***.000.891-** - ISAC JEFERSON FERREIRA DE SOUSA;81571
-308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Solicitar Complementação;2025-01-31T15:45:00;Concluída;***.385.881-** - DEBORAH HAYDEE RAMON E BARROS FERREIRA, ***.129.691-** - GILMAR PEREIRA DA SILVA;16561
+308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Solicitar Complementação;2025-01-31T15:45:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA, ***.385.881-** - DEBORAH HAYDEE RAMON E BARROS FERREIRA;16561
 41066;Ministério da Defesa;Não se aplica;2025-02-21T11:57:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;16371
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-02-20T09:48:00;Concluída;***.779.891-** - FILIPE FERREIRA DE MORAIS;44026
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-01-31T18:06:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;20178
@@ -2945,7 +2944,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 41066;Ministério da Defesa;Solicitar Complementação;2025-01-30T15:21:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;16539
 308816;Ministério dos Direitos Humanos e da Cidadania;Solicitar Complementação;2025-02-28T10:49:00;Concluída;***.986.741-** - JUSLEY DE CARVALHO BIAGE;48061
 41066;Ministério da Defesa;Não se aplica;2025-02-21T12:00:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;21119
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-03T11:26:00;Concluída;***.258.897-** - ERICK DUARTE LEMOS, ***.914.891-** - ANA JACQUELINE DOS SANTOS BORGES;21418
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-03T11:26:00;Concluída;***.914.891-** - ANA JACQUELINE DOS SANTOS BORGES, ***.258.897-** - ERICK DUARTE LEMOS;21418
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-01-31T15:55:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;20420
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-01-31T14:48:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;19460
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-30T17:54:00;Concluída;***.478.761-** - MATEUS ARAUJO DE OLIVEIRA;17265
@@ -2958,7 +2957,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-04-03T12:35:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;67959
 308798;Ministério das Cidades;Não se aplica;2025-02-01T00:00:00;Concluída;***.285.751-** - CRISTIANA SCORZA GUIMARAENS;23026
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-31T17:07:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;20893
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T09:56:00;Concluída;***.734.373-** - CARLOS EDUARDO DA CRUZ, ***.157.611-** - MARIANA MOREIRA RIBEIRO;14670
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T09:56:00;Concluída;***.157.611-** - MARIANA MOREIRA RIBEIRO, ***.734.373-** - CARLOS EDUARDO DA CRUZ;14670
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-30T10:57:00;Concluída;***.265.161-** - MARJORIE ALMEIDA CALDAS;15554
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-29T14:15:00;Concluída;***.852.211-** - RICARDO VIEIRA MOURAO;14396
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-31T17:54:00;Concluída;***.242.941-** - BERNARDO PETRARCA ESTORTI DE CASTRO, ***.802.501-** - CRISTIANA OLIVEIRA SILVA DE ALMEIDA;17444
@@ -3112,7 +3111,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-02-13T11:41:00;Concluída;***.821.135-** - CLEONICE PEREIRA SOUZA;40455
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-11T13:55:00;Concluída;***.087.086-** - MARCOS DANIEL SOARES;39875
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-02-10T15:49:00;Concluída;***.791.481-** - EMMANUEL RODRIGUES GOMES FEITOSA;38349
-308816;Ministério dos Direitos Humanos e da Cidadania;Solicitar Complementação;2025-05-06T17:24:00;Concluída;***.263.571-** - CLEYTON EDNEY RIBEIRO MEDEIROS, ***.697.571-** - MICHELLE CASSEMIRO DE FREITAS;77239
+308816;Ministério dos Direitos Humanos e da Cidadania;Solicitar Complementação;2025-05-06T17:24:00;Concluída;***.697.571-** - MICHELLE CASSEMIRO DE FREITAS, ***.263.571-** - CLEYTON EDNEY RIBEIRO MEDEIROS;77239
 235881;Ministério da Justiça e Segurança Pública;Não se aplica;2025-05-05T13:26:00;Concluída;***.185.751-** - DIEGO FELIPE DE SOUSA MARIA;79660
 330683;Ministério do Empreendedorismo, da Microempresa e da Empresa de Pequeno Porte;Aprovar Plano de Trabalho;2025-04-03T14:25:00;Concluída;***.805.741-** - MARCELO DA COSTA OLIVEIRA;68028
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-04-03T09:14:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;67659
@@ -3360,6 +3359,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308821;Ministério da Cultura;Solicitar Complementação;2025-02-01T09:47:00;Concluída;***.054.697-** - MARCELO CAVALCANTE FIGUEIREDO;22007
 2045;Instituto do Patrimônio Histórico e Artístico Nacional;Solicitar Complementação;2025-01-31T14:03:00;Concluída;***.000.891-** - ISAC JEFERSON FERREIRA DE SOUSA;19632
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-31T15:33:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;20270
+308800;Ministério da Fazenda;Solicitar Complementação;2025-01-24T23:14:00;Concluída;Sistema;2188
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-21T10:07:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;59814
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-01-31T12:44:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;17965
 308797;Ministério do Esporte;Solicitar Complementação;2025-01-31T17:32:00;Concluída;***.898.831-** - HELOISA ROBERTA RESENDE DOS SANTOS;21081
@@ -3413,7 +3413,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-06T10:25:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;34773
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-01T12:57:00;Concluída;***.044.141-** - CARINA BEZERRA DA SILVA;22054
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-30T12:14:00;Concluída;***.791.481-** - EMMANUEL RODRIGUES GOMES FEITOSA;16024
-72084;Ministério do Turismo;Não se aplica;2025-06-03T20:21:00;Concluída;***.023.411-** - GUILHERME MEDEIROS PIMENTEL, ***.448.146-** - CLAUDIO CORREA VASQUES;21056
+72084;Ministério do Turismo;Não se aplica;2025-06-03T20:21:00;Concluída;***.448.146-** - CLAUDIO CORREA VASQUES, ***.023.411-** - GUILHERME MEDEIROS PIMENTEL;21056
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-01-29T23:15:00;Concluída;***.751.936-** - EVLYN BASSO MENEGHINI;15136
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-31T15:49:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;20389
 54844;Departamento Nacional de Infraestrutura de Transportes;Não se aplica;2025-02-18T20:43:00;Concluída;***.407.841-** - ADRIANE BRAZ DAS NEVES OLIVEIRA;43520
@@ -3463,7 +3463,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-31T17:16:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;20959
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-05-21T11:21:00;Concluída;***.069.251-** - JOAO PAULO RIBEIRO DE ARAUJO;85716
 308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2025-02-28T11:43:00;Concluída;***.358.977-** - DANIEL HENRIQUE GALILEU SEVERINO DE LIMA BEZERRA CABRAL;48078
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-13T17:41:00;Concluída;***.862.831-** - JOAO FERNANDO MANES ROCHA, ***.600.661-** - ZULEIMA VIANA DE OLIVEIRA ARAUJO;21121
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-13T17:41:00;Concluída;***.600.661-** - ZULEIMA VIANA DE OLIVEIRA ARAUJO, ***.862.831-** - JOAO FERNANDO MANES ROCHA;21121
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-06T10:30:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;34783
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-31T13:42:00;Concluída;***.951.543-** - MILLENA AYLA DA MATA DIAS;19518
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T14:14:00;Concluída;***.369.371-** - AMANDA LARISSA DE ARAUJO;16322
@@ -3513,7 +3513,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-26T15:34:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;64124
 235881;Ministério da Justiça e Segurança Pública;Não se aplica;2025-02-27T16:23:00;Concluída;***.671.825-** - EVERALDINO HONORIO DA SILVA JUNIOR;47904
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-02-26T15:00:00;Concluída;***.430.111-** - KETLEY SANTOS DE SOUSA;47389
-308815;Ministério das Mulheres;Não se aplica;2025-02-11T10:41:00;Concluída;***.715.531-** - PAULO GUSTAVO MOREIRA SOARES, ***.343.401-** - ALEXANDRE LINS DE ALBUQUERQUE LIMA;16907
+308815;Ministério das Mulheres;Não se aplica;2025-02-11T10:41:00;Concluída;***.343.401-** - ALEXANDRE LINS DE ALBUQUERQUE LIMA, ***.715.531-** - PAULO GUSTAVO MOREIRA SOARES;16907
 235881;Ministério da Justiça e Segurança Pública;Não se aplica;2025-02-11T09:27:00;Concluída;***.769.645-** - JUAREZ MARIO DOS SANTOS NUNES;39832
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T15:26:00;Concluída;***.036.301-** - KATIA ZAMITH MARTINS;38290
 308798;Ministério das Cidades;Não se aplica;2025-04-15T15:13:00;Concluída;***.467.561-** - ADRIANA NEMER AFONSO;73790
@@ -3668,7 +3668,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 54844;Departamento Nacional de Infraestrutura de Transportes;Não se aplica;2025-02-24T16:06:00;Concluída;***.407.841-** - ADRIANE BRAZ DAS NEVES OLIVEIRA;46312
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-03-21T14:50:00;Concluída;***.118.252-** - DYHEMES FERREIRA MARQUES;59962
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-03-14T20:37:00;Concluída;***.118.252-** - DYHEMES FERREIRA MARQUES;56421
-41066;Ministério da Defesa;Não se aplica;2025-03-06T11:59:00;Concluída;***.240.001-** - ZEILDE DE ARAUJO ROCHA BATISTA;48806
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-31T21:03:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;21853
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-14T11:13:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;41236
 308798;Ministério das Cidades;Solicitar Complementação;2025-02-03T08:26:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;22227
@@ -3687,6 +3686,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-03-12T16:30:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;55226
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-07-21T11:22:00;Concluída;***.118.252-** - DYHEMES FERREIRA MARQUES;102680
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-01-30T19:17:00;Concluída;***.118.252-** - DYHEMES FERREIRA MARQUES;17472
+41066;Ministério da Defesa;Não se aplica;2025-03-06T11:59:00;Concluída;***.240.001-** - ZEILDE DE ARAUJO ROCHA BATISTA;48806
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-02-04T16:02:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;32232
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T18:30:00;Concluída;***.849.971-** - VICTOR LIRA KOPP;21596
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-30T15:40:00;Concluída;***.265.161-** - MARJORIE ALMEIDA CALDAS;16611
@@ -3805,7 +3805,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-30T16:03:00;Concluída;***.265.161-** - MARJORIE ALMEIDA CALDAS;16698
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-29T13:22:00;Concluída;***.526.777-** - RORION GREICE NUNES RIBEIRO;14287
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-06-09T17:30:00;Concluída;***.222.321-** - THIAGO LOPES RIBEIRO REIS;91405
-308793;Ministério da Agricultura e Pecuária;Aprovar Plano de Trabalho;2025-04-10T13:11:00;Concluída;***.979.581-** - LEANDRO HENRIQUE OLIVEIRA DE MELO, ***.087.086-** - MARCOS DANIEL SOARES;54747
+308793;Ministério da Agricultura e Pecuária;Aprovar Plano de Trabalho;2025-04-10T13:11:00;Concluída;***.087.086-** - MARCOS DANIEL SOARES, ***.979.581-** - LEANDRO HENRIQUE OLIVEIRA DE MELO;54747
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-03-17T17:18:00;Concluída;***.821.135-** - CLEONICE PEREIRA SOUZA;57301
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-21T13:48:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;45452
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T17:57:00;Concluída;***.849.971-** - VICTOR LIRA KOPP;21359
@@ -3905,6 +3905,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308821;Ministério da Cultura;Solicitar Complementação;2025-02-19T18:01:00;Concluída;***.818.203-** - MARCUS ANDRE CHAGAS ROCHA;43971
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-31T10:41:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;18367
 72084;Ministério do Turismo;Não se aplica;2025-01-31T13:19:00;Concluída;***.282.763-** - WESLEYENE MARIA ALVES DE SOUSA;19437
+308800;Ministério da Fazenda;Solicitar Complementação;2025-01-24T23:15:00;Concluída;Sistema;2703
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-01-29T18:19:00;Concluída;***.751.936-** - EVLYN BASSO MENEGHINI;15025
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-02-20T10:25:00;Concluída;***.779.891-** - FILIPE FERREIRA DE MORAIS;44167
 41066;Ministério da Defesa;Não se aplica;2025-01-31T13:39:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;19513
@@ -4067,6 +4068,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Não se aplica;2025-07-22T10:49:00;Concluída;***.163.221-** - ELVIO FELIX NASCIMENTO;103356
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-27T11:26:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;64887
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-03-31T09:22:00;Concluída;***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA;66075
+41066;Ministério da Defesa;Não se aplica;2025-03-12T14:13:00;Concluída;***.240.001-** - ZEILDE DE ARAUJO ROCHA BATISTA;54972
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-03-25T10:00:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;62745
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-14T10:38:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;56070
 41066;Ministério da Defesa;Não se aplica;2025-02-25T11:10:00;Concluída;***.240.001-** - ZEILDE DE ARAUJO ROCHA BATISTA;46724
@@ -4089,7 +4091,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-25T14:05:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;46814
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-03-20T14:07:00;Concluída;***.011.573-** - MARIO LIMA COSTA FILHO;59320
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-02-27T14:41:00;Concluída;***.011.573-** - MARIO LIMA COSTA FILHO;47804
-308800;Ministério da Fazenda;Solicitar Complementação;2025-01-24T23:15:00;Concluída;Sistema;2685
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-14T10:53:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;56097
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-08-13T13:55:00;Concluída;***.566.703-** - MARIA JOCELINA RODRIGUES LIMA;117177
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-05-26T00:09:00;Concluída;***.097.747-** - RAFAEL CONCEICAO DE SOUZA;86831
@@ -4137,7 +4138,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-01-30T10:30:00;Concluída;***.822.961-** - MARIANA AUGUSTA JORGE DE JESUS;15325
 308798;Ministério das Cidades;Solicitar Complementação;2025-02-11T11:37:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;39859
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Não se aplica;2025-04-03T17:10:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;68398
-41066;Ministério da Defesa;Não se aplica;2025-03-12T14:13:00;Concluída;***.240.001-** - ZEILDE DE ARAUJO ROCHA BATISTA;54972
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-25T10:54:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;46701
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-06-17T13:59:00;Concluída;***.011.573-** - MARIO LIMA COSTA FILHO;93749
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-03-31T16:59:00;Concluída;***.011.573-** - MARIO LIMA COSTA FILHO;66432
@@ -4504,11 +4504,11 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-03-18T16:37:00;Concluída;***.600.661-** - ZULEIMA VIANA DE OLIVEIRA ARAUJO;57998
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-17T12:21:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;56911
 308798;Ministério das Cidades;Solicitar Complementação;2025-02-11T16:50:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;40019
-308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-06T11:16:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA, ***.641.694-** - MARIA GORETE DO NASCIMENTO RODRIGUES;21566
+308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-06T11:16:00;Concluída;***.641.694-** - MARIA GORETE DO NASCIMENTO RODRIGUES, ***.750.061-** - VITORIA DE SOUSA PEREIRA;21566
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-17T12:19:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;56909
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-06-13T15:50:00;Concluída;***.197.461-** - CAROLINI PORTUGAL DOS SANTOS;93065
 308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2025-02-26T10:55:00;Concluída;***.835.391-** - FELIPE WILHELM PEIXOTO BODENS;47205
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-14T08:08:00;Concluída;***.880.691-** - GLEISON DA SILVA, ***.442.911-** - LARISSA MARTINS PIMENTA SANCHES;21183
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-14T08:08:00;Concluída;***.442.911-** - LARISSA MARTINS PIMENTA SANCHES, ***.880.691-** - GLEISON DA SILVA;21183
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-02-14T17:38:00;Concluída;***.388.703-** - DINALEA LISBOA RODRIGUES;41933
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-08T10:52:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;70388
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-15T21:53:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;56567
@@ -4571,7 +4571,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-01-30T17:39:00;Concluída;***.023.715-** - LISANDRA TORRES SANTOS;17144
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-05-12T12:33:00;Concluída;***.174.204-** - LUIS ALBERTO DA SILVA;82436
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-03-25T12:51:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;63096
-308798;Ministério das Cidades;Solicitar Complementação;2025-03-17T12:56:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;56933
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-06-02T10:22:00;Concluída;***.497.519-** - ESTELA GUILHERME ZEFERINO;88823
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-03-06T14:14:00;Concluída;***.681.414-** - FRANCISCO ARRUDA VIEIRA DE MELO FILHO;48856
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-21T11:53:00;Concluída;***.790.121-** - RAILA SILVA SOUZA;45383
@@ -4652,6 +4651,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-02-27T14:28:00;Concluída;***.174.204-** - LUIS ALBERTO DA SILVA;47792
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-02-04T15:25:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;32201
 54844;Departamento Nacional de Infraestrutura de Transportes;Não se aplica;2025-02-25T09:13:00;Concluída;***.407.841-** - ADRIANE BRAZ DAS NEVES OLIVEIRA;46612
+308798;Ministério das Cidades;Solicitar Complementação;2025-03-17T12:56:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;56933
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-06-13T18:03:00;Concluída;***.985.148-** - MARIANA FONTANETTI MARINHEIRO;93161
 308793;Ministério da Agricultura e Pecuária;Não se aplica;2025-03-11T09:40:00;Concluída;***.734.373-** - CARLOS EDUARDO DA CRUZ;50169
 72084;Ministério do Turismo;Solicitar Complementação;2025-06-18T20:27:00;Concluída;***.023.411-** - GUILHERME MEDEIROS PIMENTEL;94326
@@ -4747,7 +4747,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-03-25T09:36:00;Concluída;***.880.691-** - GLEISON DA SILVA;62680
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T16:31:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;38472
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-06-10T15:51:00;Concluída;***.824.387-** - VINICIUS DA SILVA NETTO;91747
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-05-13T11:49:00;Concluída;***.549.831-** - WARLEY FERREIRA DE SOUZA, ***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA;67986
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-05-13T11:49:00;Concluída;***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA, ***.549.831-** - WARLEY FERREIRA DE SOUZA;67986
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-04-15T15:57:00;Concluída;***.870.391-** - ELKEN RIBEIRO DA SILVA;73865
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-04-04T10:11:00;Concluída;***.770.361-** - KEILA MACEDO CARDOSO BEVENUTTI;68659
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T17:58:00;Concluída;***.790.121-** - RAILA SILVA SOUZA;34685
@@ -4863,7 +4863,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-02-14T17:50:00;Concluída;***.388.703-** - DINALEA LISBOA RODRIGUES;41942
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T16:36:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;38487
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-31T17:28:00;Concluída;***.141.691-** - AGUIAR GONZAGA VIEIRA DA COSTA;21041
-308798;Ministério das Cidades;Solicitar Complementação;2025-03-20T14:36:00;Concluída;***.141.691-** - AGUIAR GONZAGA VIEIRA DA COSTA, ***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;48688
+308798;Ministério das Cidades;Solicitar Complementação;2025-03-20T14:36:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO, ***.141.691-** - AGUIAR GONZAGA VIEIRA DA COSTA;48688
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-21T14:07:00;Concluída;***.426.851-** - FERNANDA FERREIRA ANANIAS;45494
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-30T21:33:00;Concluída;***.958.531-** - LUIZ EDUARDO PARANAGUA BORGES;17572
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-14T10:08:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;56010
@@ -5024,7 +5024,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T16:22:00;Concluída;***.192.685-** - ADSON LIMA E SILVA;38446
 308798;Ministério das Cidades;Não se aplica;2025-04-23T21:17:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;76758
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-04-04T10:40:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;68702
-41066;Ministério da Defesa;Não se aplica;2025-02-26T16:25:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;47481
 308798;Ministério das Cidades;Não se aplica;2025-03-18T23:30:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;58295
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-14T12:22:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;41333
 308798;Ministério das Cidades;Não se aplica;2025-03-18T23:31:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;58296
@@ -5125,10 +5124,11 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-19T10:25:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;58464
 308815;Ministério das Mulheres;Não se aplica;2025-08-08T16:33:00;Concluída;***.994.091-** - PRISCILLE FERREIRA DE OLIVEIRA;114529
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-02-26T14:18:00;Concluída;***.274.737-** - MIRIA LACERDA VITORINO;47343
-235881;Ministério da Justiça e Segurança Pública;Não se aplica;2025-02-18T11:36:00;Concluída;***.195.913-** - DIEGO AIRTON MAIA DE MORAES, ***.671.825-** - EVERALDINO HONORIO DA SILVA JUNIOR;41000
+235881;Ministério da Justiça e Segurança Pública;Não se aplica;2025-02-18T11:36:00;Concluída;***.671.825-** - EVERALDINO HONORIO DA SILVA JUNIOR, ***.195.913-** - DIEGO AIRTON MAIA DE MORAES;41000
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-06-13T15:51:00;Concluída;***.011.573-** - MARIO LIMA COSTA FILHO;93068
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-03-31T17:06:00;Concluída;***.011.573-** - MARIO LIMA COSTA FILHO;66437
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-03-20T14:11:00;Concluída;***.011.573-** - MARIO LIMA COSTA FILHO;59325
+41066;Ministério da Defesa;Não se aplica;2025-02-26T16:25:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;47481
 308798;Ministério das Cidades;Não se aplica;2025-07-23T13:49:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;105407
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-07-23T12:12:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;105236
 308798;Ministério das Cidades;Não se aplica;2025-03-26T11:46:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;63875
@@ -5272,6 +5272,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-04-02T16:10:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;67369
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-04-01T00:03:00;Concluída;***.835.391-** - FELIPE WILHELM PEIXOTO BODENS;66505
 308793;Ministério da Agricultura e Pecuária;Aprovar Plano de Trabalho;2025-03-14T07:09:00;Concluída;***.734.373-** - CARLOS EDUARDO DA CRUZ;55907
+308798;Ministério das Cidades;Solicitar Complementação;2025-03-20T17:48:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;59668
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T11:40:00;Concluída;***.426.851-** - FERNANDA FERREIRA ANANIAS;32453
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-01-29T17:07:00;Concluída;***.138.311-** - JULIA DA CONCEICAO SILVA;14902
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-29T16:03:00;Concluída;***.761.800-** - GETULIO RINCON FILHO;14686
@@ -5376,7 +5377,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-31T15:25:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;20232
 54844;Departamento Nacional de Infraestrutura de Transportes;Não se aplica;2025-02-24T16:54:00;Concluída;***.407.841-** - ADRIANE BRAZ DAS NEVES OLIVEIRA;46431
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-12T11:46:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;54904
-308798;Ministério das Cidades;Solicitar Complementação;2025-03-20T17:48:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;59668
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-14T10:51:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;41200
 308798;Ministério das Cidades;Não se aplica;2025-05-08T15:29:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;81343
 308818;Ministério dos Transportes;Não se aplica;2025-05-07T14:10:00;Concluída;***.192.685-** - ADSON LIMA E SILVA;80747
@@ -5543,14 +5543,14 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308821;Ministério da Cultura;Solicitar Complementação;2025-04-07T17:26:00;Concluída;***.350.479-** - MIGUEL NARDI CORAL;70138
 308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T11:03:00;Concluída;***.616.301-** - RAFAEL DA SILVA MAXIMINIANO;18566
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-06-09T07:35:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;90705
-308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-01-31T16:05:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA, ***.385.881-** - DEBORAH HAYDEE RAMON E BARROS FERREIRA;14769
+308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-01-31T16:05:00;Concluída;***.385.881-** - DEBORAH HAYDEE RAMON E BARROS FERREIRA, ***.129.691-** - GILMAR PEREIRA DA SILVA;14769
 308821;Ministério da Cultura;Solicitar Complementação;2025-02-01T08:25:00;Concluída;***.820.941-** - VANESSA FELIX DE OLIVEIRA;21992
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-20T11:02:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;44284
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-07-01T16:51:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;97715
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-03-24T14:29:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;60686
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-02-25T17:44:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;47022
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Solicitar Complementação;2025-02-06T16:09:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;35009
-308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Solicitar Complementação;2025-01-31T16:03:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA, ***.385.881-** - DEBORAH HAYDEE RAMON E BARROS FERREIRA;14783
+308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Solicitar Complementação;2025-01-31T16:03:00;Concluída;***.385.881-** - DEBORAH HAYDEE RAMON E BARROS FERREIRA, ***.129.691-** - GILMAR PEREIRA DA SILVA;14783
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-10T15:50:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;49932
 308821;Ministério da Cultura;Solicitar Complementação;2025-02-01T00:57:00;Concluída;***.982.367-** - VIVIAN ROSA REIS;21981
 72084;Ministério do Turismo;Solicitar Complementação;2025-06-05T14:48:00;Concluída;***.399.361-** - MARIA FERNANDA MASCARENHAS DOS SANTOS MELIS;90017
@@ -5589,7 +5589,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-30T11:14:00;Concluída;***.929.681-** - GABRIEL VIEIRA;15661
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-01-30T11:13:00;Concluída;***.478.761-** - MATEUS ARAUJO DE OLIVEIRA;15647
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T08:51:00;Concluída;***.862.831-** - JOAO FERNANDO MANES ROCHA;15178
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T18:53:00;Concluída;***.862.831-** - JOAO FERNANDO MANES ROCHA, ***.497.901-** - JESSYCA KANOY NOGUEIRA LOPES;15184
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T18:53:00;Concluída;***.497.901-** - JESSYCA KANOY NOGUEIRA LOPES, ***.862.831-** - JOAO FERNANDO MANES ROCHA;15184
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T14:00:00;Concluída;***.426.851-** - FERNANDA FERREIRA ANANIAS;32625
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T18:37:00;Concluída;***.549.831-** - WARLEY FERREIRA DE SOUZA;17419
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-30T16:01:00;Concluída;***.929.681-** - GABRIEL VIEIRA;16688
@@ -5598,7 +5598,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-04-30T11:30:00;Concluída;***.003.521-** - LIVIA LARISSA DIAS DE JESUS;79219
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-08T15:05:00;Concluída;***.200.316-** - FERNANDO DAVID FIALHO;70777
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-03-18T17:53:00;Concluída;***.989.266-** - JOYCE DE SOUZA FALUBA;58187
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-03-17T15:45:00;Concluída;***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA, ***.442.911-** - LARISSA MARTINS PIMENTA SANCHES;21383
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-03-17T15:45:00;Concluída;***.442.911-** - LARISSA MARTINS PIMENTA SANCHES, ***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA;21383
 308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2025-02-27T16:43:00;Concluída;***.929.681-** - GABRIEL VIEIRA;47918
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T14:03:00;Concluída;***.426.851-** - FERNANDA FERREIRA ANANIAS;32637
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-02-21T11:08:00;Concluída;***.779.891-** - FILIPE FERREIRA DE MORAIS;45284
@@ -5737,7 +5737,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-25T11:26:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;62960
 72084;Ministério do Turismo;Solicitar Complementação;2025-01-31T20:38:00;Concluída;***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA;21808
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-01-29T09:10:00;Concluída;***.968.074-** - ELIS CARVALHO PENA;13947
-308798;Ministério das Cidades;Solicitar Complementação;2025-03-14T10:56:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;56105
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-01-31T10:37:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;18377
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-08-26T16:39:00;Concluída;***.566.703-** - MARIA JOCELINA RODRIGUES LIMA;131136
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-08-05T10:55:00;Concluída;***.566.703-** - MARIA JOCELINA RODRIGUES LIMA;110932
@@ -5752,6 +5751,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-05-19T10:23:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;84857
 308798;Ministério das Cidades;Solicitar Complementação;2025-05-16T20:15:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;84660
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-05-13T14:24:00;Concluída;***.003.521-** - LIVIA LARISSA DIAS DE JESUS;83058
+308798;Ministério das Cidades;Solicitar Complementação;2025-03-14T10:56:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;56105
 308798;Ministério das Cidades;Solicitar Complementação;2025-07-09T19:21:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;99749
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-02-26T13:12:00;Concluída;***.174.204-** - LUIS ALBERTO DA SILVA;47313
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T17:40:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;38647
@@ -5797,6 +5797,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308821;Ministério da Cultura;Solicitar Complementação;2025-03-26T12:52:00;Concluída;***.310.891-** - LIANA BARBOSA DE MELO;63899
 308821;Ministério da Cultura;Solicitar Complementação;2025-02-10T10:19:00;Concluída;***.310.891-** - LIANA BARBOSA DE MELO;35689
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-14T14:41:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;56219
+308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T16:26:00;Concluída;***.818.203-** - MARCUS ANDRE CHAGAS ROCHA;20628
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-05T10:53:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;110930
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Não se aplica;2025-08-05T09:44:00;Concluída;***.201.341-** - LEONARDO GAMA DA SILVA;110811
 41066;Ministério da Defesa;Não se aplica;2025-08-04T17:55:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;110703
@@ -5823,7 +5824,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2025-01-29T17:42:00;Concluída;***.555.004-** - GEIZE DOS SANTOS;14979
 308821;Ministério da Cultura;Solicitar Complementação;2025-04-11T14:12:00;Concluída;***.440.577-** - JOSE ANTONIO DA SILVA;72656
 308821;Ministério da Cultura;Solicitar Complementação;2025-04-04T17:51:00;Concluída;***.818.203-** - MARCUS ANDRE CHAGAS ROCHA;69351
-308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T16:26:00;Concluída;***.818.203-** - MARCUS ANDRE CHAGAS ROCHA;20628
 72084;Ministério do Turismo;Solicitar Complementação;2025-02-24T11:15:00;Concluída;***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA;46098
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-02-21T16:34:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;45885
 72084;Ministério do Turismo;Solicitar Complementação;2025-01-31T20:56:00;Concluída;***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA;21839
@@ -6008,7 +6008,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 2852;Ministério de Minas e Energia;Não se aplica;2025-02-20T16:57:00;Concluída;***.063.958-** - DENIS DE MOURA SOARES;44112
 308818;Ministério dos Transportes;Não se aplica;2025-02-10T18:07:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;39782
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-05-12T14:40:00;Concluída;***.174.204-** - LUIS ALBERTO DA SILVA;82535
-308800;Ministério da Fazenda;Solicitar Complementação;2025-01-24T23:18:00;Concluída;Sistema;4280
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-03-27T13:26:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;64997
 72084;Ministério do Turismo;Não se aplica;2025-05-08T10:49:00;Concluída;***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA;81190
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-05-07T17:51:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;81012
@@ -6088,6 +6087,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 72084;Ministério do Turismo;Aprovar Plano de Trabalho;2025-01-31T17:25:00;Concluída;***.448.146-** - CLAUDIO CORREA VASQUES;21022
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-01-28T19:07:00;Concluída;***.968.074-** - ELIS CARVALHO PENA;13881
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-11T15:16:00;Concluída;***.790.121-** - RAILA SILVA SOUZA;54408
+308800;Ministério da Fazenda;Solicitar Complementação;2025-01-24T23:18:00;Concluída;Sistema;4222
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-18T16:43:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;43269
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-24T19:11:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;62180
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-14T15:38:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;41611
@@ -6161,7 +6161,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-01-29T09:42:00;Concluída;***.968.074-** - ELIS CARVALHO PENA;13970
 72084;Ministério do Turismo;Solicitar Complementação;2025-01-31T13:11:00;Concluída;***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA;19409
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-01-29T09:44:00;Concluída;***.968.074-** - ELIS CARVALHO PENA;13973
-308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Solicitar Complementação;2025-01-31T17:02:00;Concluída;***.968.074-** - ELIS CARVALHO PENA, ***.129.691-** - GILMAR PEREIRA DA SILVA;16862
+308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Solicitar Complementação;2025-01-31T17:02:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA, ***.968.074-** - ELIS CARVALHO PENA;16862
 308798;Ministério das Cidades;Solicitar Complementação;2025-01-30T18:08:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;17344
 308798;Ministério das Cidades;Solicitar Complementação;2025-06-06T16:12:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;90651
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-21T11:42:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;45353
@@ -6195,7 +6195,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-20T15:13:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;44697
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-28T17:30:00;Concluída;***.708.566-** - ISABELA SBAMPATO BATISTA REIS DE PAULA;78638
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-01-30T11:55:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;15944
-308818;Ministério dos Transportes;Não se aplica;2025-03-06T11:56:00;Concluída;***.793.388-** - FABIO CESAR DE CARVALHO, ***.533.831-** - LUCIENE MATOS DO NASCIMENTO;39798
+308818;Ministério dos Transportes;Não se aplica;2025-03-06T11:56:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO, ***.793.388-** - FABIO CESAR DE CARVALHO;39798
 54844;Departamento Nacional de Infraestrutura de Transportes;Não se aplica;2025-02-27T12:07:00;Concluída;***.407.841-** - ADRIANE BRAZ DAS NEVES OLIVEIRA;47742
 308798;Ministério das Cidades;Não se aplica;2025-06-25T16:55:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;95653
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-05-27T11:56:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;87522
@@ -6504,7 +6504,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-29T16:16:00;Concluída;***.413.531-** - JOSYANNE BRAGA GUIMARAES;14722
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-05-29T15:53:00;Concluída;***.088.341-** - ELIZABETH VIEIRA DA SILVA;88439
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-03-11T15:29:00;Concluída;***.516.079-** - GIANFRANCISCO SCHORK;54437
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-12T10:56:00;Concluída;***.413.531-** - JOSYANNE BRAGA GUIMARAES, ***.600.661-** - ZULEIMA VIANA DE OLIVEIRA ARAUJO;21365
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-12T10:56:00;Concluída;***.600.661-** - ZULEIMA VIANA DE OLIVEIRA ARAUJO, ***.413.531-** - JOSYANNE BRAGA GUIMARAES;21365
 72084;Ministério do Turismo;Não se aplica;2025-02-26T15:29:00;Concluída;***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA;47409
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-02-10T14:33:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;38151
 308797;Ministério do Esporte;Solicitar Complementação;2025-01-31T17:15:00;Concluída;***.898.831-** - HELOISA ROBERTA RESENDE DOS SANTOS;20955
@@ -7974,7 +7974,6 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 41066;Ministério da Defesa;Não se aplica;2025-01-30T11:13:00;Concluída;***.647.490-** - CARLOS ALBERTO SILVA;15648
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-01-30T19:07:00;Concluída;***.118.252-** - DYHEMES FERREIRA MARQUES;17458
 308818;Ministério dos Transportes;Não se aplica;2025-02-13T14:46:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;40591
-244;Ministério da Educação;Não se aplica;2025-02-14T00:00:00;Concluída;***.253.761-** - SILVIO ALVES PORTILHO;61174
 2852;Ministério de Minas e Energia;Não se aplica;2025-03-26T10:21:00;Concluída;***.594.775-** - LAERTE GOMES DE BRITO;63694
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-01-30T17:52:00;Concluída;***.011.573-** - MARIO LIMA COSTA FILHO;17249
 308818;Ministério dos Transportes;Não se aplica;2025-04-10T15:45:00;Concluída;***.192.685-** - ADSON LIMA E SILVA;72125
@@ -7998,6 +7997,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T10:38:00;Concluída;***.310.891-** - LIANA BARBOSA DE MELO;18380
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-14T16:50:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;41799
 54844;Departamento Nacional de Infraestrutura de Transportes;Não se aplica;2025-02-28T23:11:00;Concluída;***.407.841-** - ADRIANE BRAZ DAS NEVES OLIVEIRA;48501
+244;Ministério da Educação;Não se aplica;2025-02-14T00:00:00;Concluída;***.253.761-** - SILVIO ALVES PORTILHO;61174
 308818;Ministério dos Transportes;Não se aplica;2025-02-13T14:51:00;Concluída;***.533.831-** - LUCIENE MATOS DO NASCIMENTO;40601
 253;Fundo Nacional de Desenvolvimento da Educação;Não se aplica;2025-02-12T15:36:00;Concluída;***.253.761-** - SILVIO ALVES PORTILHO;40158
 72084;Ministério do Turismo;Solicitar Complementação;2025-01-31T14:03:00;Concluída;***.728.491-** - MICHELLY HANNA SILVA WADIE CASTRO;19628
@@ -8294,7 +8294,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-02-04T15:47:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;32224
 308798;Ministério das Cidades;Solicitar Complementação;2025-05-12T11:10:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;82296
 308798;Ministério das Cidades;Não se aplica;2025-03-11T10:51:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;50271
-235881;Ministério da Justiça e Segurança Pública;Não se aplica;2025-02-20T09:26:00;Concluída;***.671.825-** - EVERALDINO HONORIO DA SILVA JUNIOR, ***.097.747-** - RAFAEL CONCEICAO DE SOUZA;18400
+235881;Ministério da Justiça e Segurança Pública;Não se aplica;2025-02-20T09:26:00;Concluída;***.097.747-** - RAFAEL CONCEICAO DE SOUZA, ***.671.825-** - EVERALDINO HONORIO DA SILVA JUNIOR;18400
 253;Fundo Nacional de Desenvolvimento da Educação;Não se aplica;2025-02-17T12:31:00;Concluída;***.351.471-** - ANA PAULA DA SILVA BARBOZA;42199
 267175;Ministério da Ciência, Tecnologia e Inovações;Não se aplica;2025-01-30T15:29:00;Concluída;***.791.621-** - MARCELO CASSIO SILVERIO;16573
 308793;Ministério da Agricultura e Pecuária;Não se aplica;2025-01-30T15:05:00;Concluída;***.044.141-** - CARINA BEZERRA DA SILVA;16478
@@ -8634,7 +8634,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-05-14T10:09:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;83460
 308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T10:06:00;Concluída;***.750.007-** - JOSE ROBERTO DE OLIVEIRA;18177
 308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T10:15:00;Concluída;***.750.007-** - JOSE ROBERTO DE OLIVEIRA;18214
-308821;Ministério da Cultura;Solicitar Complementação;2025-05-05T14:31:00;Concluída;***.750.007-** - JOSE ROBERTO DE OLIVEIRA, ***.310.891-** - LIANA BARBOSA DE MELO;75243
+308821;Ministério da Cultura;Solicitar Complementação;2025-05-05T14:31:00;Concluída;***.310.891-** - LIANA BARBOSA DE MELO, ***.750.007-** - JOSE ROBERTO DE OLIVEIRA;75243
 308821;Ministério da Cultura;Solicitar Complementação;2025-03-11T10:56:00;Concluída;***.750.007-** - JOSE ROBERTO DE OLIVEIRA;50273
 308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T10:17:00;Concluída;***.750.007-** - JOSE ROBERTO DE OLIVEIRA;18228
 308798;Ministério das Cidades;Solicitar Complementação;2025-05-14T10:20:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;83466
@@ -9363,7 +9363,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-24T12:09:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;60563
 308821;Ministério da Cultura;Solicitar Complementação;2025-05-26T19:54:00;Concluída;***.278.182-** - JOELLE KATIUSSIA MACEDO DA SILVA CARDOSO;87324
 308821;Ministério da Cultura;Solicitar Complementação;2025-04-15T17:24:00;Concluída;***.664.431-** - CARLOS ANTONIO OLIVEIRA DA CRUZ;73993
-308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T19:11:00;Concluída;***.522.351-** - REINALDO MONTEIRO DOS REIS, ***.113.906-** - NATALIA VALADARES DO VALE;20900
+308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T19:11:00;Concluída;***.113.906-** - NATALIA VALADARES DO VALE, ***.522.351-** - REINALDO MONTEIRO DOS REIS;20900
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-01-30T18:25:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;16426
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-03-10T18:00:00;Concluída;***.862.831-** - JOAO FERNANDO MANES ROCHA;50101
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-02-28T15:00:00;Concluída;***.465.051-** - VIETE PASSOS FREITAS;48169
@@ -9405,7 +9405,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308821;Ministério da Cultura;Não se aplica;2025-04-09T23:59:00;Concluída;***.982.367-** - VIVIAN ROSA REIS;71676
 2045;Instituto do Patrimônio Histórico e Artístico Nacional;Solicitar Complementação;2025-02-28T19:51:00;Concluída;***.000.891-** - ISAC JEFERSON FERREIRA DE SOUSA;48396
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-31T23:04:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;66493
-308821;Ministério da Cultura;Solicitar Complementação;2025-02-04T17:38:00;Concluída;***.750.007-** - JOSE ROBERTO DE OLIVEIRA, ***.700.181-** - NEURAN PEREIRA DA SILVA;18326
+308821;Ministério da Cultura;Solicitar Complementação;2025-02-04T17:38:00;Concluída;***.700.181-** - NEURAN PEREIRA DA SILVA, ***.750.007-** - JOSE ROBERTO DE OLIVEIRA;18326
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-04-08T08:30:00;Concluída;***.776.834-** - NATALIA GONCALVES RAMOS MARQUES;70283
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-27T11:39:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;64920
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-03-12T11:36:00;Concluída;***.313.811-** - DARLAN CARDOSO SOARES;54835
@@ -9600,7 +9600,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-31T09:14:00;Concluída;***.353.461-** - MATEUS SEABRA CORDEIRO;17859
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T13:54:00;Concluída;***.353.461-** - MATEUS SEABRA CORDEIRO;16259
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-11T11:41:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;50322
-308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T17:25:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI, ***.750.061-** - VITORIA DE SOUSA PEREIRA, ***.426.851-** - FERNANDA FERREIRA ANANIAS;19696
+308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T17:25:00;Concluída;***.426.851-** - FERNANDA FERREIRA ANANIAS, ***.171.628-** - GABRIEL LICA SILVA BALESTRINI, ***.750.061-** - VITORIA DE SOUSA PEREIRA;19696
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T17:00:00;Concluída;***.353.461-** - MATEUS SEABRA CORDEIRO;16950
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-01-30T11:43:00;Concluída;***.822.961-** - MARIANA AUGUSTA JORGE DE JESUS;15871
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-29T13:31:00;Concluída;***.248.801-** - BEATRIZ SANTIAGO DE SOUZA;14301
@@ -9611,7 +9611,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-02-05T17:22:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;34581
 2852;Ministério de Minas e Energia;Não se aplica;2025-02-20T17:16:00;Concluída;***.063.958-** - DENIS DE MOURA SOARES;44215
 308797;Ministério do Esporte;Solicitar Complementação;2025-03-24T22:42:00;Concluída;***.846.801-** - SUZANE DUARTE FILGUEIRA;62556
-72084;Ministério do Turismo;Solicitar Complementação;2025-04-15T19:49:00;Concluída;***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA, ***.399.361-** - MARIA FERNANDA MASCARENHAS DOS SANTOS MELIS;46447
+72084;Ministério do Turismo;Solicitar Complementação;2025-04-15T19:49:00;Concluída;***.399.361-** - MARIA FERNANDA MASCARENHAS DOS SANTOS MELIS, ***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA;46447
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-03-28T11:05:00;Concluída;***.646.431-** - ELENITA CORREIA DA SILVA;65746
 41066;Ministério da Defesa;Solicitar Complementação;2025-02-28T10:59:00;Concluída;***.654.596-** - MARCIA CRISTINA ECCARD;48066
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-17T18:10:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;42485
@@ -10125,7 +10125,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-21T18:17:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;60143
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-17T18:43:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;42504
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T17:45:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;34647
-308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2025-01-31T17:18:00;Concluída;***.062.641-** - ANTONIO SIQUEIRA ASSREUY, ***.248.801-** - BEATRIZ SANTIAGO DE SOUZA;14984
+308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2025-01-31T17:18:00;Concluída;***.248.801-** - BEATRIZ SANTIAGO DE SOUZA, ***.062.641-** - ANTONIO SIQUEIRA ASSREUY;14984
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-30T10:17:00;Concluída;***.222.521-** - ANA CLARA BUENO LIMA;15357
 308797;Ministério do Esporte;Não se aplica;2025-01-31T17:15:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA;20954
 308821;Ministério da Cultura;Solicitar Complementação;2025-08-15T16:24:00;Concluída;***.709.411-** - JESSICA SILVA QUERINO;120847
@@ -10292,7 +10292,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-13T15:08:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;55551
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-21T20:42:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;60167
 308798;Ministério das Cidades;Solicitar Complementação;2025-06-02T17:04:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;89070
-308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-06T10:49:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS, ***.791.841-** - CLEITON MARCELINO PEREIRA;31163
+308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-06T10:49:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;31163
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-13T15:11:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;55554
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-09T15:50:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;71524
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-13T15:14:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;55561
@@ -10432,7 +10432,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-24T17:19:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;61124
 308797;Ministério do Esporte;Não se aplica;2025-01-31T10:58:00;Concluída;***.817.851-** - NAYARA VIEIRA DA SILVA;18531
 308797;Ministério do Esporte;Não se aplica;2025-01-31T15:44:00;Concluída;***.169.723-** - JONATAS PINTO SILVA;20349
-308821;Ministério da Cultura;Não se aplica;2025-01-31T19:24:00;Concluída;***.522.351-** - REINALDO MONTEIRO DOS REIS, ***.113.906-** - NATALIA VALADARES DO VALE;20534
+308821;Ministério da Cultura;Não se aplica;2025-01-31T19:24:00;Concluída;***.113.906-** - NATALIA VALADARES DO VALE, ***.522.351-** - REINALDO MONTEIRO DOS REIS;20534
 2045;Instituto do Patrimônio Histórico e Artístico Nacional;Não se aplica;2025-01-31T11:20:00;Concluída;***.000.891-** - ISAC JEFERSON FERREIRA DE SOUSA;18716
 308797;Ministério do Esporte;Não se aplica;2025-01-31T15:45:00;Concluída;***.169.723-** - JONATAS PINTO SILVA;20357
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T08:53:00;Concluída;***.734.373-** - CARLOS EDUARDO DA CRUZ;15180
@@ -10551,7 +10551,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-07-04T10:24:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;98576
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-04-24T10:46:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;76871
 308821;Ministério da Cultura;Solicitar Complementação;2025-05-07T16:36:00;Concluída;***.859.877-** - NILO JOSE RIBEIRO PINTO;80942
-308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T19:25:00;Concluída;***.522.351-** - REINALDO MONTEIRO DOS REIS, ***.113.906-** - NATALIA VALADARES DO VALE;21254
+308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T19:25:00;Concluída;***.113.906-** - NATALIA VALADARES DO VALE, ***.522.351-** - REINALDO MONTEIRO DOS REIS;21254
 308798;Ministério das Cidades;Solicitar Complementação;2025-02-07T17:59:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;35565
 308818;Ministério dos Transportes;Não se aplica;2025-02-14T10:56:00;Concluída;***.192.685-** - ADSON LIMA E SILVA;41215
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T11:04:00;Concluída;***.734.373-** - CARLOS EDUARDO DA CRUZ;15602
@@ -10595,7 +10595,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-03-11T17:18:00;Concluída;***.512.751-** - ANA MARIA RIBEIRO DIAS;54612
 308798;Ministério das Cidades;Solicitar Complementação;2025-05-06T17:25:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;80385
 308818;Ministério dos Transportes;Não se aplica;2025-02-14T14:13:00;Concluída;***.192.685-** - ADSON LIMA E SILVA;41398
-308798;Ministério das Cidades;Solicitar Complementação;2025-05-09T14:09:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA, ***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;63442
+308798;Ministério das Cidades;Solicitar Complementação;2025-05-09T14:09:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ, ***.658.683-** - VERBENA CARVALHO BRAGA;63442
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-25T17:39:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;63471
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-25T17:41:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;63476
 308821;Ministério da Cultura;Solicitar Complementação;2025-01-31T16:11:00;Concluída;***.741.458-** - TASSIA TOFFOLI NUNES;19333
@@ -10813,7 +10813,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Não se aplica;2025-03-19T17:00:00;Concluída;***.848.401-** - LIDIA DA SILVA OLIVEIRA;58982
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2025-01-31T16:41:00;Concluída;***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;20714
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-03-25T08:55:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;62603
-308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-31T17:32:00;Concluída;***.389.914-** - RITA DICACIA FELIPE CAMARA, ***.929.373-** - MARIA FRANCISCA DAS CHAGAS LIMA DA SILVA;20629
+308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-01-31T17:32:00;Concluída;***.929.373-** - MARIA FRANCISCA DAS CHAGAS LIMA DA SILVA, ***.389.914-** - RITA DICACIA FELIPE CAMARA;20629
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-01-29T10:42:00;Concluída;***.248.801-** - BEATRIZ SANTIAGO DE SOUZA;14052
 308797;Ministério do Esporte;Solicitar Complementação;2025-03-24T21:28:00;Concluída;***.846.801-** - SUZANE DUARTE FILGUEIRA;62414
 308798;Ministério das Cidades;Solicitar Complementação;2025-05-08T19:34:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;81519
@@ -12591,7 +12591,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308816;Ministério dos Direitos Humanos e da Cidadania;Solicitar Complementação;2025-02-28T12:05:00;Concluída;***.986.741-** - JUSLEY DE CARVALHO BIAGE;48098
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-01-31T08:49:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;17729
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-06-05T18:42:00;Concluída;***.771.215-** - JAMILE GUERRA FONSECA;90331
-308793;Ministério da Agricultura e Pecuária;Não se aplica;2025-04-15T14:57:00;Concluída;***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA, ***.087.086-** - MARCOS DANIEL SOARES;49947
+308793;Ministério da Agricultura e Pecuária;Não se aplica;2025-04-15T14:57:00;Concluída;***.087.086-** - MARCOS DANIEL SOARES, ***.779.111-** - VIVIAN BRASIL DE SOUSA ALMEIDA;49947
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-03-17T11:08:00;Concluída;***.517.302-** - WANESSA MORAES NOGUEIRA CABRAL;56772
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-02-20T16:29:00;Concluída;***.426.851-** - FERNANDA FERREIRA ANANIAS;44913
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T19:27:00;Concluída;***.535.921-** - IZABELA KAROLINE COSTA BORGES;17486
@@ -12614,7 +12614,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2025-03-17T11:13:00;Concluída;***.517.302-** - WANESSA MORAES NOGUEIRA CABRAL;56781
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-02-28T16:37:00;Concluída;***.040.931-** - NATIELLE MARIA DE SOUZA NASCIMENTO;48300
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-02-14T10:45:00;Concluída;***.549.831-** - WARLEY FERREIRA DE SOUZA;41191
-308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-01-31T15:14:00;Concluída;***.004.708-** - GILBERTO KOJI NAGATA, ***.040.931-** - NATIELLE MARIA DE SOUZA NASCIMENTO;17362
+308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-01-31T15:14:00;Concluída;***.040.931-** - NATIELLE MARIA DE SOUZA NASCIMENTO, ***.004.708-** - GILBERTO KOJI NAGATA;17362
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-01-30T15:58:00;Concluída;***.549.831-** - WARLEY FERREIRA DE SOUZA;16669
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-05-13T09:51:00;Concluída;***.223.191-** - AFRANIO TAVARES E SILVA;82890
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-28T15:08:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;65875
@@ -12752,7 +12752,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308818;Ministério dos Transportes;Não se aplica;2025-02-17T14:30:00;Concluída;***.433.451-** - ALESSANDRA RODRIGUES BORGES ALMEIDA;42305
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-31T16:43:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;66416
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-05-12T18:12:00;Concluída;***.049.851-** - CLAUDNEY LIMA DE MATOS;82810
-235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-04-09T11:02:00;Concluída;***.689.094-** - FELIPE ABATH MARTINS, ***.011.573-** - MARIO LIMA COSTA FILHO;47923
+235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-04-09T11:02:00;Concluída;***.011.573-** - MARIO LIMA COSTA FILHO, ***.689.094-** - FELIPE ABATH MARTINS;47923
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-01-30T18:00:00;Concluída;***.011.573-** - MARIO LIMA COSTA FILHO;17309
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-31T16:46:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;66420
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T15:33:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;32849
@@ -12804,7 +12804,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-03-31T16:22:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;66391
 308798;Ministério das Cidades;Solicitar Complementação;2025-03-06T22:15:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;49036
 308797;Ministério do Esporte;Não se aplica;2025-04-08T14:18:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA;70714
-253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-03-21T11:50:00;Concluída;***.010.331-** - IGOR LOPES GUEDES, ***.253.761-** - SILVIO ALVES PORTILHO;42149
+253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-03-21T11:50:00;Concluída;***.253.761-** - SILVIO ALVES PORTILHO, ***.010.331-** - IGOR LOPES GUEDES;42149
 308818;Ministério dos Transportes;Não se aplica;2025-02-17T14:31:00;Concluída;***.433.451-** - ALESSANDRA RODRIGUES BORGES ALMEIDA;42312
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-01T16:27:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;66824
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-02-05T15:03:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;32774
@@ -12993,7 +12993,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Aprovar Plano de Trabalho;2025-05-08T14:55:00;Concluída;***.696.971-** - RENATA SILVA DE OLIVEIRA;81293
 2852;Ministério de Minas e Energia;Solicitar Complementação;2025-05-05T17:57:00;Concluída;***.030.523-** - JOAO ARTHUR MOURA OLIVEIRA DA SILVA;79878
 308798;Ministério das Cidades;Não se aplica;2025-04-30T16:01:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;79497
-308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-04-01T18:08:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE, ***.791.841-** - CLEITON MARCELINO PEREIRA;43482
+308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-04-01T18:08:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.049.291-** - NATHALIA VIEIRA DE RESENDE;43482
 2852;Ministério de Minas e Energia;Solicitar Complementação;2025-03-26T15:07:00;Concluída;***.594.775-** - LAERTE GOMES DE BRITO;64065
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-02-13T17:40:00;Concluída;***.289.818-** - CINTIA CAMARGO NARDY DE FREITAS DA HORA;41025
 308798;Ministério das Cidades;Solicitar Complementação;2025-04-03T11:04:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;67823
@@ -13560,17 +13560,17 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 2852;Ministério de Minas e Energia;Não se aplica;2025-08-08T16:04:00;Concluída;***.030.523-** - JOAO ARTHUR MOURA OLIVEIRA DA SILVA;114410
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-09-26T16:34:00;Concluída;***.005.491-** - HARRISON REIS TORQUATO;142389
 244;Ministério da Educação;Não se aplica;2025-08-26T19:29:00;Concluída;***.975.742-** - ALINE PEREIRA LEAL;132438
-253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-08-26T15:28:00;Concluída;***.005.491-** - HARRISON REIS TORQUATO, ***.141.771-** - CATILENA FILARDI PAIM;122814
+253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-08-26T15:28:00;Concluída;***.141.771-** - CATILENA FILARDI PAIM, ***.005.491-** - HARRISON REIS TORQUATO;122814
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-08-25T20:34:00;Concluída;***.005.491-** - HARRISON REIS TORQUATO;129035
 308798;Ministério das Cidades;Não se aplica;2025-08-15T11:22:00;Concluída;***.751.841-** - LEANDRO DE ANDRADE MARTINS;120170
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-08-15T10:49:00;Concluída;***.651.121-** - FELIPE DE OLIVEIRA LOPES BEZERRA;120060
 308798;Ministério das Cidades;Não se aplica;2025-08-07T13:18:00;Concluída;***.141.691-** - AGUIAR GONZAGA VIEIRA DA COSTA;113255
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-08-06T10:11:00;Concluída;***.651.121-** - FELIPE DE OLIVEIRA LOPES BEZERRA;111736
 308797;Ministério do Esporte;Não se aplica;2025-08-05T19:04:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA;111496
-308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-08-05T18:10:00;Concluída;***.651.121-** - FELIPE DE OLIVEIRA LOPES BEZERRA, ***.791.841-** - CLEITON MARCELINO PEREIRA;110171
+308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-08-05T18:10:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.651.121-** - FELIPE DE OLIVEIRA LOPES BEZERRA;110171
 308798;Ministério das Cidades;Não se aplica;2025-08-05T18:04:00;Concluída;***.141.691-** - AGUIAR GONZAGA VIEIRA DA COSTA, ***.103.391-** - ALESSANDRA GONCALVES ARAUJO;110710
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-09-30T17:17:00;Concluída;***.916.551-** - PEDRO HENRIQUE FREITAS DE MORAIS, ***.758.481-** - LEILANE DAISY OLIVEIRA SERRA;141375
-253;Fundo Nacional de Desenvolvimento da Educação;Reprovar Plano de Trabalho;2025-08-26T17:49:00;Concluída;***.758.481-** - LEILANE DAISY OLIVEIRA SERRA, ***.141.771-** - CATILENA FILARDI PAIM;122990
+253;Fundo Nacional de Desenvolvimento da Educação;Reprovar Plano de Trabalho;2025-08-26T17:49:00;Concluída;***.141.771-** - CATILENA FILARDI PAIM, ***.758.481-** - LEILANE DAISY OLIVEIRA SERRA;122990
 308798;Ministério das Cidades;Não se aplica;2025-08-07T13:21:00;Concluída;***.141.691-** - AGUIAR GONZAGA VIEIRA DA COSTA;113258
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-08-06T09:53:00;Concluída;***.651.121-** - FELIPE DE OLIVEIRA LOPES BEZERRA;111684
 308797;Ministério do Esporte;Solicitar Complementação;2025-08-05T19:10:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA;111500
@@ -14632,7 +14632,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-17T15:00:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;139770
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-21T17:38:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;125039
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-14T11:06:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;118387
-304;Ministério da Saúde;Solicitar Complementação;2025-08-26T09:03:00;Concluída;***.654.239-** - ANDREZZA BIROLO JOAQUIM, ***.479.395-** - AYLA CAROLINE DOTO LOPO GARRIDO;128046
+304;Ministério da Saúde;Solicitar Complementação;2025-08-26T09:03:00;Concluída;***.479.395-** - AYLA CAROLINE DOTO LOPO GARRIDO, ***.654.239-** - ANDREZZA BIROLO JOAQUIM;128046
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-21T16:40:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;124875
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-19T17:49:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;140504
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-17T15:05:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;139774
@@ -15976,7 +15976,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-11T14:44:00;Concluída;***.210.696-** - DARIO PEREIRA DOS SANTOS;115311
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-09-26T10:19:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA;142197
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-26T10:53:00;Concluída;***.489.201-** - LUCAS HENRIQUE SANTOS COSTA;129545
-308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-22T13:40:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;114545
+308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-22T13:40:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS, ***.791.841-** - CLEITON MARCELINO PEREIRA;114545
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-08-21T11:42:00;Concluída;***.551.321-** - WANDERSON SANTANA FERREIRA;124415
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-07T17:27:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;113717
 308798;Ministério das Cidades;Não se aplica;2025-08-07T09:45:00;Concluída;***.141.691-** - AGUIAR GONZAGA VIEIRA DA COSTA;112988
@@ -17159,7 +17159,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-25T23:16:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA;129171
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-25T17:00:00;Concluída;***.804.101-** - THAMARA SIQUEIRA DE FREITAS;128465
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-08-22T15:52:00;Concluída;***.549.831-** - WARLEY FERREIRA DE SOUZA;126166
-308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-22T13:35:00;Concluída;***.003.521-** - LIVIA LARISSA DIAS DE JESUS, ***.791.841-** - CLEITON MARCELINO PEREIRA;124475
+308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-22T13:35:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.003.521-** - LIVIA LARISSA DIAS DE JESUS;124475
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-08-15T13:38:00;Concluída;***.551.321-** - WANDERSON SANTANA FERREIRA;120325
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-08-26T17:49:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA;131727
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-21T11:43:00;Concluída;***.252.911-** - MARINA MIDORI DE OLIVEIRA NAKANE;124417
@@ -17769,7 +17769,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-07T10:32:00;Concluída;***.595.694-** - VICTOR SANTOS LIRA DA NOBREGA;113059
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-01T17:13:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA;110078
 308797;Ministério do Esporte;Solicitar Complementação;2025-09-02T15:27:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;135215
-308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T10:53:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;123101
+308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T10:53:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA, ***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;123101
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-25T16:57:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;128454
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-22T16:57:00;Concluída;***.103.391-** - ALESSANDRA GONCALVES ARAUJO;126393
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2025-08-15T17:11:00;Concluída;***.770.152-** - ALESSANDRO GARCIA CORTEZ;120995
@@ -18739,7 +18739,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-10-03T16:43:00;Concluída;***.654.471-** - MARIA ANGELICA FLORIANO PEDROSA;145868
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-08-27T10:19:00;Concluída;***.654.471-** - MARIA ANGELICA FLORIANO PEDROSA;133456
 244;Ministério da Educação;Não se aplica;2025-08-26T21:35:00;Concluída;***.050.361-** - ALDENORA LOPES DE MACEDO;133035
-253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-10-02T14:22:00;Concluída;***.774.072-** - PEDRO JADER ANTONY LINHARES, ***.005.491-** - HARRISON REIS TORQUATO;127666
+253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-10-02T14:22:00;Concluída;***.005.491-** - HARRISON REIS TORQUATO, ***.774.072-** - PEDRO JADER ANTONY LINHARES;127666
 244;Ministério da Educação;Não se aplica;2025-09-30T10:59:00;Concluída;***.449.311-** - AMANDA CARDOSO SILVA;143220
 72084;Ministério do Turismo;Solicitar Complementação;2025-10-03T14:53:00;Concluída;***.023.411-** - GUILHERME MEDEIROS PIMENTEL;145545
 72084;Ministério do Turismo;Solicitar Complementação;2025-10-01T13:26:00;Concluída;***.359.872-** - MARIZETE TEIXEIRA DE ALMEIDA;143855
@@ -19068,7 +19068,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 72084;Ministério do Turismo;Solicitar Complementação;2025-08-22T14:40:00;Concluída;***.891.911-** - MARIA CLAUDIA DE BRITO ANDRE SILVA;125894
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-07-31T17:34:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;109649
 308797;Ministério do Esporte;Solicitar Complementação;2025-09-02T17:24:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;135412
-308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T10:59:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA, ***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;123083
+308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T10:59:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;123083
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-11T22:53:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;115869
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-26T18:03:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;131840
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-15T14:51:00;Concluída;***.958.531-** - LUIZ EDUARDO PARANAGUA BORGES;120534
@@ -19350,7 +19350,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-08-06T13:13:00;Concluída;***.920.198-** - CELIA REGINA PERNOMIAN;112102
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-25T11:09:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;141830
 308797;Ministério do Esporte;Solicitar Complementação;2025-09-02T11:10:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA;135095
-308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:01:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA, ***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;123075
+308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:01:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;123075
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-29T09:07:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;142523
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-23T16:23:00;Concluída;***.692.061-** - CRISTINA FARIAS DE ARAUJO;141216
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-21T14:35:00;Concluída;***.467.561-** - ADRIANA NEMER AFONSO;124557
@@ -19670,7 +19670,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-26T15:14:00;Concluída;***.804.101-** - THAMARA SIQUEIRA DE FREITAS;130583
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-26T13:47:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA;130180
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-08-22T18:21:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA;126619
-308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-22T13:43:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.003.521-** - LIVIA LARISSA DIAS DE JESUS;112041
+308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-22T13:43:00;Concluída;***.003.521-** - LIVIA LARISSA DIAS DE JESUS, ***.791.841-** - CLEITON MARCELINO PEREIRA;112041
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-21T17:12:00;Concluída;***.681.414-** - FRANCISCO ARRUDA VIEIRA DE MELO FILHO;124965
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-08-15T16:44:00;Concluída;***.551.321-** - WANDERSON SANTANA FERREIRA;120909
 308798;Ministério das Cidades;Solicitar Complementação;2025-10-01T12:01:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;143800
@@ -19774,7 +19774,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-10T17:31:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;138233
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-22T18:03:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;126574
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-12T23:52:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;116752
-308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:10:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA, ***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;123064
+308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:10:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;123064
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-15T15:10:00;Concluída;***.210.696-** - DARIO PEREIRA DOS SANTOS;120590
 72084;Ministério do Turismo;Solicitar Complementação;2025-10-03T10:53:00;Concluída;***.399.361-** - MARIA FERNANDA MASCARENHAS DOS SANTOS MELIS;145246
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-10-03T09:03:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;145014
@@ -20092,7 +20092,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308797;Ministério do Esporte;Solicitar Complementação;2025-08-15T09:32:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;119904
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-08-26T14:01:00;Concluída;***.472.167-** - ELIZABETH BAPTISTA DE LIMA COSTA;130222
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Não se aplica;2025-08-15T06:58:00;Concluída;***.472.167-** - ELIZABETH BAPTISTA DE LIMA COSTA;119836
-308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:13:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA, ***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;123030
+308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:13:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;123030
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-21T11:24:00;Concluída;***.473.621-** - VICTORIA RODRIGUES SOARES MACIEL;124370
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-08-15T16:57:00;Concluída;***.551.321-** - WANDERSON SANTANA FERREIRA;120956
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-08-15T15:40:00;Concluída;***.549.831-** - WARLEY FERREIRA DE SOUZA;120689
@@ -20263,7 +20263,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-08-19T15:00:00;Concluída;***.315.691-** - GESSIKA PRISCILA COSTA DE ABREU BENEVIDES;122750
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2025-08-14T14:17:00;Concluída;***.642.974-** - THAIZA OLIVEIRA DOS SANTOS;118831
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-25T16:58:00;Concluída;***.804.101-** - THAMARA SIQUEIRA DE FREITAS;128460
-308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-22T13:25:00;Concluída;***.003.521-** - LIVIA LARISSA DIAS DE JESUS, ***.791.841-** - CLEITON MARCELINO PEREIRA;110845
+308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-22T13:25:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.003.521-** - LIVIA LARISSA DIAS DE JESUS;110845
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-08-15T17:04:00;Concluída;***.551.321-** - WANDERSON SANTANA FERREIRA;120975
 308797;Ministério do Esporte;Solicitar Complementação;2025-08-15T09:35:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;119908
 72084;Ministério do Turismo;Solicitar Complementação;2025-09-23T15:53:00;Concluída;***.891.911-** - MARIA CLAUDIA DE BRITO ANDRE SILVA;141196
@@ -20559,9 +20559,9 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-08-25T18:00:00;Concluída;***.296.998-** - MATHEUS GRINGO DE ASSUNCAO;128689
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Reprovar Plano de Trabalho;2025-08-29T13:00:00;Concluída;***.989.266-** - JOYCE DE SOUZA FALUBA;134439
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-08-18T16:44:00;Concluída;***.215.151-** - PHAMELA FERNANDA LORENCO RIOS;122127
-304;Ministério da Saúde;Solicitar Complementação;2025-09-24T11:09:00;Concluída;***.906.273-** - LILIANNE BARROS AGUIAR FATURETO, ***.988.401-** - BARBARA LIMA GONTIJO;139598
+304;Ministério da Saúde;Solicitar Complementação;2025-09-24T11:09:00;Concluída;***.988.401-** - BARBARA LIMA GONTIJO, ***.906.273-** - LILIANNE BARROS AGUIAR FATURETO;139598
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-09-03T10:55:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA;135705
-308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-22T13:39:00;Concluída;***.003.521-** - LIVIA LARISSA DIAS DE JESUS, ***.791.841-** - CLEITON MARCELINO PEREIRA;124435
+308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-22T13:39:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.003.521-** - LIVIA LARISSA DIAS DE JESUS;124435
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-21T11:55:00;Concluída;***.252.911-** - MARINA MIDORI DE OLIVEIRA NAKANE;124438
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-08-15T17:14:00;Concluída;***.551.321-** - WANDERSON SANTANA FERREIRA;121002
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-08-13T15:10:00;Concluída;***.558.591-** - JOSE LUCAS CARDOSO MORALES;117370
@@ -20783,7 +20783,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308821;Ministério da Cultura;Solicitar Complementação;2025-08-19T20:07:00;Concluída;***.274.561-** - FLAVIA RODRIGUES DIAS;123224
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-21T16:37:00;Concluída;***.804.101-** - THAMARA SIQUEIRA DE FREITAS;124865
 308797;Ministério do Esporte;Solicitar Complementação;2025-09-02T14:49:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;135171
-308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:15:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;122947
+308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:15:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA, ***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;122947
 308798;Ministério das Cidades;Não se aplica;2025-09-25T13:24:00;Concluída;***.103.391-** - ALESSANDRA GONCALVES ARAUJO;141888
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-09-01T12:14:00;Concluída;***.929.741-** - FLAVIA SILVA DOS SANTOS;134789
 304;Ministério da Saúde;Solicitar Complementação;2025-08-25T09:42:00;Concluída;***.479.395-** - AYLA CAROLINE DOTO LOPO GARRIDO;127458
@@ -20856,7 +20856,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-09-30T15:37:00;Concluída;***.916.551-** - PEDRO HENRIQUE FREITAS DE MORAIS;143371
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-08-19T16:43:00;Concluída;***.315.691-** - GESSIKA PRISCILA COSTA DE ABREU BENEVIDES;123001
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-24T17:34:00;Concluída;***.870.750-** - JOSE CRISTIANO RILLING DA NOVA CRUZ;141651
-308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:17:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA, ***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;122946
+308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:17:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;122946
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Não se aplica;2025-08-26T18:32:00;Concluída;***.472.167-** - ELIZABETH BAPTISTA DE LIMA COSTA;132087
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-08-18T08:49:00;Concluída;***.472.167-** - ELIZABETH BAPTISTA DE LIMA COSTA;121254
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-08-15T09:36:00;Concluída;***.223.191-** - AFRANIO TAVARES E SILVA;119913
@@ -21618,7 +21618,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-06T14:17:00;Concluída;***.530.441-** - WELLISSON GOMES ALMEIDA;112192
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-09-19T10:45:00;Concluída;***.844.051-** - ANA CLARA ANASTACIO MOURA;140258
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-09-17T18:48:00;Concluída;***.697.571-** - MICHELLE CASSEMIRO DE FREITAS;139897
-308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-09-05T06:57:00;Concluída;***.223.191-** - AFRANIO TAVARES E SILVA, ***.472.167-** - ELIZABETH BAPTISTA DE LIMA COSTA;116987
+308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-09-05T06:57:00;Concluída;***.472.167-** - ELIZABETH BAPTISTA DE LIMA COSTA, ***.223.191-** - AFRANIO TAVARES E SILVA;116987
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-08-26T21:49:00;Concluída;***.697.571-** - MICHELLE CASSEMIRO DE FREITAS;133079
 1799;Instituto Nacional de Colonização e Reforma Agrária;Solicitar Complementação;2025-08-25T18:55:00;Concluída;***.626.952-** - SARA SENA CASTRO;128919
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-08-14T18:51:00;Concluída;***.418.000-** - PAULINO VARELA TAVARES;119798
@@ -21714,7 +21714,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 253;Fundo Nacional de Desenvolvimento da Educação;Não se aplica;2025-08-20T14:06:00;Concluída;***.315.691-** - GESSIKA PRISCILA COSTA DE ABREU BENEVIDES;123601
 253;Fundo Nacional de Desenvolvimento da Educação;Não se aplica;2025-10-01T09:41:00;Concluída;***.758.481-** - LEILANE DAISY OLIVEIRA SERRA;143657
 308797;Ministério do Esporte;Solicitar Complementação;2025-09-03T10:23:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;135684
-308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:36:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA, ***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;122913
+308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:36:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;122913
 304;Ministério da Saúde;Solicitar Complementação;2025-09-05T15:06:00;Concluída;***.869.321-** - LEONARDO GALHARDO SANTOS;136632
 304;Ministério da Saúde;Solicitar Complementação;2025-08-26T10:15:00;Concluída;***.454.502-** - CARLA TOLEDO ALVES;129417
 304;Ministério da Saúde;Solicitar Complementação;2025-08-14T11:24:00;Concluída;***.869.321-** - LEONARDO GALHARDO SANTOS;118472
@@ -21734,7 +21734,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-08T13:15:00;Concluída;***.870.391-** - ELKEN RIBEIRO DA SILVA;114136
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-07T14:33:00;Concluída;***.171.628-** - GABRIEL LICA SILVA BALESTRINI;113341
 235881;Ministério da Justiça e Segurança Pública;Não se aplica;2025-08-26T19:35:00;Concluída;***.354.256-** - RODRIGO CESAR DE MELO;132501
-308815;Ministério das Mulheres;Solicitar Complementação;2025-08-26T15:53:00;Concluída;***.839.811-** - TAINARA DA NOBREGA MARQUES, ***.134.811-** - RUTH GONCALVES DE MIRANDA, ***.322.921-** - BRUNO VINICIUS DE MORAIS GONZAGA;114651
+308815;Ministério das Mulheres;Solicitar Complementação;2025-08-26T15:53:00;Concluída;***.134.811-** - RUTH GONCALVES DE MIRANDA, ***.839.811-** - TAINARA DA NOBREGA MARQUES, ***.322.921-** - BRUNO VINICIUS DE MORAIS GONZAGA;114651
 308816;Ministério dos Direitos Humanos e da Cidadania;Não se aplica;2025-08-14T16:51:00;Concluída;***.263.571-** - CLEYTON EDNEY RIBEIRO MEDEIROS;119469
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-08T09:55:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;113873
 267175;Ministério da Ciência, Tecnologia e Inovações;Solicitar Complementação;2025-09-10T18:28:00;Concluída;***.860.893-** - JOAO BARNABE DA SILVA JUNIOR;138244
@@ -21918,7 +21918,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-10-03T16:43:00;Concluída;***.395.802-** - SHERIDA MARIA DE FREITAS MOREIRA LIMA;145866
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-09-16T12:50:00;Concluída;***.395.802-** - SHERIDA MARIA DE FREITAS MOREIRA LIMA;139338
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-26T14:26:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;130344
-308798;Ministério das Cidades;Solicitar Complementação;2025-08-22T18:31:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA, ***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ;116228
+308798;Ministério das Cidades;Solicitar Complementação;2025-08-22T18:31:00;Concluída;***.619.751-** - GABRIEL PERES RIOS DE QUEIROZ, ***.658.683-** - VERBENA CARVALHO BRAGA;116228
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-26T17:48:00;Concluída;***.467.561-** - ADRIANA NEMER AFONSO;142427
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-25T15:16:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;141981
 72084;Ministério do Turismo;Solicitar Complementação;2025-09-19T16:35:00;Concluída;***.359.872-** - MARIZETE TEIXEIRA DE ALMEIDA;140458
@@ -22155,7 +22155,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308797;Ministério do Esporte;Solicitar Complementação;2025-08-15T10:18:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;119995
 244;Ministério da Educação;Não se aplica;2025-08-26T19:03:00;Concluída;***.975.742-** - ALINE PEREIRA LEAL;132240
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2025-08-22T17:52:00;Concluída;***.351.471-** - ANA PAULA DA SILVA BARBOZA;126531
-308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:40:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;122904
+308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:40:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA, ***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;122904
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-08-06T14:03:00;Concluída;***.929.741-** - FLAVIA SILVA DOS SANTOS;112158
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-09-04T11:19:00;Concluída;***.549.831-** - WARLEY FERREIRA DE SOUZA;136032
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-26T13:39:00;Concluída;***.929.681-** - GABRIEL VIEIRA;130163
@@ -23052,7 +23052,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 304;Ministério da Saúde;Solicitar Complementação;2025-08-25T09:14:00;Concluída;***.277.241-** - DANIELY DA SILVA SANTANA;127399
 308797;Ministério do Esporte;Solicitar Complementação;2025-08-29T11:52:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;122775
 244;Ministério da Educação;Não se aplica;2025-08-26T21:10:00;Concluída;***.050.361-** - ALDENORA LOPES DE MACEDO;132793
-253;Fundo Nacional de Desenvolvimento da Educação;Reprovar Plano de Trabalho;2025-08-26T18:12:00;Concluída;***.758.481-** - LEILANE DAISY OLIVEIRA SERRA, ***.315.691-** - GESSIKA PRISCILA COSTA DE ABREU BENEVIDES;125495
+253;Fundo Nacional de Desenvolvimento da Educação;Reprovar Plano de Trabalho;2025-08-26T18:12:00;Concluída;***.315.691-** - GESSIKA PRISCILA COSTA DE ABREU BENEVIDES, ***.758.481-** - LEILANE DAISY OLIVEIRA SERRA;125495
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-05T18:26:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;111492
 72084;Ministério do Turismo;Solicitar Complementação;2025-08-20T13:53:00;Concluída;***.359.872-** - MARIZETE TEIXEIRA DE ALMEIDA;123584
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Não se aplica;2025-08-20T07:52:00;Concluída;***.129.691-** - GILMAR PEREIRA DA SILVA;123237
@@ -23066,7 +23066,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-21T16:22:00;Concluída;***.467.561-** - ADRIANA NEMER AFONSO;124811
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-09T01:07:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;114712
 244;Ministério da Educação;Não se aplica;2025-08-26T23:34:00;Concluída;***.050.361-** - ALDENORA LOPES DE MACEDO;133269
-253;Fundo Nacional de Desenvolvimento da Educação;Reprovar Plano de Trabalho;2025-08-26T18:38:00;Concluída;***.758.481-** - LEILANE DAISY OLIVEIRA SERRA, ***.845.051-** - ERICK LIMA DE CARVALHO;127816
+253;Fundo Nacional de Desenvolvimento da Educação;Reprovar Plano de Trabalho;2025-08-26T18:38:00;Concluída;***.845.051-** - ERICK LIMA DE CARVALHO, ***.758.481-** - LEILANE DAISY OLIVEIRA SERRA;127816
 308798;Ministério das Cidades;Não se aplica;2025-08-18T16:47:00;Concluída;***.163.221-** - ELVIO FELIX NASCIMENTO;122137
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-26T10:14:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;129410
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-13T09:31:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;116778
@@ -23385,7 +23385,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-08-15T11:27:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS;120182
 308799;Ministério da Integração e do Desenvolvimento Regional;Aprovar Plano de Trabalho;2025-08-13T12:15:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA;117087
 244;Ministério da Educação;Não se aplica;2025-08-26T21:12:00;Concluída;***.050.361-** - ALDENORA LOPES DE MACEDO;132824
-253;Fundo Nacional de Desenvolvimento da Educação;Reprovar Plano de Trabalho;2025-08-26T18:19:00;Concluída;***.758.481-** - LEILANE DAISY OLIVEIRA SERRA, ***.315.691-** - GESSIKA PRISCILA COSTA DE ABREU BENEVIDES;125567
+253;Fundo Nacional de Desenvolvimento da Educação;Reprovar Plano de Trabalho;2025-08-26T18:19:00;Concluída;***.315.691-** - GESSIKA PRISCILA COSTA DE ABREU BENEVIDES, ***.758.481-** - LEILANE DAISY OLIVEIRA SERRA;125567
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-04T19:03:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;110722
 308797;Ministério do Esporte;Solicitar Complementação;2025-08-15T10:39:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;120036
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-08-19T10:08:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;122422
@@ -24799,7 +24799,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-08-07T13:09:00;Concluída;***.530.441-** - WELLISSON GOMES ALMEIDA;113245
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-07T11:28:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;113145
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-13T14:46:00;Concluída;***.712.686-** - WILKE CARVALHO CHAVES;117282
-72084;Ministério do Turismo;Solicitar Complementação;2025-08-12T21:59:00;Concluída;***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA, ***.023.411-** - GUILHERME MEDEIROS PIMENTEL;115892
+72084;Ministério do Turismo;Solicitar Complementação;2025-08-12T21:59:00;Concluída;***.023.411-** - GUILHERME MEDEIROS PIMENTEL, ***.500.747-** - LUCAS BRITTO PERDIGAO CAETANO DE SOUZA;115892
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-14T18:50:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;119797
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-25T10:22:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;127567
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-22T10:12:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;125313
@@ -25385,7 +25385,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-19T14:07:00;Concluída;***.958.531-** - LUIZ EDUARDO PARANAGUA BORGES;122694
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-25T13:49:00;Concluída;***.804.101-** - THAMARA SIQUEIRA DE FREITAS;127943
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-08-25T10:23:00;Concluída;***.242.941-** - BERNARDO PETRARCA ESTORTI DE CASTRO;127568
-308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-08-07T09:06:00;Concluída;***.530.441-** - WELLISSON GOMES ALMEIDA, ***.791.841-** - CLEITON MARCELINO PEREIRA;111054
+308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2025-08-07T09:06:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.530.441-** - WELLISSON GOMES ALMEIDA;111054
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-14T09:36:00;Concluída;***.467.306-** - KATIA DE OLIVEIRA;118051
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-18T10:38:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;139964
 308798;Ministério das Cidades;Solicitar Complementação;2025-08-25T13:11:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;127873
@@ -26467,7 +26467,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Não se aplica;2025-08-18T16:44:00;Concluída;***.163.221-** - ELVIO FELIX NASCIMENTO;122130
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-06T15:10:00;Concluída;***.651.121-** - FELIPE DE OLIVEIRA LOPES BEZERRA;112375
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Não se aplica;2025-10-03T19:17:00;Concluída;***.074.300-** - PABLO WANZELLER PINHEIRO;146286
-308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Não se aplica;2025-09-26T15:39:00;Concluída;***.223.191-** - AFRANIO TAVARES E SILVA, ***.074.300-** - PABLO WANZELLER PINHEIRO;122923
+308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Não se aplica;2025-09-26T15:39:00;Concluída;***.074.300-** - PABLO WANZELLER PINHEIRO, ***.223.191-** - AFRANIO TAVARES E SILVA;122923
 304;Ministério da Saúde;Solicitar Complementação;2025-08-26T11:14:00;Concluída;***.949.126-** - JESKA VIANA MADUREIRA;129653
 304;Ministério da Saúde;Solicitar Complementação;2025-08-24T15:08:00;Concluída;***.340.751-** - LAYSLA KAREN DOS SANTOS CAMPOS;127093
 308798;Ministério das Cidades;Não se aplica;2025-09-11T17:52:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;138570
@@ -27073,7 +27073,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-19T09:37:00;Concluída;***.489.201-** - LUCAS HENRIQUE SANTOS COSTA;122391
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-08-14T18:32:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA;119778
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-08-14T15:51:00;Concluída;***.066.351-** - GRAZIELLE FORMIGA E SOUSA;119266
-308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-11T10:30:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.906.361-** - ALESSANDRA SOUZA VIEIRA DE MELO;114113
+308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-11T10:30:00;Concluída;***.906.361-** - ALESSANDRA SOUZA VIEIRA DE MELO, ***.791.841-** - CLEITON MARCELINO PEREIRA;114113
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-08-26T11:12:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS;129642
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-25T13:52:00;Concluída;***.804.101-** - THAMARA SIQUEIRA DE FREITAS;127946
 308799;Ministério da Integração e do Desenvolvimento Regional;Aprovar Plano de Trabalho;2025-08-09T17:34:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA;114782
@@ -27978,7 +27978,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Aprovar Plano de Trabalho;2025-08-09T17:30:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA;114780
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-10-03T10:53:00;Concluída;***.489.201-** - LUCAS HENRIQUE SANTOS COSTA;145247
 308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2025-08-26T17:59:00;Concluída;***.248.801-** - BEATRIZ SANTIAGO DE SOUZA;131800
-308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2025-08-26T16:45:00;Concluída;***.124.335-** - ARYANE CHAGAS TAVORA, ***.248.801-** - BEATRIZ SANTIAGO DE SOUZA;122686
+308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2025-08-26T16:45:00;Concluída;***.248.801-** - BEATRIZ SANTIAGO DE SOUZA, ***.124.335-** - ARYANE CHAGAS TAVORA;122686
 308797;Ministério do Esporte;Solicitar Complementação;2025-08-15T14:03:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA;120379
 308798;Ministério das Cidades;Solicitar Complementação;2025-09-22T16:19:00;Concluída;***.870.750-** - JOSE CRISTIANO RILLING DA NOVA CRUZ;140827
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2025-08-18T16:50:00;Concluída;***.223.191-** - AFRANIO TAVARES E SILVA;122143
@@ -28628,7 +28628,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-25T23:33:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA;129181
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-21T16:15:00;Concluída;***.562.541-** - AILTON BONIFACIO;124792
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-08-12T11:19:00;Concluída;***.549.831-** - WARLEY FERREIRA DE SOUZA;116099
-308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-11T10:19:00;Concluída;***.906.361-** - ALESSANDRA SOUZA VIEIRA DE MELO, ***.791.841-** - CLEITON MARCELINO PEREIRA;110077
+308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2025-08-11T10:19:00;Concluída;***.791.841-** - CLEITON MARCELINO PEREIRA, ***.906.361-** - ALESSANDRA SOUZA VIEIRA DE MELO;110077
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2025-09-26T08:45:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA;142175
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2025-08-25T17:45:00;Concluída;***.804.101-** - THAMARA SIQUEIRA DE FREITAS;128620
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2025-08-25T17:33:00;Concluída;***.764.821-** - JOAO CARLOS SILVA REIS;128561
@@ -29361,7 +29361,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 304;Ministério da Saúde;Solicitar Complementação;2025-11-06T10:46:00;Concluída;***.758.686-** - FERNANDA MILENA ALVES MACHADO;147928
 304;Ministério da Saúde;Solicitar Complementação;2025-11-11T12:13:00;Concluída;***.595.565-** - MARISTELA SAMPAIO SOUZA;149966
 304;Ministério da Saúde;Solicitar Complementação;2025-11-09T21:47:00;Concluída;***.340.751-** - LAYSLA KAREN DOS SANTOS CAMPOS;149054
-308821;Ministério da Cultura;Solicitar Complementação;2025-11-14T10:54:00;Concluída;***.703.278-** - ALEXANDRE FERNANDES ONO, ***.664.431-** - CARLOS ANTONIO OLIVEIRA DA CRUZ;152224
+308821;Ministério da Cultura;Solicitar Complementação;2025-11-14T10:54:00;Concluída;***.664.431-** - CARLOS ANTONIO OLIVEIRA DA CRUZ, ***.703.278-** - ALEXANDRE FERNANDES ONO;152224
 308821;Ministério da Cultura;Solicitar Complementação;2025-11-13T11:13:00;Concluída;***.664.431-** - CARLOS ANTONIO OLIVEIRA DA CRUZ;151674
 308821;Ministério da Cultura;Solicitar Complementação;2025-11-12T16:38:00;Concluída;***.664.431-** - CARLOS ANTONIO OLIVEIRA DA CRUZ;151150
 308798;Ministério das Cidades;Solicitar Complementação;2025-11-03T19:12:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;146948
@@ -30379,7 +30379,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308816;Ministério dos Direitos Humanos e da Cidadania;Solicitar Complementação;2025-11-07T19:21:00;Concluída;***.048.201-** - FERNANDA RIBEIRO ROSA MACHADO;148828
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2025-11-13T09:20:00;Concluída;***.586.459-** - ALBERTO DA ROCHA NETO;151471
 244;Ministério da Educação;Solicitar Complementação;2025-11-14T22:37:00;Concluída;***.050.361-** - ALDENORA LOPES DE MACEDO;154232
-253;Fundo Nacional de Desenvolvimento da Educação;Aprovar Plano de Trabalho;2025-11-14T21:51:00;Concluída;***.916.551-** - PEDRO HENRIQUE FREITAS DE MORAIS, ***.595.671-** - THIAGO AZEVEDO LUNA DOS SANTOS;153998
+253;Fundo Nacional de Desenvolvimento da Educação;Aprovar Plano de Trabalho;2025-11-14T21:51:00;Concluída;***.595.671-** - THIAGO AZEVEDO LUNA DOS SANTOS, ***.916.551-** - PEDRO HENRIQUE FREITAS DE MORAIS;153998
 253;Fundo Nacional de Desenvolvimento da Educação;Não se aplica;2025-11-13T17:29:00;Concluída;***.273.201-** - RODRIGO LOFRANO ALVES DOS SANTOS;152221
 244;Ministério da Educação;Solicitar Complementação;2025-11-13T17:28:00;Concluída;***.273.201-** - RODRIGO LOFRANO ALVES DOS SANTOS;152223
 308798;Ministério das Cidades;Solicitar Complementação;2025-11-11T10:48:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;149855
@@ -30406,7 +30406,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2025-11-04T10:35:00;Concluída;***.768.281-** - AMANDA CARBALLO CERQUEIRA LUPATINI;147064
 308798;Ministério das Cidades;Solicitar Complementação;2025-11-06T17:23:00;Concluída;***.467.561-** - ADRIANA NEMER AFONSO;148226
 308797;Ministério do Esporte;Solicitar Complementação;2025-11-13T15:32:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;152006
-308797;Ministério do Esporte;Solicitar Complementação;2025-11-12T11:15:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA, ***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;150697
+308797;Ministério do Esporte;Solicitar Complementação;2025-11-12T11:15:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;150697
 308797;Ministério do Esporte;Solicitar Complementação;2025-11-10T17:12:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;149606
 308797;Ministério do Esporte;Solicitar Complementação;2025-11-07T12:00:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;148456
 72084;Ministério do Turismo;Não se aplica;2025-11-14T20:49:00;Concluída;***.122.551-** - RENATO CHAGAS CABRAL;154106
@@ -31472,7 +31472,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Solicitar Complementação;2025-11-12T18:22:00;Concluída;***.727.321-** - BRENO DE MORAES SILVA;151311
 308797;Ministério do Esporte;Solicitar Complementação;2025-11-11T17:55:00;Concluída;***.266.241-** - JOSE CLEBER DA SILVA OLIVEIRA;150373
 308797;Ministério do Esporte;Solicitar Complementação;2025-12-04T18:29:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;154889
-308797;Ministério do Esporte;Solicitar Complementação;2025-12-04T10:26:00;Concluída;***.405.761-** - SOFIA GUSMAO DE SOUZA, ***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;153556
+308797;Ministério do Esporte;Solicitar Complementação;2025-12-04T10:26:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA, ***.405.761-** - SOFIA GUSMAO DE SOUZA;153556
 308797;Ministério do Esporte;Solicitar Complementação;2025-11-13T16:53:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;152184
 308797;Ministério do Esporte;Solicitar Complementação;2025-11-12T10:26:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;150629
 308797;Ministério do Esporte;Solicitar Complementação;2025-11-07T12:01:00;Concluída;***.933.261-** - MARIA LUIZA TELES DOURADO DE LIMA;148457
@@ -31613,7 +31613,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2025-11-06T17:27:00;Concluída;***.859.736-** - FRANCIENE MARTINS ARAUJO;148229
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Não se aplica;2025-11-14T18:57:00;Concluída;***.074.300-** - PABLO WANZELLER PINHEIRO;153907
 304;Ministério da Saúde;Solicitar Complementação;2025-12-04T10:28:00;Concluída;***.969.801-** - DIVINA LOPO DA SILVA;154783
-304;Ministério da Saúde;Solicitar Complementação;2025-12-01T19:13:00;Concluída;***.654.239-** - ANDREZZA BIROLO JOAQUIM, ***.595.565-** - MARISTELA SAMPAIO SOUZA;149025
+304;Ministério da Saúde;Solicitar Complementação;2025-12-01T19:13:00;Concluída;***.595.565-** - MARISTELA SAMPAIO SOUZA, ***.654.239-** - ANDREZZA BIROLO JOAQUIM;149025
 304;Ministério da Saúde;Solicitar Complementação;2025-11-09T14:05:00;Concluída;***.595.565-** - MARISTELA SAMPAIO SOUZA;148994
 304;Ministério da Saúde;Solicitar Complementação;2025-11-09T14:14:00;Concluída;***.595.565-** - MARISTELA SAMPAIO SOUZA;148995
 304;Ministério da Saúde;Solicitar Complementação;2025-11-09T06:58:00;Concluída;***.011.261-** - NADJA TEIXEIRA RESENDE;148961
@@ -33129,7 +33129,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 72084;Ministério do Turismo;Solicitar Complementação;2025-11-11T18:25:00;Concluída;***.359.872-** - MARIZETE TEIXEIRA DE ALMEIDA;150407
 72084;Ministério do Turismo;Solicitar Complementação;2025-11-03T22:37:00;Concluída;***.023.411-** - GUILHERME MEDEIROS PIMENTEL;146982
 72084;Ministério do Turismo;Solicitar Complementação;2025-11-03T22:34:00;Concluída;***.023.411-** - GUILHERME MEDEIROS PIMENTEL;146981
-304;Ministério da Saúde;Solicitar Complementação;2025-12-01T13:43:00;Concluída;***.949.126-** - JESKA VIANA MADUREIRA, ***.988.401-** - BARBARA LIMA GONTIJO;154305
+304;Ministério da Saúde;Solicitar Complementação;2025-12-01T13:43:00;Concluída;***.988.401-** - BARBARA LIMA GONTIJO, ***.949.126-** - JESKA VIANA MADUREIRA;154305
 304;Ministério da Saúde;Solicitar Complementação;2025-11-14T21:12:00;Concluída;***.595.565-** - MARISTELA SAMPAIO SOUZA;154148
 304;Ministério da Saúde;Solicitar Complementação;2025-11-14T18:16:00;Concluída;***.949.126-** - JESKA VIANA MADUREIRA;153784
 304;Ministério da Saúde;Solicitar Complementação;2025-11-13T15:57:00;Concluída;***.024.521-** - RAYANNA ARAUJO LISBOA;152077
@@ -33193,7 +33193,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-04-30T13:20:00;Concluída;***.549.831-** - WARLEY FERREIRA DE SOUZA;171676
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-07T09:34:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;155918
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-16T17:08:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;161818
-308798;Ministério das Cidades;Solicitar Complementação;2026-04-15T17:01:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO, ***.141.691-** - AGUIAR GONZAGA VIEIRA DA COSTA;157987
+308798;Ministério das Cidades;Solicitar Complementação;2026-04-15T17:01:00;Concluída;***.141.691-** - AGUIAR GONZAGA VIEIRA DA COSTA, ***.374.988-** - MARCELO ROMANO MODOLO;157987
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-06T11:57:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;155717
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-04-30T15:48:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS;172231
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-16T14:34:00;Concluída;***.149.001-** - RIANA DA SILVA SOBRAL DE CASTRO;161450
@@ -34115,7 +34115,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-04-30T14:41:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS;171934
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-22T15:54:00;Concluída;***.929.741-** - FLAVIA SILVA DOS SANTOS;164750
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-22T15:58:00;Concluída;***.929.741-** - FLAVIA SILVA DOS SANTOS;164760
-308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2026-04-22T15:35:00;Concluída;***.641.461-** - CRISTIANO HENRIQUE SOUZA DOS SANTOS, ***.124.335-** - ARYANE CHAGAS TAVORA;158202
+308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2026-04-22T15:35:00;Concluída;***.124.335-** - ARYANE CHAGAS TAVORA, ***.641.461-** - CRISTIANO HENRIQUE SOUZA DOS SANTOS;158202
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-04-30T16:18:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS;172406
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-22T16:02:00;Concluída;***.929.741-** - FLAVIA SILVA DOS SANTOS;164769
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-15T10:30:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;159763
@@ -34279,7 +34279,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-06T11:03:00;Concluída;***.227.681-** - MARIANA CAROLINA CARVALHO NOVAIS;155701
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-10T07:35:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;157393
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-15T16:32:00;Concluída;***.692.061-** - CRISTINA FARIAS DE ARAUJO;160546
-308798;Ministério das Cidades;Solicitar Complementação;2026-04-15T16:41:00;Concluída;***.692.061-** - CRISTINA FARIAS DE ARAUJO, ***.467.561-** - ADRIANA NEMER AFONSO;157324
+308798;Ministério das Cidades;Solicitar Complementação;2026-04-15T16:41:00;Concluída;***.467.561-** - ADRIANA NEMER AFONSO, ***.692.061-** - CRISTINA FARIAS DE ARAUJO;157324
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2026-04-16T15:12:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;161516
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2026-04-08T16:55:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;156665
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2026-04-17T10:41:00;Concluída;***.844.051-** - ANA CLARA ANASTACIO MOURA;162388
@@ -34377,7 +34377,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 304;Ministério da Saúde;Solicitar Complementação;2026-05-12T10:32:00;Concluída;***.969.801-** - DIVINA LOPO DA SILVA;176825
 304;Ministério da Saúde;Solicitar Complementação;2026-04-30T22:11:00;Concluída;***.654.239-** - ANDREZZA BIROLO JOAQUIM;173340
 304;Ministério da Saúde;Solicitar Complementação;2026-04-28T12:16:00;Concluída;***.949.126-** - JESKA VIANA MADUREIRA;169439
-304;Ministério da Saúde;Não se aplica;2026-04-20T15:08:00;Concluída;***.906.273-** - LILIANNE BARROS AGUIAR FATURETO, ***.340.751-** - LAYSLA KAREN DOS SANTOS CAMPOS;160200
+304;Ministério da Saúde;Não se aplica;2026-04-20T15:08:00;Concluída;***.340.751-** - LAYSLA KAREN DOS SANTOS CAMPOS, ***.906.273-** - LILIANNE BARROS AGUIAR FATURETO;160200
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-29T17:59:00;Concluída;***.774.792-** - RITA DE KASSIA WANZELER DOS SANTOS;170873
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-17T11:19:00;Concluída;***.149.001-** - RIANA DA SILVA SOBRAL DE CASTRO;162505
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-16T18:12:00;Concluída;***.149.001-** - RIANA DA SILVA SOBRAL DE CASTRO;161923
@@ -34492,7 +34492,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 72084;Ministério do Turismo;Solicitar Complementação;2026-05-14T10:32:00;Concluída;***.227.681-** - MARIANA CAROLINA CARVALHO NOVAIS;177243
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-15T13:57:00;Concluída;***.227.681-** - MARIANA CAROLINA CARVALHO NOVAIS;160146
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-05-08T16:03:00;Concluída;***.044.141-** - CARINA BEZERRA DA SILVA, ***.250.961-** - ANGELANE SOARES DOS SANTOS;175001
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-05-08T16:05:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS, ***.044.141-** - CARINA BEZERRA DA SILVA;175002
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-05-08T16:05:00;Concluída;***.044.141-** - CARINA BEZERRA DA SILVA, ***.250.961-** - ANGELANE SOARES DOS SANTOS;175002
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-04-30T16:23:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS;172430
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-04-30T14:44:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS;171946
 308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2026-04-24T10:48:00;Concluída;***.804.101-** - THAMARA SIQUEIRA DE FREITAS;167322
@@ -34588,7 +34588,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308816;Ministério dos Direitos Humanos e da Cidadania;Solicitar Complementação;2026-04-22T17:04:00;Concluída;***.174.204-** - LUIS ALBERTO DA SILVA;164874
 308816;Ministério dos Direitos Humanos e da Cidadania;Solicitar Complementação;2026-04-23T11:29:00;Concluída;***.779.891-** - FILIPE FERREIRA DE MORAIS;165524
 308816;Ministério dos Direitos Humanos e da Cidadania;Solicitar Complementação;2026-04-30T16:28:00;Concluída;***.999.997-** - SHEILA OLIVEIRA DE CASTRO;172114
-308816;Ministério dos Direitos Humanos e da Cidadania;Solicitar Complementação;2026-05-13T12:03:00;Concluída;***.644.821-** - KEYLA MARA SOUZA DE MORAIS, ***.964.941-** - MARCELO MOURAO MOTTA GROSSI;174193
+308816;Ministério dos Direitos Humanos e da Cidadania;Solicitar Complementação;2026-05-13T12:03:00;Concluída;***.964.941-** - MARCELO MOURAO MOTTA GROSSI, ***.644.821-** - KEYLA MARA SOUZA DE MORAIS;174193
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-06T12:08:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;155719
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-06T18:29:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;155858
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-10T08:33:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;157412
@@ -34720,7 +34720,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-02T19:24:00;Concluída;***.359.872-** - MARIZETE TEIXEIRA DE ALMEIDA;155674
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-05-06T08:20:00;Concluída;***.497.901-** - JESSYCA KANOY NOGUEIRA LOPES;175193
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2026-04-23T13:21:00;Concluída;***.005.491-** - HARRISON REIS TORQUATO;165839
-253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2026-05-05T10:52:00;Concluída;***.005.491-** - HARRISON REIS TORQUATO, ***.774.072-** - PEDRO JADER ANTONY LINHARES;174255
+253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2026-05-05T10:52:00;Concluída;***.774.072-** - PEDRO JADER ANTONY LINHARES, ***.005.491-** - HARRISON REIS TORQUATO;174255
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2026-04-23T14:24:00;Concluída;***.005.491-** - HARRISON REIS TORQUATO;165967
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2026-04-27T08:23:00;Concluída;***.472.167-** - ELIZABETH BAPTISTA DE LIMA COSTA;168194
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2026-04-22T15:16:00;Concluída;***.620.101-** - RENAN MELO DE AGUIAR;164638
@@ -35484,7 +35484,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-22T13:27:00;Concluída;***.891.911-** - MARIA CLAUDIA DE BRITO ANDRE SILVA;164388
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-16T11:50:00;Concluída;***.891.911-** - MARIA CLAUDIA DE BRITO ANDRE SILVA;161248
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-10T16:17:00;Concluída;***.891.911-** - MARIA CLAUDIA DE BRITO ANDRE SILVA;157691
-308821;Ministério da Cultura;Solicitar Complementação;2026-04-29T15:39:00;Concluída;***.664.431-** - CARLOS ANTONIO OLIVEIRA DA CRUZ, ***.278.182-** - JOELLE KATIUSSIA MACEDO DA SILVA CARDOSO;170564
+308821;Ministério da Cultura;Solicitar Complementação;2026-04-29T15:39:00;Concluída;***.278.182-** - JOELLE KATIUSSIA MACEDO DA SILVA CARDOSO, ***.664.431-** - CARLOS ANTONIO OLIVEIRA DA CRUZ;170564
 308821;Ministério da Cultura;Solicitar Complementação;2026-04-29T11:48:00;Concluída;***.278.182-** - JOELLE KATIUSSIA MACEDO DA SILVA CARDOSO;170343
 308821;Ministério da Cultura;Solicitar Complementação;2026-04-23T13:49:00;Concluída;***.278.182-** - JOELLE KATIUSSIA MACEDO DA SILVA CARDOSO;165878
 308821;Ministério da Cultura;Solicitar Complementação;2026-04-17T11:28:00;Concluída;***.664.431-** - CARLOS ANTONIO OLIVEIRA DA CRUZ;162531
@@ -36096,7 +36096,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 304;Ministério da Saúde;Solicitar Complementação;2026-04-30T20:27:00;Concluída;***.969.801-** - DIVINA LOPO DA SILVA;173197
 304;Ministério da Saúde;Solicitar Complementação;2026-04-13T16:35:00;Concluída;***.969.801-** - DIVINA LOPO DA SILVA;158487
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2026-04-15T18:18:00;Concluída;***.929.741-** - FLAVIA SILVA DOS SANTOS;160810
-308818;Ministério dos Transportes;Solicitar Complementação;2026-05-12T14:48:00;Concluída;***.697.721-** - NATANIELA RODRIGUES DE CARVALHO, ***.435.691-** - JULHIERMES FERNANDES DO NASCIMENTO;167119
+308818;Ministério dos Transportes;Solicitar Complementação;2026-05-12T14:48:00;Concluída;***.435.691-** - JULHIERMES FERNANDES DO NASCIMENTO, ***.697.721-** - NATANIELA RODRIGUES DE CARVALHO;167119
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-15T13:42:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;160120
 304;Ministério da Saúde;Não se aplica;2026-04-09T10:30:00;Concluída;***.044.214-** - MAYARA MARIA FERNANDES DOS SANTOS CAVALCANTE;156941
 308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Não se aplica;2026-04-23T14:51:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;166049
@@ -36254,7 +36254,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-07T11:34:00;Concluída;***.286.156-** - CLEBER MARCELO DA SILVA;155994
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-22T13:54:00;Concluída;***.891.911-** - MARIA CLAUDIA DE BRITO ANDRE SILVA;164432
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-14T11:19:00;Concluída;***.891.911-** - MARIA CLAUDIA DE BRITO ANDRE SILVA;158911
-308798;Ministério das Cidades;Solicitar Complementação;2026-04-30T09:33:00;Concluída;***.141.691-** - AGUIAR GONZAGA VIEIRA DA COSTA, ***.374.988-** - MARCELO ROMANO MODOLO;162910
+308798;Ministério das Cidades;Solicitar Complementação;2026-04-30T09:33:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO, ***.141.691-** - AGUIAR GONZAGA VIEIRA DA COSTA;162910
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-16T09:28:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;160963
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-29T08:08:00;Concluída;***.728.491-** - MICHELLY HANNA SILVA WADIE CASTRO;170043
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-17T11:54:00;Concluída;***.728.491-** - MICHELLY HANNA SILVA WADIE CASTRO;162590
@@ -36449,7 +36449,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-27T13:19:00;Concluída;***.728.491-** - MICHELLY HANNA SILVA WADIE CASTRO;168656
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-23T12:06:00;Concluída;***.792.991-** - AIRLA PULU DA SILVA;165605
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-12T17:19:00;Concluída;***.817.723-** - ANA KETYLLA PONTE PRADO RODRIGUES;176965
-1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-08T15:45:00;Concluída;***.808.991-** - BRENO ANDRE PEREIRA LOPES BISPO, ***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;174693
+1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-08T15:45:00;Concluída;***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA, ***.808.991-** - BRENO ANDRE PEREIRA LOPES BISPO;174693
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-04-22T22:08:00;Concluída;***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;165138
 304;Ministério da Saúde;Solicitar Complementação;2026-04-30T14:28:00;Concluída;***.340.751-** - LAYSLA KAREN DOS SANTOS CAMPOS;171884
 304;Ministério da Saúde;Solicitar Complementação;2026-04-19T21:49:00;Concluída;***.654.239-** - ANDREZZA BIROLO JOAQUIM;163616
@@ -36722,7 +36722,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 304;Ministério da Saúde;Solicitar Complementação;2026-04-16T15:36:00;Concluída;***.340.751-** - LAYSLA KAREN DOS SANTOS CAMPOS;161571
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-16T10:13:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;161031
 308816;Ministério dos Direitos Humanos e da Cidadania;Solicitar Complementação;2026-04-15T15:07:00;Concluída;***.174.204-** - LUIS ALBERTO DA SILVA;160287
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-04-24T14:41:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA, ***.250.961-** - ANGELANE SOARES DOS SANTOS;162779
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-04-24T14:41:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS, ***.232.781-** - ANNA WALERIA MAXIMO LIRA;162779
 304;Ministério da Saúde;Solicitar Complementação;2026-04-24T15:22:00;Concluída;***.949.126-** - JESKA VIANA MADUREIRA;167613
 304;Ministério da Saúde;Solicitar Complementação;2026-04-16T15:42:00;Concluída;***.340.751-** - LAYSLA KAREN DOS SANTOS CAMPOS;161589
 304;Ministério da Saúde;Solicitar Complementação;2026-04-16T15:46:00;Concluída;***.340.751-** - LAYSLA KAREN DOS SANTOS CAMPOS;161593
@@ -37251,7 +37251,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 304;Ministério da Saúde;Solicitar Complementação;2026-04-09T10:27:00;Concluída;***.969.801-** - DIVINA LOPO DA SILVA;156935
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-24T15:39:00;Concluída;***.003.521-** - LIVIA LARISSA DIAS DE JESUS;167635
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2026-04-16T10:27:00;Concluída;***.003.491-** - MARCELLA CALDAS DE BARROS LEVENHAGEN;161060
-1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-11T14:59:00;Concluída;***.808.991-** - BRENO ANDRE PEREIRA LOPES BISPO, ***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA, ***.817.723-** - ANA KETYLLA PONTE PRADO RODRIGUES;174694
+1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-11T14:59:00;Concluída;***.817.723-** - ANA KETYLLA PONTE PRADO RODRIGUES, ***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA, ***.808.991-** - BRENO ANDRE PEREIRA LOPES BISPO;174694
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-04-22T23:00:00;Concluída;***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;165163
 308815;Ministério das Mulheres;Solicitar Complementação;2026-04-23T15:11:00;Concluída;***.906.911-** - GLEICY KELLE FARIAS DE ASSIS;166148
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-14T17:17:00;Concluída;***.467.561-** - ADRIANA NEMER AFONSO;159414
@@ -37288,7 +37288,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-08T20:29:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;156768
 308797;Ministério do Esporte;Solicitar Complementação;2026-04-17T17:23:00;Concluída;***.969.941-** - FERNANDA AMARO MARTINS DA SILVA LIMA;163283
 308797;Ministério do Esporte;Solicitar Complementação;2026-04-13T15:13:00;Concluída;***.969.941-** - FERNANDA AMARO MARTINS DA SILVA LIMA;158362
-1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-11T14:57:00;Concluída;***.817.723-** - ANA KETYLLA PONTE PRADO RODRIGUES, ***.808.991-** - BRENO ANDRE PEREIRA LOPES BISPO, ***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;174716
+1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-11T14:57:00;Concluída;***.808.991-** - BRENO ANDRE PEREIRA LOPES BISPO, ***.817.723-** - ANA KETYLLA PONTE PRADO RODRIGUES, ***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;174716
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-04-24T18:29:00;Concluída;***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;167962
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-04-22T22:12:00;Concluída;***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;165140
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-04-30T18:20:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS;172897
@@ -37313,7 +37313,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2026-04-23T18:28:00;Concluída;***.005.491-** - HARRISON REIS TORQUATO;166832
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2026-04-21T13:45:00;Concluída;***.724.434-** - OSMAR BEZERRA CALIXTO OLIVEIRA;163890
 235881;Ministério da Justiça e Segurança Pública;Solicitar Complementação;2026-04-08T15:00:00;Concluída;***.724.434-** - OSMAR BEZERRA CALIXTO OLIVEIRA;156553
-1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-11T15:06:00;Concluída;***.817.723-** - ANA KETYLLA PONTE PRADO RODRIGUES, ***.808.991-** - BRENO ANDRE PEREIRA LOPES BISPO, ***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;174706
+1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-11T15:06:00;Concluída;***.817.723-** - ANA KETYLLA PONTE PRADO RODRIGUES, ***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA, ***.808.991-** - BRENO ANDRE PEREIRA LOPES BISPO;174706
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-04-22T22:14:00;Concluída;***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;165141
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2026-05-13T17:27:00;Concluída;***.305.621-** - VANESSA DA SILVA CRUZ COSTA;177153
 308798;Ministério das Cidades;Não se aplica;2026-05-04T10:36:00;Concluída;***.609.481-** - HUMBERTO MACIEL FERREIRA;174128
@@ -38550,7 +38550,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-15T12:30:00;Concluída;***.375.766-** - JOAO VICENTE SANTORO;160063
 308814;Ministério do Desenvolvimento, Indústria, Comércio e Serviços;Solicitar Complementação;2026-04-17T14:14:00;Concluída;***.853.796-** - TOMAS DE FARIA BALBINO;162725
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-13T16:08:00;Concluída;***.817.723-** - ANA KETYLLA PONTE PRADO RODRIGUES;177125
-1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-11T13:53:00;Concluída;***.817.723-** - ANA KETYLLA PONTE PRADO RODRIGUES, ***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;174718
+1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-05-11T13:53:00;Concluída;***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA, ***.817.723-** - ANA KETYLLA PONTE PRADO RODRIGUES;174718
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-04-29T17:31:00;Concluída;***.817.723-** - ANA KETYLLA PONTE PRADO RODRIGUES;170816
 1927;Ministério do Meio Ambiente;Solicitar Complementação;2026-04-22T22:29:00;Concluída;***.207.224-** - ZELIA MARIA PEIXOTO DA SILVA;165150
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-13T11:47:00;Concluída;***.929.741-** - FLAVIA SILVA DOS SANTOS;158091
@@ -41320,7 +41320,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-29T14:20:00;Concluída;***.003.521-** - LIVIA LARISSA DIAS DE JESUS;170513
 308798;Ministério das Cidades;Não se aplica;2026-04-28T14:01:00;Concluída;***.658.683-** - VERBENA CARVALHO BRAGA;169519
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2026-04-23T21:57:00;Concluída;***.595.671-** - THIAGO AZEVEDO LUNA DOS SANTOS;167089
-308793;Ministério da Agricultura e Pecuária;Não se aplica;2026-04-23T10:51:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS, ***.637.161-** - JESSICA OLIVEIRA DE LIMA MENDES;162956
+308793;Ministério da Agricultura e Pecuária;Não se aplica;2026-04-23T10:51:00;Concluída;***.637.161-** - JESSICA OLIVEIRA DE LIMA MENDES, ***.250.961-** - ANGELANE SOARES DOS SANTOS;162956
 244;Ministério da Educação;Não se aplica;2026-04-21T10:51:00;Concluída;***.050.361-** - ALDENORA LOPES DE MACEDO;163827
 308795;Ministério da Pesca e Aquicultura;Solicitar Complementação;2026-04-17T13:46:00;Concluída;***.062.641-** - ANTONIO SIQUEIRA ASSREUY;162689
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-15T12:03:00;Concluída;***.003.521-** - LIVIA LARISSA DIAS DE JESUS;160014
@@ -42614,7 +42614,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308797;Ministério do Esporte;Solicitar Complementação;2026-04-17T10:38:00;Concluída;***.470.708-** - LEONARDO TAKEI KAWATA;162374
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-16T14:29:00;Concluída;***.572.723-** - ROMULO CESAR PINHEIRO COUTINHO;161442
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-05-06T16:21:00;Concluída;***.049.291-** - NATHALIA VIEIRA DE RESENDE;175356
-308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2026-05-06T11:44:00;Concluída;***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM, ***.074.300-** - PABLO WANZELLER PINHEIRO;166427
+308796;Ministério do Desenvolvimento e Assistência Social, Família e Combate à Fome;Solicitar Complementação;2026-05-06T11:44:00;Concluída;***.074.300-** - PABLO WANZELLER PINHEIRO, ***.848.891-** - DENISE BORGES DE SOUZA ESTEVAM;166427
 308798;Ministério das Cidades;Solicitar Complementação;2026-05-04T08:39:00;Concluída;***.961.698-** - RODOLFO SCHWEISER DE PAIVA LOPES;174038
 308797;Ministério do Esporte;Solicitar Complementação;2026-04-17T10:49:00;Concluída;***.470.708-** - LEONARDO TAKEI KAWATA;162419
 308798;Ministério das Cidades;Não se aplica;2026-04-28T16:45:00;Concluída;***.103.391-** - ALESSANDRA GONCALVES ARAUJO;169795
@@ -42876,7 +42876,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-09T15:24:00;Concluída;***.359.872-** - MARIZETE TEIXEIRA DE ALMEIDA;157203
 72084;Ministério do Turismo;Solicitar Complementação;2026-04-07T16:42:00;Concluída;***.359.872-** - MARIZETE TEIXEIRA DE ALMEIDA;156192
 308797;Ministério do Esporte;Solicitar Complementação;2026-04-13T22:18:00;Concluída;***.687.461-** - FRANCISLEY FREITAS DOS SANTOS;158710
-72084;Ministério do Turismo;Solicitar Complementação;2026-04-10T16:11:00;Concluída;***.359.872-** - MARIZETE TEIXEIRA DE ALMEIDA, ***.023.411-** - GUILHERME MEDEIROS PIMENTEL;156795
+72084;Ministério do Turismo;Solicitar Complementação;2026-04-10T16:11:00;Concluída;***.023.411-** - GUILHERME MEDEIROS PIMENTEL, ***.359.872-** - MARIZETE TEIXEIRA DE ALMEIDA;156795
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-29T20:00:00;Concluída;***.971.281-** - ADELCIONE GOMES DE SOUZA;171024
 308799;Ministério da Integração e do Desenvolvimento Regional;Solicitar Complementação;2026-04-23T14:17:00;Concluída;***.750.061-** - VITORIA DE SOUSA PEREIRA;165943
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-22T14:47:00;Concluída;***.961.698-** - RODOLFO SCHWEISER DE PAIVA LOPES;164553
@@ -44003,7 +44003,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-16T13:05:00;Concluída;***.399.848-** - DIEGO VERNILLE DA SILVA;161351
 308797;Ministério do Esporte;Solicitar Complementação;2026-04-23T17:40:00;Concluída;***.893.778-** - JOAO VICTOR BEZERRA;166720
 308797;Ministério do Esporte;Solicitar Complementação;2026-04-16T11:12:00;Concluída;***.969.941-** - FERNANDA AMARO MARTINS DA SILVA LIMA;161162
-304;Ministério da Saúde;Solicitar Complementação;2026-04-22T11:26:00;Concluída;***.004.741-** - KEYLA ANTUNES KIKUSHI CAMARA, ***.574.895-** - HENRIQUE ALMEIDA SILVA GALRAO;160602
+304;Ministério da Saúde;Solicitar Complementação;2026-04-22T11:26:00;Concluída;***.574.895-** - HENRIQUE ALMEIDA SILVA GALRAO, ***.004.741-** - KEYLA ANTUNES KIKUSHI CAMARA;160602
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-17T17:53:00;Concluída;***.961.698-** - RODOLFO SCHWEISER DE PAIVA LOPES;163341
 308798;Ministério das Cidades;Solicitar Complementação;2026-04-14T16:38:00;Concluída;***.467.561-** - ADRIANA NEMER AFONSO;159345
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-04-30T14:40:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS;171925
@@ -44390,7 +44390,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-19T16:39:00;Concluída;***.087.086-** - MARCOS DANIEL SOARES;180173
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-19T15:23:00;Concluída;***.087.086-** - MARCOS DANIEL SOARES;180117
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-18T19:10:00;Concluída;***.087.086-** - MARCOS DANIEL SOARES;179953
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-17T11:32:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA, ***.250.961-** - ANGELANE SOARES DOS SANTOS;178999
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-17T11:32:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS, ***.232.781-** - ANNA WALERIA MAXIMO LIRA;178999
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-10-27T15:04:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS;178255
 308821;Ministério da Cultura;Solicitar Complementação;2026-11-17T13:36:00;Concluída;***.820.941-** - VANESSA FELIX DE OLIVEIRA;179578
 308821;Ministério da Cultura;Solicitar Complementação;2026-11-12T17:25:00;Concluída;***.820.941-** - VANESSA FELIX DE OLIVEIRA;179173
@@ -44680,7 +44680,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2026-11-07T19:03:00;Concluída;***.595.671-** - THIAGO AZEVEDO LUNA DOS SANTOS;178817
 253;Fundo Nacional de Desenvolvimento da Educação;Solicitar Complementação;2026-11-12T18:09:00;Concluída;***.916.551-** - PEDRO HENRIQUE FREITAS DE MORAIS;179181
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-18T15:29:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA;179856
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-17T17:17:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA, ***.250.961-** - ANGELANE SOARES DOS SANTOS;179672
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-17T17:17:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS, ***.232.781-** - ANNA WALERIA MAXIMO LIRA;179672
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-10T19:18:00;Concluída;***.087.086-** - MARCOS DANIEL SOARES;178962
 308799;Ministério da Integração e do Desenvolvimento Regional;Não se aplica;2026-10-26T14:33:00;Concluída;***.330.621-** - NATALI SOUSA GOMES;178150
 308798;Ministério das Cidades;Solicitar Complementação;2026-10-23T15:00:00;Concluída;***.374.988-** - MARCELO ROMANO MODOLO;178116
@@ -45061,7 +45061,7 @@ codigo_siorg_orgao_analise_pt_hist;nome_orgao_analise_pt_hist;situacao_parecer_a
 308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-18T19:54:00;Concluída;***.087.086-** - MARCOS DANIEL SOARES;179960
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2026-11-17T20:52:00;Concluída;***.764.821-** - JOAO CARLOS SILVA REIS;179694
 314727;Secretaria Nacional de Juventude;Não se aplica;2026-11-17T15:56:00;Concluída;***.718.421-** - VERONICA DA SILVA VIDAL;179636
-308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-11T15:50:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS, ***.232.781-** - ANNA WALERIA MAXIMO LIRA;178663
+308793;Ministério da Agricultura e Pecuária;Solicitar Complementação;2026-11-11T15:50:00;Concluída;***.232.781-** - ANNA WALERIA MAXIMO LIRA, ***.250.961-** - ANGELANE SOARES DOS SANTOS;178663
 308794;Ministério do Desenvolvimento Agrário e Agricultura Familiar;Não se aplica;2026-11-05T14:19:00;Concluída;***.764.821-** - JOAO CARLOS SILVA REIS;178669
 308795;Ministério da Pesca e Aquicultura;Não se aplica;2026-11-06T09:51:00;Concluída;***.489.201-** - LUCAS HENRIQUE SANTOS COSTA;178740
 308793;Ministério da Agricultura e Pecuária;Não se aplica;2026-10-27T11:23:00;Concluída;***.250.961-** - ANGELANE SOARES DOS SANTOS;178215
