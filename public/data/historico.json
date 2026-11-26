@@ -1,5 +1,5 @@
 {
- "atualizado_em": "2026-11-26T05:13-03:00",
+ "atualizado_em": "2026-11-26T14:07-03:00",
  "entradas": [
   {
    "dataset": "fundo-a-fundo",
@@ -9950,6 +9950,91 @@
      "situacao": "Plano de Trabalho em Elaboração/Aguardando Envio para Análise",
      "antes": 11,
      "depois": 11
+    }
+   ],
+   "situacoes_novas": []
+  },
+  {
+   "dataset": "discricionarias-legais",
+   "executado_em": "2026-11-26T14:07-03:00",
+   "sem_base_anterior": false,
+   "registros": {
+    "antes": 23742,
+    "depois": 23742
+   },
+   "novos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "removidos": {
+    "total": 0,
+    "exemplos": []
+   },
+   "colunas_novas": [],
+   "colunas_removidas": [],
+   "campos_alterados": [],
+   "totais": [
+    {
+     "campo": "valor_global",
+     "antes": 32173955319.04,
+     "depois": 32173955319.04
+    },
+    {
+     "campo": "valor_repasse",
+     "antes": 31137101004.879997,
+     "depois": 31137101004.879997
+    },
+    {
+     "campo": "valor_contrapartida",
+     "antes": 1036854314.16,
+     "depois": 1036854314.16
+    },
+    {
+     "campo": "vl_contrapartida_finan_prop",
+     "antes": 1004766122.5899999,
+     "depois": 1004766122.5899999
+    },
+    {
+     "campo": "vl_contrapartida_bens_serv_prop",
+     "antes": 32088191.569999997,
+     "depois": 32088191.569999997
+    },
+    {
+     "campo": "valor_desembolsado",
+     "antes": 2283530562.21,
+     "depois": 2283530562.21
+    }
+   ],
+   "situacoes": [
+    {
+     "situacao": "Em Análise pelo Órgão Concedente",
+     "antes": 10605,
+     "depois": 10605
+    },
+    {
+     "situacao": "Aprovadas",
+     "antes": 6235,
+     "depois": 6235
+    },
+    {
+     "situacao": "Rejeitadas",
+     "antes": 4428,
+     "depois": 4428
+    },
+    {
+     "situacao": "Cadastradas",
+     "antes": 1852,
+     "depois": 1852
+    },
+    {
+     "situacao": "Em Complementação pelo Estado/Município",
+     "antes": 613,
+     "depois": 613
+    },
+    {
+     "situacao": "Não informado",
+     "antes": 9,
+     "depois": 9
     }
    ],
    "situacoes_novas": []
